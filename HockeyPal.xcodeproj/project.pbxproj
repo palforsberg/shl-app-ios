@@ -13,6 +13,9 @@
 		D1AFF87025A84FCD00E50ADE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D1AFF86F25A84FCD00E50ADE /* Preview Assets.xcassets */; };
 		D1AFF87B25A84FCE00E50ADE /* HockeyPalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF87A25A84FCE00E50ADE /* HockeyPalTests.swift */; };
 		D1AFF88625A84FCE00E50ADE /* HockeyPalUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF88525A84FCE00E50ADE /* HockeyPalUITests.swift */; };
+		D1AFF89725A8537B00E50ADE /* GamesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF89625A8537B00E50ADE /* GamesView.swift */; };
+		D1AFF89C25A8540E00E50ADE /* TabItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF89B25A8540E00E50ADE /* TabItem.swift */; };
+		D1AFF8A125A8550500E50ADE /* StandingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF8A025A8550500E50ADE /* StandingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +48,9 @@
 		D1AFF88125A84FCE00E50ADE /* HockeyPalUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HockeyPalUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1AFF88525A84FCE00E50ADE /* HockeyPalUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HockeyPalUITests.swift; sourceTree = "<group>"; };
 		D1AFF88725A84FCE00E50ADE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D1AFF89625A8537B00E50ADE /* GamesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesView.swift; sourceTree = "<group>"; };
+		D1AFF89B25A8540E00E50ADE /* TabItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItem.swift; sourceTree = "<group>"; };
+		D1AFF8A025A8550500E50ADE /* StandingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,8 +101,8 @@
 		D1AFF86725A84FCB00E50ADE /* HockeyPal */ = {
 			isa = PBXGroup;
 			children = (
-				D1AFF86825A84FCB00E50ADE /* HockeyPalApp.swift */,
-				D1AFF86A25A84FCB00E50ADE /* ContentView.swift */,
+				D1AFF8A925A85C1100E50ADE /* components */,
+				D1AFF8A525A8570B00E50ADE /* compositions */,
 				D1AFF86C25A84FCD00E50ADE /* Assets.xcassets */,
 				D1AFF87125A84FCD00E50ADE /* Info.plist */,
 				D1AFF86E25A84FCD00E50ADE /* Preview Content */,
@@ -128,6 +134,25 @@
 				D1AFF88725A84FCE00E50ADE /* Info.plist */,
 			);
 			path = HockeyPalUITests;
+			sourceTree = "<group>";
+		};
+		D1AFF8A525A8570B00E50ADE /* compositions */ = {
+			isa = PBXGroup;
+			children = (
+				D1AFF86825A84FCB00E50ADE /* HockeyPalApp.swift */,
+				D1AFF86A25A84FCB00E50ADE /* ContentView.swift */,
+				D1AFF89625A8537B00E50ADE /* GamesView.swift */,
+				D1AFF8A025A8550500E50ADE /* StandingsView.swift */,
+			);
+			path = compositions;
+			sourceTree = "<group>";
+		};
+		D1AFF8A925A85C1100E50ADE /* components */ = {
+			isa = PBXGroup;
+			children = (
+				D1AFF89B25A8540E00E50ADE /* TabItem.swift */,
+			);
+			path = components;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -259,7 +284,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D1AFF8A125A8550500E50ADE /* StandingsView.swift in Sources */,
 				D1AFF86B25A84FCB00E50ADE /* ContentView.swift in Sources */,
+				D1AFF89725A8537B00E50ADE /* GamesView.swift in Sources */,
+				D1AFF89C25A8540E00E50ADE /* TabItem.swift in Sources */,
 				D1AFF86925A84FCB00E50ADE /* HockeyPalApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
