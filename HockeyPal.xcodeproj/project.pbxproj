@@ -1,0 +1,579 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D1AFF86925A84FCB00E50ADE /* HockeyPalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF86825A84FCB00E50ADE /* HockeyPalApp.swift */; };
+		D1AFF86B25A84FCB00E50ADE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF86A25A84FCB00E50ADE /* ContentView.swift */; };
+		D1AFF86D25A84FCD00E50ADE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D1AFF86C25A84FCD00E50ADE /* Assets.xcassets */; };
+		D1AFF87025A84FCD00E50ADE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D1AFF86F25A84FCD00E50ADE /* Preview Assets.xcassets */; };
+		D1AFF87B25A84FCE00E50ADE /* HockeyPalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF87A25A84FCE00E50ADE /* HockeyPalTests.swift */; };
+		D1AFF88625A84FCE00E50ADE /* HockeyPalUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF88525A84FCE00E50ADE /* HockeyPalUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D1AFF87725A84FCE00E50ADE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D1AFF85D25A84FCB00E50ADE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D1AFF86425A84FCB00E50ADE;
+			remoteInfo = HockeyPal;
+		};
+		D1AFF88225A84FCE00E50ADE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D1AFF85D25A84FCB00E50ADE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D1AFF86425A84FCB00E50ADE;
+			remoteInfo = HockeyPal;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		D1AFF86525A84FCB00E50ADE /* HockeyPal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HockeyPal.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1AFF86825A84FCB00E50ADE /* HockeyPalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HockeyPalApp.swift; sourceTree = "<group>"; };
+		D1AFF86A25A84FCB00E50ADE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		D1AFF86C25A84FCD00E50ADE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D1AFF86F25A84FCD00E50ADE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		D1AFF87125A84FCD00E50ADE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D1AFF87625A84FCE00E50ADE /* HockeyPalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HockeyPalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1AFF87A25A84FCE00E50ADE /* HockeyPalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HockeyPalTests.swift; sourceTree = "<group>"; };
+		D1AFF87C25A84FCE00E50ADE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D1AFF88125A84FCE00E50ADE /* HockeyPalUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HockeyPalUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1AFF88525A84FCE00E50ADE /* HockeyPalUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HockeyPalUITests.swift; sourceTree = "<group>"; };
+		D1AFF88725A84FCE00E50ADE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D1AFF86225A84FCB00E50ADE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1AFF87325A84FCE00E50ADE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1AFF87E25A84FCE00E50ADE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D1AFF85C25A84FCB00E50ADE = {
+			isa = PBXGroup;
+			children = (
+				D1AFF86725A84FCB00E50ADE /* HockeyPal */,
+				D1AFF87925A84FCE00E50ADE /* HockeyPalTests */,
+				D1AFF88425A84FCE00E50ADE /* HockeyPalUITests */,
+				D1AFF86625A84FCB00E50ADE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D1AFF86625A84FCB00E50ADE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D1AFF86525A84FCB00E50ADE /* HockeyPal.app */,
+				D1AFF87625A84FCE00E50ADE /* HockeyPalTests.xctest */,
+				D1AFF88125A84FCE00E50ADE /* HockeyPalUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D1AFF86725A84FCB00E50ADE /* HockeyPal */ = {
+			isa = PBXGroup;
+			children = (
+				D1AFF86825A84FCB00E50ADE /* HockeyPalApp.swift */,
+				D1AFF86A25A84FCB00E50ADE /* ContentView.swift */,
+				D1AFF86C25A84FCD00E50ADE /* Assets.xcassets */,
+				D1AFF87125A84FCD00E50ADE /* Info.plist */,
+				D1AFF86E25A84FCD00E50ADE /* Preview Content */,
+			);
+			path = HockeyPal;
+			sourceTree = "<group>";
+		};
+		D1AFF86E25A84FCD00E50ADE /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				D1AFF86F25A84FCD00E50ADE /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		D1AFF87925A84FCE00E50ADE /* HockeyPalTests */ = {
+			isa = PBXGroup;
+			children = (
+				D1AFF87A25A84FCE00E50ADE /* HockeyPalTests.swift */,
+				D1AFF87C25A84FCE00E50ADE /* Info.plist */,
+			);
+			path = HockeyPalTests;
+			sourceTree = "<group>";
+		};
+		D1AFF88425A84FCE00E50ADE /* HockeyPalUITests */ = {
+			isa = PBXGroup;
+			children = (
+				D1AFF88525A84FCE00E50ADE /* HockeyPalUITests.swift */,
+				D1AFF88725A84FCE00E50ADE /* Info.plist */,
+			);
+			path = HockeyPalUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D1AFF86425A84FCB00E50ADE /* HockeyPal */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D1AFF88A25A84FCE00E50ADE /* Build configuration list for PBXNativeTarget "HockeyPal" */;
+			buildPhases = (
+				D1AFF86125A84FCB00E50ADE /* Sources */,
+				D1AFF86225A84FCB00E50ADE /* Frameworks */,
+				D1AFF86325A84FCB00E50ADE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HockeyPal;
+			productName = HockeyPal;
+			productReference = D1AFF86525A84FCB00E50ADE /* HockeyPal.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D1AFF87525A84FCE00E50ADE /* HockeyPalTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D1AFF88D25A84FCE00E50ADE /* Build configuration list for PBXNativeTarget "HockeyPalTests" */;
+			buildPhases = (
+				D1AFF87225A84FCE00E50ADE /* Sources */,
+				D1AFF87325A84FCE00E50ADE /* Frameworks */,
+				D1AFF87425A84FCE00E50ADE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D1AFF87825A84FCE00E50ADE /* PBXTargetDependency */,
+			);
+			name = HockeyPalTests;
+			productName = HockeyPalTests;
+			productReference = D1AFF87625A84FCE00E50ADE /* HockeyPalTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		D1AFF88025A84FCE00E50ADE /* HockeyPalUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D1AFF89025A84FCE00E50ADE /* Build configuration list for PBXNativeTarget "HockeyPalUITests" */;
+			buildPhases = (
+				D1AFF87D25A84FCE00E50ADE /* Sources */,
+				D1AFF87E25A84FCE00E50ADE /* Frameworks */,
+				D1AFF87F25A84FCE00E50ADE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D1AFF88325A84FCE00E50ADE /* PBXTargetDependency */,
+			);
+			name = HockeyPalUITests;
+			productName = HockeyPalUITests;
+			productReference = D1AFF88125A84FCE00E50ADE /* HockeyPalUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D1AFF85D25A84FCB00E50ADE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1230;
+				LastUpgradeCheck = 1230;
+				TargetAttributes = {
+					D1AFF86425A84FCB00E50ADE = {
+						CreatedOnToolsVersion = 12.3;
+					};
+					D1AFF87525A84FCE00E50ADE = {
+						CreatedOnToolsVersion = 12.3;
+						TestTargetID = D1AFF86425A84FCB00E50ADE;
+					};
+					D1AFF88025A84FCE00E50ADE = {
+						CreatedOnToolsVersion = 12.3;
+						TestTargetID = D1AFF86425A84FCB00E50ADE;
+					};
+				};
+			};
+			buildConfigurationList = D1AFF86025A84FCB00E50ADE /* Build configuration list for PBXProject "HockeyPal" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D1AFF85C25A84FCB00E50ADE;
+			productRefGroup = D1AFF86625A84FCB00E50ADE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D1AFF86425A84FCB00E50ADE /* HockeyPal */,
+				D1AFF87525A84FCE00E50ADE /* HockeyPalTests */,
+				D1AFF88025A84FCE00E50ADE /* HockeyPalUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D1AFF86325A84FCB00E50ADE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D1AFF87025A84FCD00E50ADE /* Preview Assets.xcassets in Resources */,
+				D1AFF86D25A84FCD00E50ADE /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1AFF87425A84FCE00E50ADE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1AFF87F25A84FCE00E50ADE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D1AFF86125A84FCB00E50ADE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D1AFF86B25A84FCB00E50ADE /* ContentView.swift in Sources */,
+				D1AFF86925A84FCB00E50ADE /* HockeyPalApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1AFF87225A84FCE00E50ADE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D1AFF87B25A84FCE00E50ADE /* HockeyPalTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1AFF87D25A84FCE00E50ADE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D1AFF88625A84FCE00E50ADE /* HockeyPalUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D1AFF87825A84FCE00E50ADE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D1AFF86425A84FCB00E50ADE /* HockeyPal */;
+			targetProxy = D1AFF87725A84FCE00E50ADE /* PBXContainerItemProxy */;
+		};
+		D1AFF88325A84FCE00E50ADE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D1AFF86425A84FCB00E50ADE /* HockeyPal */;
+			targetProxy = D1AFF88225A84FCE00E50ADE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		D1AFF88825A84FCE00E50ADE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		D1AFF88925A84FCE00E50ADE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D1AFF88B25A84FCE00E50ADE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"HockeyPal/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = HockeyPal/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.palforsberg.HockeyPal;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D1AFF88C25A84FCE00E50ADE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"HockeyPal/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = HockeyPal/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.palforsberg.HockeyPal;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D1AFF88E25A84FCE00E50ADE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = HockeyPalTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.palforsberg.HockeyPalTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HockeyPal.app/HockeyPal";
+			};
+			name = Debug;
+		};
+		D1AFF88F25A84FCE00E50ADE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = HockeyPalTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.palforsberg.HockeyPalTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HockeyPal.app/HockeyPal";
+			};
+			name = Release;
+		};
+		D1AFF89125A84FCE00E50ADE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = HockeyPalUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.palforsberg.HockeyPalUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = HockeyPal;
+			};
+			name = Debug;
+		};
+		D1AFF89225A84FCE00E50ADE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = HockeyPalUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.palforsberg.HockeyPalUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = HockeyPal;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D1AFF86025A84FCB00E50ADE /* Build configuration list for PBXProject "HockeyPal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D1AFF88825A84FCE00E50ADE /* Debug */,
+				D1AFF88925A84FCE00E50ADE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D1AFF88A25A84FCE00E50ADE /* Build configuration list for PBXNativeTarget "HockeyPal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D1AFF88B25A84FCE00E50ADE /* Debug */,
+				D1AFF88C25A84FCE00E50ADE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D1AFF88D25A84FCE00E50ADE /* Build configuration list for PBXNativeTarget "HockeyPalTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D1AFF88E25A84FCE00E50ADE /* Debug */,
+				D1AFF88F25A84FCE00E50ADE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D1AFF89025A84FCE00E50ADE /* Build configuration list for PBXNativeTarget "HockeyPalUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D1AFF89125A84FCE00E50ADE /* Debug */,
+				D1AFF89225A84FCE00E50ADE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D1AFF85D25A84FCB00E50ADE /* Project object */;
+}
