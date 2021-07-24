@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import HockeyPal
+@testable import shl_app_ios
 
 class HockeyPalTests: XCTestCase {
 
