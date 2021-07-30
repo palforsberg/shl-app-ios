@@ -38,7 +38,9 @@ class ImageLoader: ObservableObject {
             }
             DispatchQueue.main.async {
                 self.downloadedImage = UIImage(data: data)
-                ImageLoader.cache.setObject(self.downloadedImage!, forKey: NSString(string: url), cost: data.count)
+                if (self.downloadedImage != nil) {
+                    ImageLoader.cache.setObject(self.downloadedImage!, forKey: NSString(string: url), cost: data.count)
+                }
             }
         }.resume()
     }

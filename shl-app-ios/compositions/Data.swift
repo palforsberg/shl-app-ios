@@ -8,45 +8,67 @@
 import Foundation
 import SwiftUI
 
-let gamesUrl = "https://api.mocki.io/v1/e48f3d0f"
-let standingsUrl = "https://api.mocki.io/v1/c1b1266f"
+let baseUrl = "http://localhost:8000"
+let gamesUrl = "\(baseUrl)/games/2021"
+let standingsUrl = "\(baseUrl)/standings/2021"
 let teamsUrl = "https://api.mocki.io/v1/d066b1b4"
-
-
-func getGames(completion: @escaping (GamesData) -> ()) {
-    getData(url: gamesUrl, type: GamesData.self, completion: completion)
+let gameStatsUrl = { (game: Game) -> String in
+    return "/game/\(game.game_uuid)/\(game.game_id)"
 }
 
-func getStandings(completion: @escaping (StandingsData) -> ()) {
-    getData(url: standingsUrl, type: StandingsData.self, completion: completion)
-}
 
-func getData<T>(url: String, type: T.Type, completion: @escaping (T) -> ()) where T : Codable {
-    guard let url = URL(string: url) else {
-        print("Your API end point is Invalid")
-        return
+class DataProvider {
+    func getGames(completion: @escaping ([Game]) -> ()) {
+        getData(url: gamesUrl, type: [Game].self, completion: { (e: [Game]) -> () in
+            completion(e)
+        })
     }
-    let request = URLRequest(url: url)
-    print("fetching \(type) from \(url)")
-    URLSession.shared.dataTask(with: request) { data, response, error in
-        if let data = data {
-            do {
-                let decoder = JSONDecoder()
-                decoder.dateDecodingStrategy = JSONDecoder.DateDecodingStrategy.iso8601
-                let response = try decoder.decode(type, from: data)
-                DispatchQueue.main.async {
-                    completion(response)
-                }
-            } catch let error {
-                print("error \(error)")
-            }
-           
+
+    func getStandings(completion: @escaping (StandingsData) -> ()) {
+        getData(url: standingsUrl, type: [Standing].self, completion: { (e: [Standing]) -> () in
+            completion(StandingsData(data: e))
+        })
+    }
+    
+    func getGameStats(game: Game, completion: @escaping (GameStatsData) -> ()) {
+        getData(url: gameStatsUrl(game), type: GameStatsData.self, completion: completion)
+    }
+    
+    func getTeams(completion: @escaping ([Team]) -> ()) {
+        getData(url: teamsUrl, type: [Team].self, completion: completion)
+    }
+
+    func getData<T>(url: String, type: T.Type, completion: @escaping (T) -> ()) where T : Codable {
+        guard let url = URL(string: url) else {
+            print("Your API end point is Invalid")
+            return
         }
-    }.resume()
+        let request = URLRequest(url: url)
+        print("fetching \(type) from \(url)")
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let data = data {
+                do {
+                    let decoder = JSONDecoder()
+                    decoder.dateDecodingStrategy = JSONDecoder.DateDecodingStrategy.iso8601
+                    let response = try decoder.decode(type, from: data)
+                    DispatchQueue.main.async {
+                        completion(response)
+                    }
+                } catch let error {
+                    print("error \(error)")
+                }
+               
+            }
+        }.resume()
+    }
 }
 
-struct GamesData: Codable {
-    let data: [Game]
+class GamesData: ObservableObject {
+    @Published var data: [Game]
+    
+    init(data: [Game]) {
+        self.data = data
+    }
     
     func getGames() -> [Game] {
         return data.sorted { (a, b) -> Bool in
@@ -58,7 +80,7 @@ struct GamesData: Codable {
         let now = Date()
         return Array(getGames()
             .filter({ game -> Bool in
-                return game.start_date_time == now
+                return game.start_date_time < now && game.played == false
             })
             .filter(getTeamFilter(teamCodes: teamCodes)))
     }
@@ -70,7 +92,7 @@ struct GamesData: Codable {
                 return a.start_date_time > b.start_date_time
             }
             .filter({ game -> Bool in
-                return game.start_date_time < now
+                return game.start_date_time < now && game.played == true
             })
             .filter(getTeamFilter(teamCodes: teamCodes)))
     }
@@ -94,6 +116,12 @@ struct GamesData: Codable {
             return game.hasTeam(e)
         }}
     }
+    
+    func getGamesBetween(team1: String, team2: String) -> [Game] {
+        return getPlayedGames(teamCodes: []).filter { g in
+            return g.hasTeam(team1) && g.hasTeam(team2)
+        }
+    }
 }
 
 struct Game: Codable, Identifiable  {
@@ -101,6 +129,7 @@ struct Game: Codable, Identifiable  {
         return game_id
     }
     let game_id: Int
+    let game_uuid: String
     let away_team_code: String
     let away_team_result: Int
     let home_team_code: String
@@ -122,25 +151,63 @@ struct Standing: Codable, Identifiable {
         return team_code
     }
     let team_code: String
-    let diff: Int
     let gp: Int
     let rank: Int
     let points: Int
     
     func getPointsPerGame() -> Double {
+        if (gp == 0) {
+            return 0
+        }
         return Double(points) / Double(gp)
     }
 }
 
-struct TeamsData: Codable {
-    let data: [Team]
+class TeamsData: ObservableObject {
+    @Published var teams = [String:Team]()
+    func getTeam(_ code: String) -> Team? {
+        return teams[code]
+    }
+    func setTeams(teams: [Team]) {
+        for team in teams {
+            self.teams[team.code] = team
+        }
+    }
 }
+
 struct Team: Codable, Identifiable {
     var id: String {
         return code
     }
     let code: String
     let name: String
+}
+
+struct GameStatsData: Codable {
+    var data: GameStats
+}
+
+struct GameStats: Codable {
+    var recaps: [String: Period]
+    var gameState: String
+    
+    func getRecap() -> Period {
+        return recaps["gameRecap"]!
+    }
+}
+
+struct Period: Codable {
+    var periodNumber: Int8
+    var homeG: Int16
+    var awayG: Int16
+    var homeHits: Int16
+    var homeSOG: Int16
+    var homePIM: Int16
+    var homeFOW: Int16
+    var awayHits: Int16
+    var awaySOG: Int16
+    var awayPIM: Int16
+    var awayFOW: Int16
 }
 
 extension Date {

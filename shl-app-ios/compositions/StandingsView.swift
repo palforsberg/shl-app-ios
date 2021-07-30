@@ -9,12 +9,12 @@ import SwiftUI
 
 struct StandingsView: View {
     @State var standings = [Standing]()
-    @EnvironmentObject var teams: Teams
+    @EnvironmentObject var teams: TeamsData
+    var provider: DataProvider? = DataProvider()
     
     var body: some View {
         NavigationView {
             List(standings) { item in
-                let team = teams.getTeam(item.team_code)
                 NavigationLink(destination: TeamView(teamCode: item.team_code)) {
                     HStack() {
                         Text("#\(item.rank)")
@@ -22,22 +22,18 @@ struct StandingsView: View {
                             .fontWeight(.bold)
                             .frame(width: 30, height: 20)
                             .foregroundColor(Color.gray)
-                        TeamLogo(code: item.team_code)
-                        Text(team?.name ?? item.team_code)
-                            .font(.headline)
-                            .fontWeight(.medium)
+                        TeamAvatar(item.team_code)
                         Spacer()
                         PointsText("\(item.gp)")
-    //                    PointsText(String(format: "%.2f", item.getPointsPerGame()))
+                        PointsText(String(format: "%.2f", item.getPointsPerGame()))
                         PointsText("\(item.points)")
-                            .padding(.trailing, 5.0)
                     }.padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
                 }.buttonStyle(PlainButtonStyle())
             }
             .listStyle(InsetGroupedListStyle())
             .navigationBarTitle(Text("SHL"))
             .onAppear(perform: {
-                getStandings { (result) in
+                provider?.getStandings { (result) in
                     self.standings = result.data
                 }
             })
@@ -54,7 +50,7 @@ struct PointsText: View {
 
     var body: some View {
         Text("\(points)")
-            .font(.system(size: 14))
+            .font(.system(size: 14, design: .rounded))
             .fontWeight(.medium)
             .frame(width: 30, height: 20)
             .multilineTextAlignment(.trailing)
@@ -63,6 +59,10 @@ struct PointsText: View {
 
 struct StandingsView_Previews: PreviewProvider {
     static var previews: some View {
-        StandingsView()
+        return StandingsView(standings: [getStanding()], provider: nil)
+            .environmentObject(TeamsData())
+    }
+    static func getStanding() -> Standing {
+        return Standing(team_code: "LHF", gp: 4, rank: 1, points: 3)
     }
 }

@@ -24,7 +24,8 @@ struct TeamAvatar: View {
     var body: some View {
         HStack {
             TeamLogo(code: teamCode, size: LogoSize.small)
-            Text(teamCode).font(.system(size: 28)).fontWeight(.medium)
+                .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+            Text(teamCode).font(.system(size: 24, design: .rounded)).fontWeight(.semibold)
         }
         .frame(width: 115, height: 40, alignment: alignment)
         
@@ -34,14 +35,19 @@ struct TeamAvatar: View {
 struct LiveGame: View {
     var game: Game
     var body: some View {
-        TeamLogo(code: game.home_team_code)
-        Text(game.home_team_code)
-        Text("-")
-        TeamLogo(code: game.away_team_code)
-        Text(game.away_team_code)
-        Spacer()
-        Text("\(game.home_team_result) - \(game.away_team_result)")
-            .multilineTextAlignment(.trailing)
+        HStack {
+            TeamAvatar(game.home_team_code, alignment: .center)
+            Spacer()
+            Text("\(game.home_team_result)")
+                .font(.system(size: 30))
+                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+            Text("-")
+            Text("\(game.away_team_result)")
+                .font(.system(size: 30))
+                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+            Spacer()
+            TeamAvatar(game.away_team_code, alignment: .center)
+        }
     }
 }
 
@@ -49,26 +55,28 @@ struct ComingGame: View {
     var game: Game
     var body: some View {
         HStack {
-            TeamAvatar(game.home_team_code)
-            TeamAvatar(game.away_team_code)
+            TeamAvatar(game.home_team_code, alignment: .center)
             Spacer()
             VStack(alignment: .center, spacing: /*@START_MENU_TOKEN@*/nil/*@END_MENU_TOKEN@*/, content: {
-                Text("\(game.start_date_time.getFormattedDate())".uppercased())
+                Text("\(game.start_date_time.getFormattedDate())")
                     .fontWeight(.semibold)
                     .foregroundColor(Color.init(Color.RGBColorSpace.sRGB, white: 0.4, opacity: 1.0))
-                    .font(.system(size: 15))
+                    .font(.system(size: 18, design: .rounded))
                     
                 Text("\(game.start_date_time.getFormattedTime())")
-                    .font(.system(size: 15))
+                    .font(.system(size: 15, design: .rounded))
                     .foregroundColor(Color.init(Color.RGBColorSpace.sRGB, white: 0.4, opacity: 1.0))
             })
+            Spacer()
+            TeamAvatar(game.away_team_code, alignment: .center)
+
         }
     }
 }
 
 struct ComingGame_Previews: PreviewProvider {
     static var previews: some View {
-        ComingGame(game: Game(game_id: 1, away_team_code: "FHC", away_team_result: 2, home_team_code: "LHF", home_team_result: 3, start_date_time: Date(), played: false))
+        ComingGame(game: Game(game_id: 1, game_uuid: "123", away_team_code: "FHC", away_team_result: 2, home_team_code: "LHF", home_team_result: 3, start_date_time: Date(), played: false))
             .environment(\.locale, .init(identifier: "sv"))
     }
 }
@@ -95,7 +103,7 @@ struct PlayedGame: View {
                     .opacity(awayLost ? 0.5 : 1.0)
             }
             Text(game.start_date_time.getFormattedDate())
-                .font(.system(size: 18))
+                .font(.system(size: 18, design: .rounded))
                 .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                 .foregroundColor(Color.init(white: 0.6))
         })
@@ -104,13 +112,14 @@ struct PlayedGame: View {
 
 struct PlayedGame_Previews: PreviewProvider {
     static var previews: some View {
-        PlayedGame(game: Game(game_id: 1, away_team_code: "FHC", away_team_result: 2, home_team_code: "LHF", home_team_result: 3, start_date_time: Date(), played: false))
+        PlayedGame(game: Game(game_id: 1, game_uuid: "123", away_team_code: "FHC", away_team_result: 2, home_team_code: "LHF", home_team_result: 3, start_date_time: Date(), played: false))
             .environment(\.locale, .init(identifier: "sv"))
     }
 }
 
 struct GamesView: View {
     @EnvironmentObject var starredTeams: StarredTeams
+    @EnvironmentObject var gamesData: GamesData
     
     @State var liveGames = [Game]()
     @State var futureGames = [Game]()
@@ -119,45 +128,41 @@ struct GamesView: View {
     var body: some View {
         NavigationView {
             List {
-                if (!liveGames.isEmpty) {
-                    Section(header: Text("Live").font(.headline), content: {
-                        ForEach(liveGames) { (item) in
+                Section(header: Text("Live").font(.headline), content: {
+                    ForEach(liveGames) { (item) in
+                        NavigationLink(destination: GamesStatsView(game: item)) {
                             VStack(alignment: .leading) {
-                                HStack() {
-                                    LiveGame(game: item)
-                                }
-                            }.padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                                LiveGame(game: item)
+                            }.padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
                         }
-                    })
-                }
+                    }
+                })
                 Section(header: Text("Coming").font(.headline), content: {
                     ForEach(futureGames) { (item) in
-                        VStack(alignment: .leading) {
-                            HStack() {
+                        NavigationLink(destination: GamesStatsView(game: item)) {
+                            VStack(alignment: .leading) {
                                 ComingGame(game: item)
-                            }
-                        }.padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                            }.padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
+                        }
                     }
                 })
                 Section(header: Text("Played").font(.headline), content: {
                     ForEach(playedGames) { (item) in
-                        VStack(alignment: .leading) {
-                            HStack() {
+                        NavigationLink(destination: GamesStatsView(game: item)) {
+                            VStack(alignment: .leading) {
                                 PlayedGame(game: item)
-                            }
-                        }.padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                            }.padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
+                        }
                     }
                 })
             }
             .listStyle(InsetGroupedListStyle())
             .navigationBarTitle(Text("Games"))
             .onAppear(perform: {
-                getGames { (result) in
-                    let teamCodes = starredTeams.get()
-                    self.futureGames = result.getFutureGames(teamCodes: teamCodes)
-                    self.liveGames = result.getLiveGames(teamCodes: teamCodes)
-                    self.playedGames = result.getPlayedGames(teamCodes: teamCodes)
-                }
+                let teamCodes = starredTeams.get()
+                self.futureGames = gamesData.getFutureGames(teamCodes: teamCodes)
+                self.liveGames = gamesData.getLiveGames(teamCodes: teamCodes)
+                self.playedGames = gamesData.getPlayedGames(teamCodes: teamCodes)
             })
             Color.gray
         }
@@ -166,7 +171,12 @@ struct GamesView: View {
 
 struct GamesView_Previews: PreviewProvider {
     static var previews: some View {
+        let gamesData = GamesData(data: [getLiveGame(), getLiveGame(),
+                                         getPlayedGame(), getPlayedGame(),
+                                         getFutureGame(), getFutureGame()])
         GamesView()
+            .environmentObject(StarredTeams())
+            .environmentObject(gamesData)
             .environment(\.locale, .init(identifier: "sv"))
     }
 }
