@@ -8,12 +8,13 @@
 import Foundation
 import SwiftUI
 
+let season = 2020
 let baseUrl = "http://localhost:8000"
-let gamesUrl = "\(baseUrl)/games/2021"
-let standingsUrl = "\(baseUrl)/standings/2021"
+let gamesUrl = "\(baseUrl)/games/\(season)"
+let standingsUrl = "\(baseUrl)/standings/\(season)"
 let teamsUrl = "https://api.mocki.io/v1/d066b1b4"
 let gameStatsUrl = { (game: Game) -> String in
-    return "/game/\(game.game_uuid)/\(game.game_id)"
+    return "\(baseUrl)/game/\(game.game_uuid)/\(game.game_id)"
 }
 
 
@@ -30,8 +31,8 @@ class DataProvider {
         })
     }
     
-    func getGameStats(game: Game, completion: @escaping (GameStatsData) -> ()) {
-        getData(url: gameStatsUrl(game), type: GameStatsData.self, completion: completion)
+    func getGameStats(game: Game, completion: @escaping (GameStats) -> ()) {
+        getData(url: gameStatsUrl(game), type: GameStats.self, completion: completion)
     }
     
     func getTeams(completion: @escaping ([Team]) -> ()) {
@@ -155,11 +156,11 @@ struct Standing: Codable, Identifiable {
     let rank: Int
     let points: Int
     
-    func getPointsPerGame() -> Double {
+    func getPointsPerGame() -> String {
         if (gp == 0) {
-            return 0
+            return "0.00"
         }
-        return Double(points) / Double(gp)
+        return String(format: "%.2f", Double(points) / Double(gp))
     }
 }
 
@@ -188,11 +189,18 @@ struct GameStatsData: Codable {
 }
 
 struct GameStats: Codable {
-    var recaps: [String: Period]
+    var recaps: AllPeriods
     var gameState: String
+}
+
+struct AllPeriods: Codable {
+    var gameRecap: Period
+    var period1: Period?
+    var period2: Period?
+    var period3: Period?
     
-    func getRecap() -> Period {
-        return recaps["gameRecap"]!
+    private enum CodingKeys : String, CodingKey {
+        case gameRecap, period1 = "0", period2 = "1", period3 = "2"
     }
 }
 
@@ -209,6 +217,7 @@ struct Period: Codable {
     var awayPIM: Int16
     var awayFOW: Int16
 }
+
 
 extension Date {
    func getFormattedDateAndTime() -> String {

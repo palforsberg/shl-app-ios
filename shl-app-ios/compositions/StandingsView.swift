@@ -15,18 +15,17 @@ struct StandingsView: View {
     var body: some View {
         NavigationView {
             List(standings) { item in
-                NavigationLink(destination: TeamView(teamCode: item.team_code)) {
+                NavigationLink(destination: TeamView(teamCode: item.team_code, standing: item)) {
                     HStack() {
                         Text("#\(item.rank)")
-                            .font(.subheadline)
-                            .fontWeight(.bold)
+                            .points()
                             .frame(width: 30, height: 20)
                             .foregroundColor(Color.gray)
                         TeamAvatar(item.team_code)
                         Spacer()
-                        PointsText("\(item.gp)")
-                        PointsText(String(format: "%.2f", item.getPointsPerGame()))
-                        PointsText("\(item.points)")
+                        Text("\(item.gp)").points()
+                        Text(item.getPointsPerGame()).points()
+                        Text("\(item.points)").points()
                     }.padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
                 }.buttonStyle(PlainButtonStyle())
             }
@@ -39,21 +38,6 @@ struct StandingsView: View {
             })
             Color.gray
         }
-    }
-}
-
-struct PointsText: View {
-    var points: String
-    init(_ points: String) {
-        self.points = points
-    }
-
-    var body: some View {
-        Text("\(points)")
-            .font(.system(size: 14, design: .rounded))
-            .fontWeight(.medium)
-            .frame(width: 30, height: 20)
-            .multilineTextAlignment(.trailing)
     }
 }
 

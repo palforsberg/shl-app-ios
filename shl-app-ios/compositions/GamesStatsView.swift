@@ -7,97 +7,135 @@
 
 import SwiftUI
 
+
+struct StatsRow: View {
+    var left: String
+    var center: String
+    var right: String
+    
+    var body: some View {
+        HStack() {
+            Text(left).font(.system(size: 20, design: .rounded)).fontWeight(.bold).frame(width: 45, alignment: .leading)
+            Spacer()
+            Text(LocalizedStringKey(center)).font(.system(size: 18, design: .rounded)).fontWeight(.semibold).frame(maxWidth: .infinity, alignment: .center)
+            Spacer()
+            Text(right).font(.system(size: 20, design: .rounded)).fontWeight(.bold).frame(width: 45, alignment: .trailing)
+        }.padding(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
+    }
+}
+
+struct GroupedView<Content: View>: View {
+    var content: () -> Content
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 10.0).foregroundColor(Color(UIColor.secondarySystemGroupedBackground))
+            VStack {
+                content()
+            }.padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+        }.padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 15))
+    }
+}
+
+struct PeriodStatsView: View {
+    let stats: Period?
+    
+    var body: some View {
+        GroupedView {
+            VStack {
+                StatsRow(left: "\(stats?.homeSOG ?? 0)", center: "Shots", right: "\(stats?.awaySOG ?? 0)")
+                StatsRow(left: "\(stats?.homePIM ?? 0)", center: "Penalty Minutes", right: "\(stats?.awayPIM ?? 0)")
+                StatsRow(left: "\(stats?.homeFOW ?? 0)", center: "Face Offs Won", right: "\(stats?.awayFOW ?? 0)")
+                StatsRow(left: "\(stats?.homeHits ?? 0)", center: "Hits", right: "\(stats?.awayHits ?? 0)")
+            }.padding(EdgeInsets(top: 15, leading: 30, bottom: 15, trailing: 30))
+        }
+    }
+}
+
 struct GamesStatsView: View {
     @State var gameStats: GameStats?
     @State var previousGames: [Game] = []
     @EnvironmentObject var gamesData: GamesData
     
+    var provider: DataProvider? = DataProvider()
     var game: Game
     
     var body: some View {
-            ScrollView() {
-                Text("Svenska Hockey Ligan").fontWeight(.medium)
-                HStack {
-                    VStack {
-                        TeamLogo(code: game.home_team_code, size: LogoSize.big)
-                        Text("Luleå HF")
+            ScrollView {
+                Section(header: Text("Svenska Hockey Ligan").font(.headline)) {
+                    HStack(alignment: .center, spacing: 0) {
+                        VStack {
+                            TeamLogo(code: game.home_team_code, size: LogoSize.big)
+                            Text(game.home_team_code)
+                        }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 80).frame(maxWidth: 140)
+                
+                        HStack(alignment: .center, spacing: 15) {
+                            Text("\(game.home_team_result)").font(.system(size: 40, design: .rounded))
+                            Text("vs").font(.system(size: 20, design: .rounded)).padding(.top, 5)
+                            Text("\(game.away_team_result)").font(.system(size: 40, design: .rounded))
+                        }.padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5))
+                        
+                        VStack {
+                            TeamLogo(code: game.away_team_code, size: LogoSize.big)
+                            Text(game.away_team_code)
+                        }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 80).frame(maxWidth: 140)
                     }
-                    Spacer()
-                    Text("\(game.home_team_result)").font(.system(size: 40, design: .rounded))
-                    Text("-").font(.system(size: 20, design: .rounded))
-                    Text("\(game.away_team_result)").font(.system(size: 40, design: .rounded))
-                    Spacer()
-                    VStack {
-                        TeamLogo(code: game.away_team_code, size: LogoSize.big)
-                        Text("Frölunda HC")
-                    }
-                }.padding(EdgeInsets(top: 0, leading: 40, bottom: 0, trailing: 40))
-                Section(header: Text("Match Detaljer").font(.headline), content: {
-                    VStack(alignment: .leading) {
-                        HStack() {
-                            Text("\(gameStats?.getRecap().homeSOG ?? 0)")
-                            Spacer()
-                            Text("Skott")
-                            Spacer()
-                            Text("\(gameStats?.getRecap().awaySOG ?? 0)")
-                        }.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-                    }.padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
-                    VStack(alignment: .leading) {
-                        HStack() {
-                            Text("\(gameStats?.getRecap().homePIM ?? 0)")
-                            Spacer()
-                            Text("PIM")
-                            Spacer()
-                            Text("\(gameStats?.getRecap().awayPIM ?? 0)")
-                        }.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-                    }.padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
-                    VStack(alignment: .leading) {
-                        HStack() {
-                            Text("\(gameStats?.getRecap().homeFOW ?? 0)")
-                            Spacer()
-                            Text("FOW")
-                            Spacer()
-                            Text("\(gameStats?.getRecap().awayFOW ?? 0)")
-                        }.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-                    }.padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
-                    VStack(alignment: .leading) {
-                        HStack() {
-                            Text("\(gameStats?.getRecap().homeHits ?? 0)")
-                            Spacer()
-                            Text("Hits")
-                            Spacer()
-                            Text("\(gameStats?.getRecap().awayHits ?? 0)")
-                        }.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-                    }.padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
-                })
-                List {
-                    Section(header: Text("Played").font(.headline), content: {
+                }
+                Spacer(minLength: 40)
+                Text("Match Detail").listHeader()
+                PeriodStatsView(stats: gameStats?.recaps.gameRecap)
+                Spacer(minLength: 40)
+                if let period = gameStats?.recaps.period1 {
+                    Text("Period 1").listHeader()
+                    PeriodStatsView(stats: period)
+                    Spacer(minLength: 40)
+                }
+                if let period = gameStats?.recaps.period2 {
+                    Text("Period 2").listHeader()
+                    PeriodStatsView(stats: period)
+                    Spacer(minLength: 40)
+                }
+                if let period = gameStats?.recaps.period3 {
+                    Text("Period 3").listHeader()
+                    PeriodStatsView(stats: period)
+                    Spacer(minLength: 40)
+                }
+                if (!previousGames.isEmpty) {
+                    Text("Played").listHeader()
+                    GroupedView {
                         ForEach(previousGames) { (item) in
                             NavigationLink(destination: GamesStatsView(game: item)) {
-                                VStack(alignment: .leading) {
-                                    PlayedGame(game: item)
-                                }.padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
-                            }
+                                PlayedGame(game: item)
+                            }.padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
                         }
-                    })
+                    }
+                    Spacer(minLength: 40)
                 }
-            }.onAppear(perform: {
-                DataProvider().getGameStats(game: game) { stats in
-                    self.gameStats = stats.data
+            }
+            .onAppear(perform: {
+                provider?.getGameStats(game: game) { stats in
+                    self.gameStats = stats
                 }
                 
-                self.previousGames = self.gamesData.getGamesBetween(team1: game.home_team_code, team2: game.away_team_code)
+                self.previousGames = Array(self.gamesData
+                    .getGamesBetween(team1: game.home_team_code, team2: game.away_team_code)
+                    .prefix(5))
+                    
             })
+            .background(Color(UIColor.systemGroupedBackground))
     }
 }
 
 struct GamesStatsView_Previews: PreviewProvider {
     static var previews: some View {
-        GamesStatsView(game: getGame())
+        GamesStatsView(gameStats: GameStats(recaps: AllPeriods(gameRecap: getPeriod()), gameState: "Ended"),
+                       provider: nil,
+                       game: getLiveGame())
+            .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
+            .environment(\.locale, .init(identifier: "sv"))
     }
     
-    
-    static func getGame() -> Game {
-        return Game(game_id: 13558, game_uuid: "qZi-3RRn5CM5T", away_team_code: "FHC", away_team_result: 0, home_team_code: "LHF", home_team_result: 2, start_date_time: Date(), played: false)
+    static func getPeriod() -> Period {
+        return Period(periodNumber: 0, homeG: 3, awayG: 0, homeHits: 14, homeSOG: 64, homePIM: 654, homeFOW: 55, awayHits: 53, awaySOG: 23, awayPIM: 23, awayFOW: 0)
     }
 }

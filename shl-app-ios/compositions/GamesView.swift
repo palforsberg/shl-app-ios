@@ -47,7 +47,7 @@ struct LiveGame: View {
                 .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
             Spacer()
             TeamAvatar(game.away_team_code, alignment: .center)
-        }
+        }.padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
     }
 }
 
@@ -58,7 +58,7 @@ struct ComingGame: View {
             TeamAvatar(game.home_team_code, alignment: .center)
             Spacer()
             VStack(alignment: .center, spacing: /*@START_MENU_TOKEN@*/nil/*@END_MENU_TOKEN@*/, content: {
-                Text("\(game.start_date_time.getFormattedDate())")
+                Text(LocalizedStringKey(game.start_date_time.getFormattedDate()))
                     .fontWeight(.semibold)
                     .foregroundColor(Color.init(Color.RGBColorSpace.sRGB, white: 0.4, opacity: 1.0))
                     .font(.system(size: 18, design: .rounded))
@@ -69,15 +69,7 @@ struct ComingGame: View {
             })
             Spacer()
             TeamAvatar(game.away_team_code, alignment: .center)
-
-        }
-    }
-}
-
-struct ComingGame_Previews: PreviewProvider {
-    static var previews: some View {
-        ComingGame(game: Game(game_id: 1, game_uuid: "123", away_team_code: "FHC", away_team_result: 2, home_team_code: "LHF", home_team_result: 3, start_date_time: Date(), played: false))
-            .environment(\.locale, .init(identifier: "sv"))
+        }.padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
     }
 }
 
@@ -102,18 +94,11 @@ struct PlayedGame: View {
                 TeamAvatar(game.away_team_code, alignment: .center)
                     .opacity(awayLost ? 0.5 : 1.0)
             }
-            Text(game.start_date_time.getFormattedDate())
+            Text(LocalizedStringKey(game.start_date_time.getFormattedDate()))
                 .font(.system(size: 18, design: .rounded))
                 .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                 .foregroundColor(Color.init(white: 0.6))
-        })
-    }
-}
-
-struct PlayedGame_Previews: PreviewProvider {
-    static var previews: some View {
-        PlayedGame(game: Game(game_id: 1, game_uuid: "123", away_team_code: "FHC", away_team_result: 2, home_team_code: "LHF", home_team_result: 3, start_date_time: Date(), played: false))
-            .environment(\.locale, .init(identifier: "sv"))
+        }).padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
     }
 }
 
@@ -128,30 +113,24 @@ struct GamesView: View {
     var body: some View {
         NavigationView {
             List {
-                Section(header: Text("Live").font(.headline), content: {
+                Section(header: Text("Live").listHeader(), content: {
                     ForEach(liveGames) { (item) in
                         NavigationLink(destination: GamesStatsView(game: item)) {
-                            VStack(alignment: .leading) {
-                                LiveGame(game: item)
-                            }.padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
+                            LiveGame(game: item)
                         }
                     }
                 })
-                Section(header: Text("Coming").font(.headline), content: {
+                Section(header: Text("Coming").listHeader(), content: {
                     ForEach(futureGames) { (item) in
                         NavigationLink(destination: GamesStatsView(game: item)) {
-                            VStack(alignment: .leading) {
-                                ComingGame(game: item)
-                            }.padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
+                            ComingGame(game: item)
                         }
                     }
                 })
-                Section(header: Text("Played").font(.headline), content: {
+                Section(header: Text("Played").listHeader(), content: {
                     ForEach(playedGames) { (item) in
                         NavigationLink(destination: GamesStatsView(game: item)) {
-                            VStack(alignment: .leading) {
-                                PlayedGame(game: item)
-                            }.padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
+                            PlayedGame(game: item)
                         }
                     }
                 })

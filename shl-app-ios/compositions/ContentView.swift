@@ -18,14 +18,8 @@ struct ContentView: View {
     var body: some View {
         TabView {
             GamesView()
-                .environmentObject(starredTeams)
-                .environmentObject(teams)
-                .environmentObject(gameData)
                 .tabItem { TabItem(text: "Games", image: "house") }
             StandingsView()
-                .environmentObject(starredTeams)
-                .environmentObject(teams)
-                .environmentObject(gameData)
                 .tabItem { TabItem(text: "Standings", image: "list.number") }
         }.onAppear(perform: {
             provider?.getTeams(completion: { ts in
@@ -40,6 +34,7 @@ struct ContentView: View {
         .environmentObject(starredTeams)
         .environmentObject(teams)
         .environmentObject(gameData)
+        .background(Color(UIColor.systemGray6))
     }
     
 }
@@ -54,6 +49,8 @@ struct ContentView_Previews: PreviewProvider {
                                                    getPlayedGame(), getPlayedGame(),
                                                    getFutureGame(), getFutureGame()]),
                         provider: nil)
+                .environment(\.locale, .init(identifier: "sv"))
+            
         }
     }
 }
