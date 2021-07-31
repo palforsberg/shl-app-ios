@@ -19,3 +19,7 @@
 "Wins" = "Vinster";
 "Ties" = "Lika";
 "Match History" = "Tidigare Matcher";
+
+// Settings
+"App Icon" = "App Ikon";
+"Notifications" = "Notifikationer";
