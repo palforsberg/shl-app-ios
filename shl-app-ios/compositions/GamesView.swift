@@ -106,11 +106,11 @@ struct GamesView: View {
     @EnvironmentObject var starredTeams: StarredTeams
     @EnvironmentObject var gamesData: GamesData
     
-    @State var liveGames = [Game]()
-    @State var futureGames = [Game]()
-    @State var playedGames = [Game]()
-    
     var body: some View {
+        let teamCodes = starredTeams.starredTeams
+        let liveGames = gamesData.getLiveGames(teamCodes: teamCodes)
+        let futureGames = gamesData.getFutureGames(teamCodes: teamCodes)
+        let playedGames = gamesData.getPlayedGames(teamCodes: teamCodes)
         NavigationView {
             List {
                 Section(header: Text("Live").listHeader(), content: {
@@ -136,14 +136,10 @@ struct GamesView: View {
                 })
             }
             .listStyle(InsetGroupedListStyle())
-            .navigationBarTitle(Text("Games"))
-            .onAppear(perform: {
-                let teamCodes = starredTeams.get()
-                self.futureGames = gamesData.getFutureGames(teamCodes: teamCodes)
-                self.liveGames = gamesData.getLiveGames(teamCodes: teamCodes)
-                self.playedGames = gamesData.getPlayedGames(teamCodes: teamCodes)
-            })
-            Color.gray
+            .navigationBarTitle(Text("Matches"))
+            .navigationBarItems(trailing: NavigationLink(destination: SettingsView()) {
+                                         Image(systemName: "gear")
+                                     })
         }
     }
 }

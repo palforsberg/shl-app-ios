@@ -15,6 +15,7 @@ enum LogoSize {
 struct TeamLogo: View {
     var code: String
     var size = LogoSize.small
+
     var body: some View {
         URLImage(url: "http://xn--pl-yia.se/shl/logos/\(code.lowercased()).png")
                 .frame(width: getSize(), height: getSize(), alignment: .center)

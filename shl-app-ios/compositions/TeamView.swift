@@ -33,6 +33,7 @@ struct TeamView: View {
         let starred = starredTeams.isStarred(teamCode: teamCode)
         ScrollView {
             LazyVStack(alignment: .center, spacing: 10, content: {
+                Spacer(minLength: 25)
                 Text("Swedish Hockey League").fontWeight(.medium)
                 TeamLogo(code: teamCode, size: .big)
                 Text(_team?.name ?? teamCode).font(.largeTitle).fontWeight(.medium)
@@ -91,6 +92,7 @@ struct TeamView: View {
             })
             .background(Color(UIColor.systemGroupedBackground))
         }.background(Color(UIColor.systemGroupedBackground))
+        .navigationBarTitle("", displayMode: .inline)
     }
 }
 

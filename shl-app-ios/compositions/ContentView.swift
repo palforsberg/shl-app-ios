@@ -11,30 +11,27 @@ struct ContentView: View {
     
     @ObservedObject var starredTeams = StarredTeams()
     @ObservedObject var teams = TeamsData()
-    @StateObject var gameData = GamesData(data: [])
+    @ObservedObject var gameData = GamesData(data: [])
     
     var provider: DataProvider? = DataProvider()
     
     var body: some View {
         TabView {
-            GamesView()
-                .tabItem { TabItem(text: "Games", image: "house") }
-            StandingsView()
-                .tabItem { TabItem(text: "Standings", image: "list.number") }
+            GamesView().tabItem { () in Label("Home", systemImage: "house") }
+            StandingsView().tabItem { Label("Standings", systemImage: "list.bullet") }
         }.onAppear(perform: {
             provider?.getTeams(completion: { ts in
                 teams.setTeams(teams: ts)
             })
             provider?.getGames { gd in
-                DispatchQueue.main.async {
-                    gameData.data = gd
-                }
+                gameData.data = gd
             }
         })
         .environmentObject(starredTeams)
         .environmentObject(teams)
         .environmentObject(gameData)
-        .background(Color(UIColor.systemGray6))
+        .background(Color(UIColor.systemGroupedBackground))
+        .accentColor(Color.orange)
     }
     
 }

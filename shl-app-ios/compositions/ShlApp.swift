@@ -9,6 +9,9 @@ import SwiftUI
 
 @main
 struct ShlApp: App {
+    init() {
+        UINavigationBar.appearance().largeTitleTextAttributes = [.font: UIFont.rounded(ofSize: 35, weight: .bold)]
+    }
     var body: some Scene {
         WindowGroup {
             ContentView()

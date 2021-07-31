@@ -1,3 +1,5 @@
+"Home" = "Home";
+"Standings" = "Standings";
 "Games" = "Games";
 "Coming" = "Coming";
 "Played" = "Played";
@@ -15,4 +17,7 @@
 "Penalty Minutes" = "Penalty Minutes";
 "Face Offs Won" = "Face Offs Won";
 "Hits" = "Hits";
+"Wins" = "Wins";
+"Ties" = "Ties";
+"Match History" = "Match History";
 

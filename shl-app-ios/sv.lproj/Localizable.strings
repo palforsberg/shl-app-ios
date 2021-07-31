@@ -1,3 +1,5 @@
+"Home" = "Matcher";
+"Standings" = "Rankings";
 "Games" = "Matcher";
 "Coming" = "Kommande";
 "Played" = "Spelade";
@@ -14,3 +16,6 @@
 "Penalty Minutes" = "Straff Minuter";
 "Face Offs Won" = "Tekningar Vunna";
 "Hits" = "Tacklingar";
+"Wins" = "Vinster";
+"Ties" = "Lika";
+"Match History" = "Tidigare Matcher";

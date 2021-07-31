@@ -10,6 +10,7 @@ import SwiftUI
 struct StandingsView: View {
     @State var standings = [Standing]()
     @EnvironmentObject var teams: TeamsData
+    @EnvironmentObject var starredTeams: StarredTeams
     var provider: DataProvider? = DataProvider()
     
     var body: some View {
@@ -22,6 +23,9 @@ struct StandingsView: View {
                             .frame(width: 30, height: 20)
                             .foregroundColor(Color.gray)
                         TeamAvatar(item.team_code)
+                        if (starredTeams.isStarred(teamCode: item.team_code)) {
+                            Image(systemName: "star.circle.fill").foregroundColor(Color(UIColor.systemYellow))
+                        }
                         Spacer()
                         Text("\(item.gp)").points()
                         Text(item.getPointsPerGame()).points()
@@ -43,10 +47,13 @@ struct StandingsView: View {
 
 struct StandingsView_Previews: PreviewProvider {
     static var previews: some View {
-        return StandingsView(standings: [getStanding()], provider: nil)
+        let starredTeams = StarredTeams()
+        starredTeams.addTeam(teamCode: "SAIK")
+        return StandingsView(standings: [getStanding("LHF"), getStanding("SAIK")], provider: nil)
             .environmentObject(TeamsData())
+            .environmentObject(starredTeams)
     }
-    static func getStanding() -> Standing {
-        return Standing(team_code: "LHF", gp: 4, rank: 1, points: 3)
+    static func getStanding(_ teamCode: String) -> Standing {
+        return Standing(team_code: teamCode, gp: 4, rank: 1, points: 3)
     }
 }

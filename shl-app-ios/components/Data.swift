@@ -12,11 +12,10 @@ let season = 2020
 let baseUrl = "http://localhost:8000"
 let gamesUrl = "\(baseUrl)/games/\(season)"
 let standingsUrl = "\(baseUrl)/standings/\(season)"
-let teamsUrl = "https://api.mocki.io/v1/d066b1b4"
+let teamsUrl = "\(baseUrl)/teams"
 let gameStatsUrl = { (game: Game) -> String in
     return "\(baseUrl)/game/\(game.game_uuid)/\(game.game_id)"
 }
-
 
 class DataProvider {
     func getGames(completion: @escaping ([Game]) -> ()) {
@@ -141,6 +140,21 @@ struct Game: Codable, Identifiable  {
     func hasTeam(_ teamCode: String) -> Bool {
         return away_team_code == teamCode || home_team_code == teamCode
     }
+    
+    func isHome(_ teamCode: String) -> Bool {
+        return teamCode == home_team_code
+    }
+    
+    func homeWon() -> Bool {
+        return home_team_result > away_team_result
+    }
+    
+    func didWin(_ teamCode: String) -> Bool {
+        if (isHome(teamCode)) {
+            return homeWon()
+        }
+        return !homeWon()
+    }
 }
 
 struct StandingsData: Codable {
@@ -166,9 +180,15 @@ struct Standing: Codable, Identifiable {
 
 class TeamsData: ObservableObject {
     @Published var teams = [String:Team]()
+    
     func getTeam(_ code: String) -> Team? {
         return teams[code]
     }
+    
+    func getName(_ code: String) -> String {
+        return teams[code]?.name ?? code
+    }
+
     func setTeams(teams: [Team]) {
         for team in teams {
             self.teams[team.code] = team
