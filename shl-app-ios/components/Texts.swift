@@ -18,14 +18,20 @@ extension UIFont {
 
 extension Text {
 
-    func listHeader() -> some View {
-        return self
+    func listHeader(_ leading: Bool = true) -> some View {
+        let txt = self
             .font(.system(size: 18, design: .rounded))
             .fontWeight(.semibold)
             .foregroundColor(Color(UIColor.secondaryLabel))
             .textCase(.uppercase)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.leading, 15)
+        if (leading) {
+            return txt
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading, 15)
+        }
+        return txt
+            .frame(maxWidth: .none)
+            .padding(.leading, 0)
     }
     
     func points() -> some View {

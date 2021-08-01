@@ -77,34 +77,25 @@ class GamesData: ObservableObject {
     }
 
     func getLiveGames(teamCodes: [String]) -> [Game] {
-        let now = Date()
         return Array(getGames()
-            .filter({ game -> Bool in
-                return game.start_date_time < now && game.played == false
-            })
-            .filter(getTeamFilter(teamCodes: teamCodes)))
+                        .filter({ $0.isLive() })
+                        .filter(getTeamFilter(teamCodes: teamCodes)))
     }
     
     func getPlayedGames(teamCodes: [String]) -> [Game] {
-        let now = Date()
         return Array(getGames()
             .sorted { (a, b) -> Bool in
                 return a.start_date_time > b.start_date_time
             }
-            .filter({ game -> Bool in
-                return game.start_date_time < now && game.played == true
-            })
+            .filter({ $0.isPlayed() })
             .filter(getTeamFilter(teamCodes: teamCodes)))
     }
     
     func getFutureGames(teamCodes: [String]) -> [Game] {
-        let now = Date()
         return Array(getGames()
-            .filter({ game -> Bool in
-                return game.start_date_time > now
-            })
-            .filter(getTeamFilter(teamCodes: teamCodes))
-            .prefix(5))
+                        .filter({ $0.isFuture() })
+                        .filter(getTeamFilter(teamCodes: teamCodes))
+                        .prefix(5))
     }
     
     func getTeamFilter(teamCodes: [String]) -> (Game) -> Bool {
@@ -154,6 +145,18 @@ struct Game: Codable, Identifiable  {
             return homeWon()
         }
         return !homeWon()
+    }
+    
+    func isPlayed() -> Bool {
+        return played
+    }
+    
+    func isLive() -> Bool {
+        return start_date_time < Date() && played == false
+    }
+    
+    func isFuture() -> Bool {
+        return start_date_time > Date()
     }
 }
 
@@ -214,7 +217,7 @@ struct GameStats: Codable {
 }
 
 struct AllPeriods: Codable {
-    var gameRecap: Period
+    var gameRecap: Period?
     var period1: Period?
     var period2: Period?
     var period3: Period?

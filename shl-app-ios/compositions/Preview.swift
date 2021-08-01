@@ -22,5 +22,6 @@ func getLiveGame(score1: Int, score2: Int) -> Game {
 }
 
 func getFutureGame() -> Game {
-    return Game(game_id: 1, game_uuid: "123", away_team_code: "FHC", away_team_result: 0, home_team_code: "LHF", home_team_result: 2, start_date_time: Date().addingTimeInterval(TimeInterval(2_000)), played: false)
+    let futDate = Calendar.current.date(byAdding: DateComponents(day:5), to: Date())
+    return Game(game_id: 1, game_uuid: "123", away_team_code: "FHC", away_team_result: 0, home_team_code: "LHF", home_team_result: 2, start_date_time: futDate!, played: false)
 }

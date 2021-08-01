@@ -98,9 +98,16 @@ struct GamesStatsView: View {
                     }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 80).frame(maxWidth: 140)
                 }
                 Spacer(minLength: 40)
-                PeriodStatsView(title: "Match Detail", stats: gameStats?.recaps.gameRecap)
-                Spacer(minLength: 40)
+                if (game.isFuture()) {
+                    Text("Starts In").listHeader(false)
+                    TimerView(referenceDate: game.start_date_time)
+                    Spacer(minLength: 40)
+                }
                 Group {
+                    if let period = gameStats?.recaps.gameRecap {
+                        PeriodStatsView(title: "Match Detail", stats: period)
+                        Spacer(minLength: 40)
+                    }
                     if let period = gameStats?.recaps.period1 {
                         PeriodStatsView(title: "Period 1", stats: period)
                         Spacer(minLength: 20)
@@ -122,29 +129,26 @@ struct GamesStatsView: View {
                         Spacer(minLength: 40)
                     }
                 }
+                Text("Match History")
+                    .listHeader(false)
+                HStack(spacing: 15) {
+                    VStack {
+                        Text("\(self.prevHomeWins)").font(.system(size: 20, design: .rounded)).fontWeight(.semibold)
+                        Text("Wins").font(.system(size: 15, design: .rounded))
+                    }.frame(maxWidth: 50)
+                    Divider()
+                    VStack {
+                        Text("\(self.prevHomeTies)").font(.system(size: 20, design: .rounded)).fontWeight(.semibold)
+                        Text("Ties").font(.system(size: 15, design: .rounded))
+                    }.frame(maxWidth: 50)
+                    Divider()
+                    VStack {
+                        Text("\(self.prevHomeLoss)").font(.system(size: 20, design: .rounded)).fontWeight(.semibold)
+                        Text("Wins").font(.system(size: 15, design: .rounded))
+                    }.frame(maxWidth: 50)
+                }
+                Spacer(minLength: 40)
                 if (!previousGames.isEmpty) {
-                    Text("Match History")
-                        .font(.system(size: 18, design: .rounded))
-                        .fontWeight(.semibold)
-                        .foregroundColor(Color(UIColor.secondaryLabel))
-                        .textCase(.uppercase)
-                    HStack(spacing: 15) {
-                        VStack {
-                            Text("\(self.prevHomeWins)").font(.system(size: 20, design: .rounded)).fontWeight(.semibold)
-                            Text("Wins").font(.system(size: 15, design: .rounded))
-                        }.frame(maxWidth: 50)
-                        Divider()
-                        VStack {
-                            Text("\(self.prevHomeTies)").font(.system(size: 20, design: .rounded)).fontWeight(.semibold)
-                            Text("Ties").font(.system(size: 15, design: .rounded))
-                        }.frame(maxWidth: 50)
-                        Divider()
-                        VStack {
-                            Text("\(self.prevHomeLoss)").font(.system(size: 20, design: .rounded)).fontWeight(.semibold)
-                            Text("Wins").font(.system(size: 15, design: .rounded))
-                        }.frame(maxWidth: 50)
-                    }
-                    Spacer(minLength: 40)
                     GroupedView(title: "Played") {
                         ForEach(previousGames) { (item) in
                             NavigationLink(destination: GamesStatsView(game: item)) {
@@ -190,6 +194,50 @@ struct GamesStatsView_Previews: PreviewProvider {
                               provider: nil,
                               game: getLiveGame())
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
+            .environmentObject(teams)
+            .environment(\.locale, .init(identifier: "sv"))
+    }
+    
+    static func getPeriod() -> Period {
+        return Period(periodNumber: 0, homeG: 3, awayG: 0, homeHits: 14, homeSOG: 64, homePIM: 654, homeFOW: 55, awayHits: 53, awaySOG: 23, awayPIM: 23, awayFOW: 0)
+    }
+}
+
+struct GamesStatsView_Future_Game_Previews: PreviewProvider {
+    static var previews: some View {
+        let teams = TeamsData()
+        teams.setTeams(teams: [
+            Team(code: "LHF", name: "Luleå HF"),
+            Team(code: "FHC", name: "Frölunda HC")
+        ])
+        let allPeriods = AllPeriods(gameRecap: getPeriod())
+        
+        return GamesStatsView(gameStats: GameStats(recaps: allPeriods, gameState: "Ended"),
+                              provider: nil,
+                              game: getFutureGame())
+            .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
+            .environmentObject(teams)
+            .environment(\.locale, .init(identifier: "sv"))
+    }
+    
+    static func getPeriod() -> Period {
+        return Period(periodNumber: 0, homeG: 3, awayG: 0, homeHits: 14, homeSOG: 64, homePIM: 654, homeFOW: 55, awayHits: 53, awaySOG: 23, awayPIM: 23, awayFOW: 0)
+    }
+}
+
+struct GamesStatsView_Future_No_Prev_Game_Previews: PreviewProvider {
+    static var previews: some View {
+        let teams = TeamsData()
+        teams.setTeams(teams: [
+            Team(code: "LHF", name: "Luleå HF"),
+            Team(code: "FHC", name: "Frölunda HC")
+        ])
+        let allPeriods = AllPeriods(gameRecap: nil)
+        
+        return GamesStatsView(gameStats: GameStats(recaps: allPeriods, gameState: "Ended"),
+                              provider: nil,
+                              game: getFutureGame())
+            .environmentObject(GamesData(data: []))
             .environmentObject(teams)
             .environment(\.locale, .init(identifier: "sv"))
     }
