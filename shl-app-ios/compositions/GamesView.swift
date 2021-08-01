@@ -113,31 +113,37 @@ struct GamesView: View {
         let playedGames = gamesData.getPlayedGames(teamCodes: teamCodes)
         NavigationView {
             List {
-                Section(header: Text("Live").listHeader(), content: {
-                    ForEach(liveGames) { (item) in
-                        NavigationLink(destination: GamesStatsView(game: item)) {
-                            LiveGame(game: item)
+                if (!liveGames.isEmpty) {
+                    Section(header: Text("Live").listHeader(), content: {
+                        ForEach(liveGames) { (item) in
+                            NavigationLink(destination: GamesStatsView(game: item)) {
+                                LiveGame(game: item)
+                            }
                         }
-                    }
-                })
-                Section(header: Text("Coming").listHeader(), content: {
-                    ForEach(futureGames) { (item) in
-                        NavigationLink(destination: GamesStatsView(game: item)) {
-                            ComingGame(game: item)
+                    })
+                }
+                if !futureGames.isEmpty {
+                    Section(header: Text("Coming").listHeader(), content: {
+                        ForEach(futureGames) { (item) in
+                            NavigationLink(destination: GamesStatsView(game: item)) {
+                                ComingGame(game: item)
+                            }
                         }
-                    }
-                })
-                Section(header: Text("Played").listHeader(), content: {
-                    ForEach(playedGames) { (item) in
-                        NavigationLink(destination: GamesStatsView(game: item)) {
-                            PlayedGame(game: item)
+                    })
+                }
+                if !playedGames.isEmpty {
+                    Section(header: Text("Played").listHeader(), content: {
+                        ForEach(playedGames) { (item) in
+                            NavigationLink(destination: GamesStatsView(game: item)) {
+                                PlayedGame(game: item)
+                            }
                         }
-                    }
-                })
+                    })
+                }
             }
             .listStyle(InsetGroupedListStyle())
             .navigationBarTitle(Text("Matches"))
-            .navigationBarItems(trailing: NavigationLink(destination: SettingsView()) {
+            .navigationBarItems(trailing:NavigationLink(destination: SettingsView()) {
                                          Image(systemName: "gear")
                                      })
         }

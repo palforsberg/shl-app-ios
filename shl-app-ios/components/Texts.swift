@@ -25,14 +25,14 @@ extension Text {
             .foregroundColor(Color(UIColor.secondaryLabel))
             .textCase(.uppercase)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.leading, 25)
+            .padding(.leading, 15)
     }
     
     func points() -> some View {
         return self
             .font(.system(size: 14, design: .rounded))
             .fontWeight(.medium)
-            .frame(width: 30, height: 20)
+            .frame(width: 35)
             .multilineTextAlignment(.trailing)
     }
 }

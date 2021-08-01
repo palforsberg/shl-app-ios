@@ -20,7 +20,7 @@ struct StatsRow: View {
             Text(LocalizedStringKey(center)).font(.system(size: 18, design: .rounded)).fontWeight(.semibold).frame(maxWidth: .infinity, alignment: .center)
             Spacer()
             Text(right).font(.system(size: 20, design: .rounded)).fontWeight(.bold).frame(width: 45, alignment: .trailing)
-        }.padding(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
+        }.padding(EdgeInsets(top: 3, leading: 0, bottom: 3, trailing: 0))
     }
 }
 
@@ -79,7 +79,9 @@ struct GamesStatsView: View {
                 HStack(alignment: .center, spacing: 0) {
                     VStack {
                         TeamLogo(code: game.home_team_code, size: LogoSize.big)
-                        Text(teamsData.getName(game.home_team_code)).font(.system(size: 15, design: .rounded))
+                        Text(teamsData.getName(game.home_team_code))
+                            .font(.system(size: 15, design: .rounded))
+                            .fontWeight(.medium)
                     }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 80).frame(maxWidth: 140)
             
                     HStack(alignment: .center, spacing: 15) {
@@ -90,23 +92,35 @@ struct GamesStatsView: View {
                     
                     VStack {
                         TeamLogo(code: game.away_team_code, size: LogoSize.big)
-                        Text(teamsData.getName(game.away_team_code)).font(.system(size: 15, design: .rounded))
+                        Text(teamsData.getName(game.away_team_code))
+                            .font(.system(size: 15, design: .rounded))
+                            .fontWeight(.medium)
                     }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 80).frame(maxWidth: 140)
                 }
                 Spacer(minLength: 40)
                 PeriodStatsView(title: "Match Detail", stats: gameStats?.recaps.gameRecap)
                 Spacer(minLength: 40)
-                if let period = gameStats?.recaps.period1 {
-                    PeriodStatsView(title: "Period 1", stats: period)
-                    Spacer(minLength: 40)
-                }
-                if let period = gameStats?.recaps.period2 {
-                    PeriodStatsView(title: "Period 2", stats: period)
-                    Spacer(minLength: 40)
-                }
-                if let period = gameStats?.recaps.period3 {
-                    PeriodStatsView(title: "Period 3", stats: period)
-                    Spacer(minLength: 40)
+                Group {
+                    if let period = gameStats?.recaps.period1 {
+                        PeriodStatsView(title: "Period 1", stats: period)
+                        Spacer(minLength: 20)
+                    }
+                    if let period = gameStats?.recaps.period2 {
+                        PeriodStatsView(title: "Period 2", stats: period)
+                        Spacer(minLength: 20)
+                    }
+                    if let period = gameStats?.recaps.period3 {
+                        PeriodStatsView(title: "Period 3", stats: period)
+                        Spacer(minLength: 40)
+                    }
+                    if let period = gameStats?.recaps.period4 {
+                        PeriodStatsView(title: "Period 4", stats: period)
+                        Spacer(minLength: 40)
+                    }
+                    if let period = gameStats?.recaps.period5 {
+                        PeriodStatsView(title: "Period 5", stats: period)
+                        Spacer(minLength: 40)
+                    }
                 }
                 if (!previousGames.isEmpty) {
                     Text("Match History")
@@ -166,9 +180,15 @@ struct GamesStatsView_Previews: PreviewProvider {
             Team(code: "LHF", name: "Luleå HF"),
             Team(code: "FHC", name: "Frölunda HC")
         ])
-        return GamesStatsView(gameStats: GameStats(recaps: AllPeriods(gameRecap: getPeriod()), gameState: "Ended"),
-                       provider: nil,
-                       game: getLiveGame())
+        let allPeriods = AllPeriods(gameRecap: getPeriod(),
+                                    period1: getPeriod(),
+                                    period2: getPeriod(),
+                                    period3: getPeriod()
+        )
+        
+        return GamesStatsView(gameStats: GameStats(recaps: allPeriods, gameState: "Ended"),
+                              provider: nil,
+                              game: getLiveGame())
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
             .environmentObject(teams)
             .environment(\.locale, .init(identifier: "sv"))

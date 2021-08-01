@@ -31,23 +31,22 @@ struct ContentView: View {
         .environmentObject(teams)
         .environmentObject(gameData)
         .background(Color(UIColor.systemGroupedBackground))
-        .accentColor(Color.orange)
     }
-    
 }
 
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
-            ContentView(starredTeams: StarredTeams(),
-                        teams: TeamsData(),
-                        gameData: GamesData(data: [getLiveGame(), getLiveGame(),
-                                                   getPlayedGame(), getPlayedGame(),
-                                                   getFutureGame(), getFutureGame()]),
-                        provider: nil)
-                .environment(\.locale, .init(identifier: "sv"))
-            
-        }
+        let teams = TeamsData()
+        teams.setTeams(teams: [Team(code: "LHF", name: "Luleå HF"),
+                               Team(code: "FHC", name: "Frölunda HC"),
+                               Team(code: "SAIK", name: "Skellefteå AIK")])
+        return ContentView(starredTeams: StarredTeams(),
+                    teams: teams,
+                    gameData: GamesData(data: [getLiveGame(), getLiveGame(),
+                                               getPlayedGame(), getPlayedGame(),
+                                               getFutureGame(), getFutureGame()]),
+                    provider: nil)
+            .environment(\.locale, .init(identifier: "sv"))
     }
 }

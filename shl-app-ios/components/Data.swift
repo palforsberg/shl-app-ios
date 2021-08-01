@@ -8,8 +8,8 @@
 import Foundation
 import SwiftUI
 
-let season = 2020
-let baseUrl = "http://localhost:8000"
+let season = 2021
+let baseUrl = "http://192.168.1.74:8000"
 let gamesUrl = "\(baseUrl)/games/\(season)"
 let standingsUrl = "\(baseUrl)/standings/\(season)"
 let teamsUrl = "\(baseUrl)/teams"
@@ -172,9 +172,9 @@ struct Standing: Codable, Identifiable {
     
     func getPointsPerGame() -> String {
         if (gp == 0) {
-            return "0.00"
+            return "0.0"
         }
-        return String(format: "%.2f", Double(points) / Double(gp))
+        return String(format: "%.1f", Double(points) / Double(gp))
     }
 }
 
@@ -218,9 +218,11 @@ struct AllPeriods: Codable {
     var period1: Period?
     var period2: Period?
     var period3: Period?
+    var period4: Period?
+    var period5: Period?
     
     private enum CodingKeys : String, CodingKey {
-        case gameRecap, period1 = "0", period2 = "1", period3 = "2"
+        case gameRecap, period1 = "0", period2 = "1", period3 = "2", period4 = "3", period5 = "4"
     }
 }
 

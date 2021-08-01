@@ -19,6 +19,8 @@ struct StandingsView: View {
                 NavigationLink(destination: TeamView(teamCode: item.team_code, standing: item)) {
                     HStack() {
                         Text("#\(item.rank)")
+                            .font(.system(size: 16, design: .rounded))
+                            .fontWeight(.semibold)
                             .points()
                             .frame(width: 30, height: 20)
                             .foregroundColor(Color.gray)
@@ -40,7 +42,9 @@ struct StandingsView: View {
                     self.standings = result.data
                 }
             })
-            Color.gray
+            .navigationBarItems(trailing: NavigationLink(destination: SettingsView()) {
+                Image(systemName: "gear")
+            })
         }
     }
 }
