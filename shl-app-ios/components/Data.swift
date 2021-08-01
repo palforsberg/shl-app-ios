@@ -17,7 +17,35 @@ let gameStatsUrl = { (game: Game) -> String in
     return "\(baseUrl)/game/\(game.game_uuid)/\(game.game_id)"
 }
 
+class Cache {
+    var storage = UserDefaults.standard
+    var encoder = JSONEncoder()
+    var decoder = JSONDecoder()
+    
+    func store<T : Codable>(key: String, data: T) {
+        if let json = try? encoder.encode(data) {
+            storage.set(json, forKey: key)
+            storage.synchronize()
+        }
+    }
+    
+    func retrieve<T: Codable>(key: String, type: T.Type) -> T? {
+        if let archived = storage.object(forKey: key) as? Data {
+            return try! decoder.decode(type.self, from: archived)
+        }
+        return nil
+    }
+}
+
 class DataProvider {
+    
+    private let cache = Cache()
+    let decoder = JSONDecoder()
+
+    init() {
+        decoder.dateDecodingStrategy = JSONDecoder.DateDecodingStrategy.iso8601
+    }
+
     func getGames(completion: @escaping ([Game]) -> ()) {
         getData(url: gamesUrl, type: [Game].self, completion: { (e: [Game]) -> () in
             completion(e)
@@ -38,26 +66,40 @@ class DataProvider {
         getData(url: teamsUrl, type: [Team].self, completion: completion)
     }
 
-    func getData<T>(url: String, type: T.Type, completion: @escaping (T) -> ()) where T : Codable {
+    func getData<T : Codable>(url: String, type: T.Type, completion: @escaping (T) -> ()) {
         guard let url = URL(string: url) else {
             print("Your API end point is Invalid")
             return
         }
+        let cacheKey = url.relativePath
         let request = URLRequest(url: url)
         print("fetching \(type) from \(url)")
+        
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let data = data {
                 do {
                     let decoder = JSONDecoder()
                     decoder.dateDecodingStrategy = JSONDecoder.DateDecodingStrategy.iso8601
                     let response = try decoder.decode(type, from: data)
+                    self.cache.store(key: cacheKey, data: response)
                     DispatchQueue.main.async {
                         completion(response)
                     }
                 } catch let error {
-                    print("error \(error)")
+                    print("error \(error.localizedDescription)")
+                    DispatchQueue.main.async {
+                        if let cached = self.cache.retrieve(key: cacheKey, type: type) {
+                            completion(cached)
+                        }
+                    }
                 }
-               
+            } else if let error = error {
+                print("error \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    if let cached = self.cache.retrieve(key: cacheKey, type: type) {
+                        completion(cached)
+                    }
+                }
             }
         }.resume()
     }
@@ -199,10 +241,7 @@ class TeamsData: ObservableObject {
     }
 }
 
-struct Team: Codable, Identifiable {
-    var id: String {
-        return code
-    }
+struct Team: Codable {
     let code: String
     let name: String
 }
