@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 let season = 2021
-let baseUrl = "http://192.168.1.74:8000"
+let baseUrl = "http://86.107.103.138/shl-api"
 let gamesUrl = "\(baseUrl)/games/\(season)"
 let standingsUrl = "\(baseUrl)/standings/\(season)"
 let teamsUrl = "\(baseUrl)/teams"

@@ -17,7 +17,7 @@ struct TeamLogo: View {
     var size = LogoSize.small
 
     var body: some View {
-        URLImage(url: "http://xn--pl-yia.se/shl/logos/\(code.lowercased()).png")
+        URLImage(url: "http://86.107.103.138/shl-server/logo/\(code.lowercased()).png")
                 .frame(width: getSize(), height: getSize(), alignment: .center)
     }
     

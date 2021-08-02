@@ -9,21 +9,17 @@ import Foundation
 
 
 class StarredTeams: ObservableObject {
-    @Published var starredTeams: [String] {
+    var starredTeams: [String] {
         didSet {
             storage.setValue(starredTeams, forKey: "starredTeams")
             storage.synchronize()
         }
     }
     
-    var storage = UserDefaults.standard
+    private var storage = UserDefaults.standard
     
     init() {
-        starredTeams = storage.array(forKey: "starredTeams") as? [String] ?? [String]()
-    }
-
-    func get() -> [String] {
-        return starredTeams
+        starredTeams = storage.array(forKey: "starredTeams") as? [String] ?? []
     }
 
     func isStarred(teamCode: String) -> Bool {
@@ -36,15 +32,14 @@ class StarredTeams: ObservableObject {
         }
         
         starredTeams.append(teamCode)
+        self.objectWillChange.send()
     }
 
     func removeTeam(teamCode: String) {
         guard isStarred(teamCode: teamCode) else {
             return
         }
-        
-        starredTeams.removeAll(where: { (e) -> Bool in
-            return e == teamCode
-        })
+        starredTeams.removeAll(where: { $0 == teamCode })
+        self.objectWillChange.send()
     }
 }

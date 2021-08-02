@@ -22,13 +22,14 @@ struct StandingsView: View {
                             .font(.system(size: 16, design: .rounded))
                             .fontWeight(.semibold)
                             .points()
-                            .frame(width: 30, height: 20)
+                            .frame(width: 30)
                             .foregroundColor(Color.gray)
                         TeamAvatar(item.team_code)
-                        if (starredTeams.isStarred(teamCode: item.team_code)) {
-                            Image(systemName: "star.circle.fill").foregroundColor(Color(UIColor.systemYellow))
-                        }
-                        Spacer()
+                        Image(
+                            systemName: "star.circle.fill")
+                            .foregroundColor(starredTeams.isStarred(teamCode: item.team_code) ? Color(UIColor.systemYellow) : Color.clear)
+                            .frame(width: 10)
+                            .padding(.leading, -10)
                         Text("\(item.gp)").points()
                         Text(item.getPointsPerGame()).points()
                         Text("\(item.points)").points()
@@ -38,6 +39,9 @@ struct StandingsView: View {
             .listStyle(InsetGroupedListStyle())
             .navigationBarTitle(Text("SHL"))
             .onAppear(perform: {
+                guard self.standings.isEmpty else {
+                    return
+                }
                 provider?.getStandings { (result) in
                     self.standings = result.data
                 }
@@ -53,11 +57,11 @@ struct StandingsView_Previews: PreviewProvider {
     static var previews: some View {
         let starredTeams = StarredTeams()
         starredTeams.addTeam(teamCode: "SAIK")
-        return StandingsView(standings: [getStanding("LHF"), getStanding("SAIK")], provider: nil)
+        return StandingsView(standings: [getStanding("LHF", rank: 1), getStanding("SAIK", rank: 14)], provider: nil)
             .environmentObject(TeamsData())
             .environmentObject(starredTeams)
     }
-    static func getStanding(_ teamCode: String) -> Standing {
-        return Standing(team_code: teamCode, gp: 4, rank: 1, points: 3)
+    static func getStanding(_ teamCode: String, rank: Int) -> Standing {
+        return Standing(team_code: teamCode, gp: 4, rank: rank, points: 3)
     }
 }
