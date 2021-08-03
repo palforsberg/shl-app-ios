@@ -15,6 +15,7 @@
 		2339F66726B58D49006DE5F0 /* tik@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F66426B58D49006DE5F0 /* tik@1x.png */; };
 		2339F66B26B6862A006DE5F0 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F66A26B6862A006DE5F0 /* TimerView.swift */; };
 		2339F66E26B857E7006DE5F0 /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F66D26B857E7006DE5F0 /* Debouncer.swift */; };
+		2339F67026B92599006DE5F0 /* Season.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F66F26B92599006DE5F0 /* Season.swift */; };
 		23537ED026B1D30200C9B6ED /* GamesStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ECF26B1D30200C9B6ED /* GamesStatsView.swift */; };
 		23537ED226B3FE6D00C9B6ED /* Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ED126B3FE6D00C9B6ED /* Preview.swift */; };
 		23537ED426B454B800C9B6ED /* Texts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ED326B454B800C9B6ED /* Texts.swift */; };
@@ -77,6 +78,7 @@
 		2339F66A26B6862A006DE5F0 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
 		2339F66C26B844E6006DE5F0 /* shl-app-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "shl-app-ios.entitlements"; sourceTree = "<group>"; };
 		2339F66D26B857E7006DE5F0 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
+		2339F66F26B92599006DE5F0 /* Season.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Season.swift; sourceTree = "<group>"; };
 		23537ECF26B1D30200C9B6ED /* GamesStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesStatsView.swift; sourceTree = "<group>"; };
 		23537ED126B3FE6D00C9B6ED /* Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preview.swift; sourceTree = "<group>"; };
 		23537ED326B454B800C9B6ED /* Texts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Texts.swift; sourceTree = "<group>"; };
@@ -243,6 +245,7 @@
 				23537ED326B454B800C9B6ED /* Texts.swift */,
 				2339F66A26B6862A006DE5F0 /* TimerView.swift */,
 				2339F66D26B857E7006DE5F0 /* Debouncer.swift */,
+				2339F66F26B92599006DE5F0 /* Season.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -404,6 +407,7 @@
 				D1AFF86925A84FCB00E50ADE /* ShlApp.swift in Sources */,
 				23537ED626B57B9C00C9B6ED /* SettingsView.swift in Sources */,
 				23537ED426B454B800C9B6ED /* Texts.swift in Sources */,
+				2339F67026B92599006DE5F0 /* Season.swift in Sources */,
 				D1AFC2A425B07E8100490FCE /* TeamView.swift in Sources */,
 				D1AFC2A925B07F5E00490FCE /* StarredTeams.swift in Sources */,
 				23537ED026B1D30200C9B6ED /* GamesStatsView.swift in Sources */,

@@ -26,6 +26,8 @@ struct TeamAvatar: View {
             TeamLogo(code: teamCode, size: LogoSize.small)
                 .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
             Text(teamCode).font(.system(size: 24, design: .rounded)).fontWeight(.semibold)
+                .scaledToFit()
+                .minimumScaleFactor(0.8)
         }
         .frame(width: 115, height: 40, alignment: alignment)
         
@@ -104,41 +106,45 @@ struct PlayedGame: View {
 
 struct GamesView: View {
     @EnvironmentObject var starredTeams: StarredTeams
+    @EnvironmentObject var season: Season
     @EnvironmentObject var gamesData: GamesData
+    
+    var provider: DataProvider?
     
     var body: some View {
         let teamCodes = starredTeams.starredTeams
         let liveGames = gamesData.getLiveGames(teamCodes: teamCodes)
         let futureGames = gamesData.getFutureGames(teamCodes: teamCodes)
         let playedGames = gamesData.getPlayedGames(teamCodes: teamCodes)
+
         NavigationView {
             List {
                 if (!liveGames.isEmpty) {
-                    Section(header: Text("Live").listHeader(), content: {
+                    Section(header: Text("Live").listHeader()) {
                         ForEach(liveGames) { (item) in
                             NavigationLink(destination: GamesStatsView(game: item)) {
                                 LiveGame(game: item)
                             }
                         }
-                    })
+                    }
                 }
                 if !futureGames.isEmpty {
-                    Section(header: Text("Coming").listHeader(), content: {
+                    Section(header: Text("Coming").listHeader()) {
                         ForEach(futureGames) { (item) in
                             NavigationLink(destination: GamesStatsView(game: item)) {
                                 ComingGame(game: item)
                             }
                         }
-                    })
+                    }
                 }
                 if !playedGames.isEmpty {
-                    Section(header: Text("Played").listHeader(), content: {
+                    Section(header: Text("Played_param \(season.getFormattedPrevSeason())").listHeader()) {
                         ForEach(playedGames) { (item) in
                             NavigationLink(destination: GamesStatsView(game: item)) {
                                 PlayedGame(game: item)
                             }
                         }
-                    })
+                    }
                 }
             }
             .listStyle(InsetGroupedListStyle())
@@ -146,7 +152,11 @@ struct GamesView: View {
             .navigationBarItems(trailing:NavigationLink(destination: SettingsView()) {
                                          Image(systemName: "gear")
                                      })
-        }
+        }.onReceive(season.$season, perform: { _ in
+            provider?.getGames(season: season.season) { gd in
+                gamesData.set(data: gd)
+            }
+        })
     }
 }
 
@@ -155,8 +165,13 @@ struct GamesView_Previews: PreviewProvider {
         let gamesData = GamesData(data: [getLiveGame(), getLiveGame(),
                                          getPlayedGame(), getPlayedGame(),
                                          getFutureGame(), getFutureGame()])
-        GamesView()
-            .environmentObject(StarredTeams())
+        let starredTeams = StarredTeams()
+        starredTeams.addTeam(teamCode: "LHF")
+        
+        return GamesView(
+                  provider: nil)
+            .environmentObject(starredTeams)
+            .environmentObject(Season())
             .environmentObject(gamesData)
             .environment(\.locale, .init(identifier: "sv"))
     }

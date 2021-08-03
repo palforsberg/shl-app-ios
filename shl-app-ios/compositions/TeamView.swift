@@ -24,6 +24,7 @@ struct TeamView: View {
     @EnvironmentObject var starredTeams: StarredTeams
     @EnvironmentObject var teams: TeamsData
     @EnvironmentObject var games: GamesData
+    @EnvironmentObject var season: Season
 
     let teamCode: String
     let standing: Standing
@@ -46,8 +47,7 @@ struct TeamView: View {
                 }
                 Spacer()
                 Group {
-                    Text("Season Details").listHeader()
-                    GroupedView {
+                    GroupedView(title: "Season_param \(season.getFormattedPrevSeason())" ) {
                         Group {
                             StatsRowSingle(left: "Rank", right: "#\(standing.rank)")
                             StatsRowSingle(left: "Points", right: "\(standing.points)")
@@ -59,8 +59,7 @@ struct TeamView: View {
                 }
                 if (!games.getLiveGames(teamCodes: [teamCode]).isEmpty) {
                     Group {
-                        Text("Live").listHeader()
-                        GroupedView {
+                        GroupedView(title: "Live") {
                             ForEach(games.getLiveGames(teamCodes: [teamCode])) { (item) in
                                 LiveGame(game: item)
                             }
@@ -70,8 +69,7 @@ struct TeamView: View {
                 }
                 if (!games.getFutureGames(teamCodes: [teamCode]).isEmpty) {
                     Group {
-                        Text("Coming").listHeader()
-                        GroupedView {
+                        GroupedView(title: "Coming") {
                             ForEach(games.getFutureGames(teamCodes: [teamCode])) { (item) in
                                 ComingGame(game: item)
                             }
@@ -81,8 +79,7 @@ struct TeamView: View {
                 }
                 if (!games.getPlayedGames(teamCodes: [teamCode]).isEmpty) {
                     Group {
-                        Text("Played").listHeader()
-                        GroupedView {
+                        GroupedView(title: "Played_param \(season.getFormattedPrevSeason())") {
                             ForEach(games.getPlayedGames(teamCodes: [teamCode])) { (item) in
                                 PlayedGame(game: item)
                             }

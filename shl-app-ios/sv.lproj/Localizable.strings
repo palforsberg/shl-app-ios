@@ -2,16 +2,18 @@
 "Standings" = "Ranking";
 "Matches" = "Matcher";
 "Coming" = "Kommande";
-"Played" = "Spelade";
+"Played_param %@" = "Spelade %@";
+"Season_param %@" = "Säsongen %@";
 "Favourite" = "Favorit";
 "Swedish Hockey League" = "Svenska Hockey Ligan";
-"Season Details" = "Säsongen";
 "Match Detail" = "Matchen";
 "Today" = "Idag";
 "Points" = "Poäng";
 "Rank" = "Ranking";
 "Games Played" = "Antal Matcher";
 "Points/Game" = "Poäng/Match";
+"Starts In" = "Börjar om";
+
 "Shots" = "Skott";
 "Penalty Minutes" = "Straff Minuter";
 "Face Offs Won" = "Tekningar Vunna";
@@ -21,6 +23,8 @@
 "Match History" = "Tidigare Matcher";
 
 // Settings
+"Season" = "Säsong";
 "Settings" = "Inställningar";
 "App Icon" = "App Ikon";
 "Notifications" = "Notifikationer";
+"Supporter" = "Supporter";

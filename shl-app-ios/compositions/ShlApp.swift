@@ -38,7 +38,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
      */
     static func registerForPushNotifications() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
-            print("Permission granted: \(granted)")
+            print("[APP] Permission granted: \(granted)")
             guard granted else { return }
             AppDelegate.getNotificationSettings()
         }
@@ -46,7 +46,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     
     static func getNotificationSettings() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
-            print("Notification settings: \(settings)")
             guard settings.authorizationStatus == .authorized else { return }
             DispatchQueue.main.async {
                 UIApplication.shared.registerForRemoteNotifications()
@@ -57,13 +56,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
         let token = tokenParts.joined()
-        print("Device Token: \(token)")
+        print("[APP] Device Token: \(token)")
         UserDefaults.standard.setValue(token, forKey: "apn_token")
 
         DataProvider().addUser(apnToken: token, teams: StarredTeams.readFromDisk())
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("Failed to register: \(error)")
+        print("[APP] Failed to register: \(error.localizedDescription)")
     }
 }

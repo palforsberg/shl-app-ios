@@ -25,7 +25,7 @@ struct AppIconView: View {
     
     var body: some View {
         Section {
-            Picker(selection: $currentIndex, label: Text("App Icon"), content: {
+            Picker(selection: $currentIndex, label: Label("App Icon", systemImage: "app").accentColor(Color.green), content: {
                 ForEach(0..<AppIconView.icons.count) { e in
                     HStack {
                         Image(uiImage: UIImage(named: AppIconView.icons[e].code ?? "default")!).resizable()
@@ -55,6 +55,12 @@ struct AppIconView: View {
 
 struct AppIconView_Previews: PreviewProvider {
     static var previews: some View {
-        AppIconView()
+        List {
+            Section(header: Text("")) {
+                AppIconView()
+            }
+        }
+        .listStyle(InsetGroupedListStyle())
+        .navigationBarTitle(Text("Settings"))
     }
 }

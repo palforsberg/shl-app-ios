@@ -25,13 +25,13 @@ struct StatsRow: View {
 }
 
 struct GroupedView<Content: View>: View {
-    var title: String?
+    var title: LocalizedStringKey?
     var content: () -> Content
     
     var body: some View {
         VStack {
             if let t = title {
-                Text(LocalizedStringKey(t)).listHeader()
+                Text(t).listHeader()
                     .padding(.bottom, -4)
             }
             ZStack {
@@ -45,7 +45,7 @@ struct GroupedView<Content: View>: View {
 }
 
 struct PeriodStatsView: View {
-    let title: String
+    let title: LocalizedStringKey
     let stats: Period?
     
     var body: some View {
@@ -66,8 +66,11 @@ struct GamesStatsView: View {
     @State var prevHomeWins: Int = 0
     @State var prevHomeLoss: Int = 0
     @State var prevHomeTies: Int = 0
+    @State var hasFetched = false
+
     @EnvironmentObject var gamesData: GamesData
     @EnvironmentObject var teamsData: TeamsData
+    @EnvironmentObject var season: Season
     
     var provider: DataProvider? = DataProvider()
     var game: Game
@@ -82,6 +85,8 @@ struct GamesStatsView: View {
                         Text(teamsData.getName(game.home_team_code))
                             .font(.system(size: 15, design: .rounded))
                             .fontWeight(.medium)
+                            .scaledToFit()
+                            .minimumScaleFactor(0.8)
                     }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 80).frame(maxWidth: 140)
             
                     HStack(alignment: .center, spacing: 15) {
@@ -95,8 +100,10 @@ struct GamesStatsView: View {
                         Text(teamsData.getName(game.away_team_code))
                             .font(.system(size: 15, design: .rounded))
                             .fontWeight(.medium)
+                            .scaledToFit()
+                            .minimumScaleFactor(0.8)
                     }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 80).frame(maxWidth: 140)
-                }
+                }.frame(maxWidth: .infinity)
                 Spacer(minLength: 40)
                 if (game.isFuture()) {
                     Text("Starts In").listHeader(false)
@@ -129,8 +136,8 @@ struct GamesStatsView: View {
                         Spacer(minLength: 40)
                     }
                 }
-                Text("Match History")
-                    .listHeader(false)
+                if hasFetched { // hide until all data has been fetched to avoid jumping UI
+                Text("Match History").listHeader(false)
                 HStack(spacing: 15) {
                     VStack {
                         Text("\(self.prevHomeWins)").font(.system(size: 20, design: .rounded)).fontWeight(.semibold)
@@ -149,7 +156,7 @@ struct GamesStatsView: View {
                 }
                 Spacer(minLength: 40)
                 if (!previousGames.isEmpty) {
-                    GroupedView(title: "Played") {
+                    GroupedView(title: "Played_param \(season.getFormattedPrevSeason())") {
                         ForEach(previousGames) { (item) in
                             NavigationLink(destination: GamesStatsView(game: item)) {
                                 PlayedGame(game: item)
@@ -159,10 +166,15 @@ struct GamesStatsView: View {
                     }
                     Spacer(minLength: 40)
                 }
+                }
             }
             .onAppear(perform: {
                 provider?.getGameStats(game: game) { stats in
                     self.gameStats = stats
+                    self.hasFetched = true
+                }
+                if provider == nil {
+                    self.hasFetched = true
                 }
                 
                 let allPrevGames = self.gamesData.getGamesBetween(team1: game.home_team_code, team2: game.away_team_code)
@@ -210,9 +222,8 @@ struct GamesStatsView_Future_Game_Previews: PreviewProvider {
             Team(code: "LHF", name: "Luleå HF"),
             Team(code: "FHC", name: "Frölunda HC")
         ])
-        let allPeriods = AllPeriods(gameRecap: getPeriod())
         
-        return GamesStatsView(gameStats: GameStats(recaps: allPeriods, gameState: "Ended"),
+        return GamesStatsView(gameStats: GameStats(recaps: AllPeriods(), gameState: ""),
                               provider: nil,
                               game: getFutureGame())
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))

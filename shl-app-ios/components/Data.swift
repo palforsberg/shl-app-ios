@@ -8,11 +8,10 @@
 import Foundation
 import SwiftUI
 
-let season = 2021
 let baseUrl = "http://86.107.103.138/shl-api"
-//let baseUrl = "http://192.168.1.74:8000"
-let gamesUrl = "\(baseUrl)/games/\(season)"
-let standingsUrl = "\(baseUrl)/standings/\(season)"
+//let baseUrl = "http://192.168.1.74:8080"
+let gamesUrl = { (season: Int) -> String in return "\(baseUrl)/games/\(season)" }
+let standingsUrl = { (season: Int) -> String in return "\(baseUrl)/standings/\(season)" }
 let teamsUrl = "\(baseUrl)/teams"
 let userUrl = "\(baseUrl)/user"
 let gameStatsUrl = { (game: Game) -> String in
@@ -33,6 +32,7 @@ class Cache {
     
     func retrieve<T: Codable>(key: String, type: T.Type) -> T? {
         if let archived = storage.object(forKey: key) as? Data {
+            print("[CACHE] GET cached \(type) from \(key)")
             return try! decoder.decode(type.self, from: archived)
         }
         return nil
@@ -48,16 +48,28 @@ class DataProvider {
         decoder.dateDecodingStrategy = JSONDecoder.DateDecodingStrategy.iso8601
     }
 
-    func getGames(completion: @escaping ([Game]) -> ()) {
-        getData(url: gamesUrl, type: [Game].self, completion: { (e: [Game]) -> () in
+    func getGames(season: Int, completion: @escaping ([Game]) -> ()) {
+        let url = gamesUrl(season)
+        if season != Season.currentSeason {
+            if let cached = cache.retrieve(key: url, type: [Game].self) {
+                completion(cached)
+                return
+            }
+        }
+        getData(url: url, type: [Game].self, completion: { (e: [Game]) -> () in
             completion(e)
         })
     }
 
-    func getStandings(completion: @escaping (StandingsData) -> ()) {
-        getData(url: standingsUrl, type: [Standing].self, completion: { (e: [Standing]) -> () in
-            completion(StandingsData(data: e))
-        })
+    func getStandings(season: Int, completion: @escaping ([Standing]) -> ()) {
+        let url = standingsUrl(season)
+        if season != Season.currentSeason {
+            if let cached = cache.retrieve(key: url, type: [Standing].self) {
+                completion(cached)
+                return
+            }
+        }
+        getData(url: standingsUrl(season), type: [Standing].self, completion: completion)
     }
     
     func getGameStats(game: Game, completion: @escaping (GameStats) -> ()) {
@@ -73,17 +85,16 @@ class DataProvider {
             return
         }
         let request = AddUser(apn_token: apnToken!, teams: teams)
-        postData(url: userUrl, data: request, completion: { print("POST:ed user") })
+        postData(url: userUrl, data: request, completion: { print("[DATA] POST:ed user") })
     }
 
-    func getData<T : Codable>(url: String, type: T.Type, completion: @escaping (T) -> ()) {
-        guard let url = URL(string: url) else {
-            print("Your API end point is Invalid")
+    func getData<T : Codable>(url urlString: String, type: T.Type, completion: @escaping (T) -> ()) {
+        guard let url = URL(string: urlString) else {
+            print("[DATA] Your API end point is Invalid")
             return
         }
-        let cacheKey = url.relativePath
         let request = URLRequest(url: url)
-        print("fetching \(type) from \(url)")
+        print("[DATA] GET \(type) from \(url)")
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let data = data {
@@ -91,22 +102,22 @@ class DataProvider {
                     let decoder = JSONDecoder()
                     decoder.dateDecodingStrategy = JSONDecoder.DateDecodingStrategy.iso8601
                     let response = try decoder.decode(type, from: data)
-                    self.cache.store(key: cacheKey, data: response)
+                    self.cache.store(key: urlString, data: response)
                     DispatchQueue.main.async {
                         completion(response)
                     }
                 } catch let error {
-                    print("error \(error.localizedDescription)")
+                    print("[DATA] error \(error.localizedDescription)")
                     DispatchQueue.main.async {
-                        if let cached = self.cache.retrieve(key: cacheKey, type: type) {
+                        if let cached = self.cache.retrieve(key: urlString, type: type) {
                             completion(cached)
                         }
                     }
                 }
             } else if let error = error {
-                print("error \(error.localizedDescription)")
+                print("[DATA] error \(error.localizedDescription)")
                 DispatchQueue.main.async {
-                    if let cached = self.cache.retrieve(key: cacheKey, type: type) {
+                    if let cached = self.cache.retrieve(key: urlString, type: type) {
                         completion(cached)
                     }
                 }
@@ -116,10 +127,10 @@ class DataProvider {
     
     func postData<T : Codable>(url: String, data: T, completion: @escaping () -> ()) {
         guard let url = URL(string: url) else {
-            print("Your API end point is Invalid")
+            print("[DATA] Your API end point is Invalid")
             return
         }
-        print("posting \(data) to \(url)")
+        print("[DATA] POST \(data) to \(url)")
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -129,12 +140,11 @@ class DataProvider {
         URLSession.shared.dataTask(with: request) { data, response, error in
             guard let response = response as? HTTPURLResponse,
                 error == nil else {
-                print("error", error ?? "Unknown error")
+                print("[DATA] error", error ?? "Unknown error")
                 return
             }
             guard response.statusCode == 200 else {
-                print("statusCode should be 200, but is \(response.statusCode)")
-                print("response = \(response)")
+                print("[DATA] statusCode should be 200, but is \(response.statusCode)")
                 return
             }
             completion()
@@ -143,10 +153,15 @@ class DataProvider {
 }
 
 class GamesData: ObservableObject {
-    @Published var data: [Game]
+    private var data: [Game]
     
     init(data: [Game]) {
         self.data = data
+    }
+    
+    func set(data: [Game]) {
+        self.data = data
+        self.objectWillChange.send()
     }
     
     func getGames() -> [Game] {
@@ -239,8 +254,21 @@ struct Game: Codable, Identifiable  {
     }
 }
 
-struct StandingsData: Codable {
-    let data: [Standing]
+class StandingsData: ObservableObject {
+    private var data: [Standing]
+    
+    init(data: [Standing]) {
+        self.data = data
+    }
+    
+    func get() -> [Standing] {
+        return data
+    }
+
+    func set(data: [Standing]) {
+        self.data = data
+        self.objectWillChange.send()
+    }
 }
 
 struct Standing: Codable, Identifiable {
