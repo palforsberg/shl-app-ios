@@ -10,9 +10,11 @@ import SwiftUI
 
 let season = 2021
 let baseUrl = "http://86.107.103.138/shl-api"
+//let baseUrl = "http://192.168.1.74:8000"
 let gamesUrl = "\(baseUrl)/games/\(season)"
 let standingsUrl = "\(baseUrl)/standings/\(season)"
 let teamsUrl = "\(baseUrl)/teams"
+let userUrl = "\(baseUrl)/user"
 let gameStatsUrl = { (game: Game) -> String in
     return "\(baseUrl)/game/\(game.game_uuid)/\(game.game_id)"
 }
@@ -65,6 +67,14 @@ class DataProvider {
     func getTeams(completion: @escaping ([Team]) -> ()) {
         getData(url: teamsUrl, type: [Team].self, completion: completion)
     }
+    
+    func addUser(apnToken: String?, teams: [String]) {
+        guard apnToken != nil && teams.count > 0 else {
+            return
+        }
+        let request = AddUser(apn_token: apnToken!, teams: teams)
+        postData(url: userUrl, data: request, completion: { print("POST:ed user") })
+    }
 
     func getData<T : Codable>(url: String, type: T.Type, completion: @escaping (T) -> ()) {
         guard let url = URL(string: url) else {
@@ -101,6 +111,33 @@ class DataProvider {
                     }
                 }
             }
+        }.resume()
+    }
+    
+    func postData<T : Codable>(url: String, data: T, completion: @escaping () -> ()) {
+        guard let url = URL(string: url) else {
+            print("Your API end point is Invalid")
+            return
+        }
+        print("posting \(data) to \(url)")
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = try! JSONEncoder().encode(data)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let response = response as? HTTPURLResponse,
+                error == nil else {
+                print("error", error ?? "Unknown error")
+                return
+            }
+            guard response.statusCode == 200 else {
+                print("statusCode should be 200, but is \(response.statusCode)")
+                print("response = \(response)")
+                return
+            }
+            completion()
         }.resume()
     }
 }
@@ -282,6 +319,10 @@ struct Period: Codable {
     var awayFOW: Int16
 }
 
+struct AddUser: Codable {
+    var apn_token: String
+    var teams: [String]
+}
 
 extension Date {
    func getFormattedDateAndTime() -> String {

@@ -11,15 +11,20 @@ import Foundation
 class StarredTeams: ObservableObject {
     var starredTeams: [String] {
         didSet {
-            storage.setValue(starredTeams, forKey: "starredTeams")
-            storage.synchronize()
+            StarredTeams.storage.setValue(starredTeams, forKey: "starredTeams")
+            StarredTeams.storage.synchronize()
         }
     }
     
-    private var storage = UserDefaults.standard
+    private static var storage = UserDefaults.standard
+    private var debouncer: Debouncer?
     
     init() {
-        starredTeams = storage.array(forKey: "starredTeams") as? [String] ?? []
+        self.starredTeams = StarredTeams.readFromDisk()
+        self.debouncer = Debouncer({() in
+            let apnToken = UserDefaults.standard.string(forKey: "apn_token")
+            DataProvider().addUser(apnToken: apnToken, teams: self.starredTeams)
+        }, seconds: 1)
     }
 
     func isStarred(teamCode: String) -> Bool {
@@ -32,7 +37,7 @@ class StarredTeams: ObservableObject {
         }
         
         starredTeams.append(teamCode)
-        self.objectWillChange.send()
+        didChangeTeams()
     }
 
     func removeTeam(teamCode: String) {
@@ -40,6 +45,15 @@ class StarredTeams: ObservableObject {
             return
         }
         starredTeams.removeAll(where: { $0 == teamCode })
+        didChangeTeams()
+    }
+    
+    func didChangeTeams() {
         self.objectWillChange.send()
+        debouncer?.send()
+    }
+    
+    static func readFromDisk() -> [String] {
+        return storage.array(forKey: "starredTeams") as? [String] ?? []
     }
 }

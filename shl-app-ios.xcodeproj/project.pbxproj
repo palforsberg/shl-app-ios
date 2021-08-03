@@ -14,6 +14,7 @@
 		2339F66626B58D49006DE5F0 /* tik@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F66326B58D49006DE5F0 /* tik@2x.png */; };
 		2339F66726B58D49006DE5F0 /* tik@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F66426B58D49006DE5F0 /* tik@1x.png */; };
 		2339F66B26B6862A006DE5F0 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F66A26B6862A006DE5F0 /* TimerView.swift */; };
+		2339F66E26B857E7006DE5F0 /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F66D26B857E7006DE5F0 /* Debouncer.swift */; };
 		23537ED026B1D30200C9B6ED /* GamesStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ECF26B1D30200C9B6ED /* GamesStatsView.swift */; };
 		23537ED226B3FE6D00C9B6ED /* Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ED126B3FE6D00C9B6ED /* Preview.swift */; };
 		23537ED426B454B800C9B6ED /* Texts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ED326B454B800C9B6ED /* Texts.swift */; };
@@ -74,6 +75,8 @@
 		2339F66326B58D49006DE5F0 /* tik@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tik@2x.png"; sourceTree = "<group>"; };
 		2339F66426B58D49006DE5F0 /* tik@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tik@1x.png"; sourceTree = "<group>"; };
 		2339F66A26B6862A006DE5F0 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
+		2339F66C26B844E6006DE5F0 /* shl-app-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "shl-app-ios.entitlements"; sourceTree = "<group>"; };
+		2339F66D26B857E7006DE5F0 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
 		23537ECF26B1D30200C9B6ED /* GamesStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesStatsView.swift; sourceTree = "<group>"; };
 		23537ED126B3FE6D00C9B6ED /* Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preview.swift; sourceTree = "<group>"; };
 		23537ED326B454B800C9B6ED /* Texts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Texts.swift; sourceTree = "<group>"; };
@@ -176,6 +179,7 @@
 		D1AFF86725A84FCB00E50ADE /* shl-app-ios */ = {
 			isa = PBXGroup;
 			children = (
+				2339F66C26B844E6006DE5F0 /* shl-app-ios.entitlements */,
 				23537ED726B57F5D00C9B6ED /* Icons */,
 				D1AFF8A925A85C1100E50ADE /* components */,
 				D1AFF8A525A8570B00E50ADE /* compositions */,
@@ -238,6 +242,7 @@
 				D1AFC2A825B07F5E00490FCE /* StarredTeams.swift */,
 				23537ED326B454B800C9B6ED /* Texts.swift */,
 				2339F66A26B6862A006DE5F0 /* TimerView.swift */,
+				2339F66D26B857E7006DE5F0 /* Debouncer.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -403,6 +408,7 @@
 				D1AFC2A925B07F5E00490FCE /* StarredTeams.swift in Sources */,
 				23537ED026B1D30200C9B6ED /* GamesStatsView.swift in Sources */,
 				D1AAF86225AB10BF008D3D62 /* TeamLogo.swift in Sources */,
+				2339F66E26B857E7006DE5F0 /* Debouncer.swift in Sources */,
 				D1AAF85A25AB0898008D3D62 /* URLImage.swift in Sources */,
 				23537EE026B5802200C9B6ED /* AppIconView.swift in Sources */,
 			);
@@ -576,6 +582,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "shl-app-ios/shl-app-ios.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"shl-app-ios/Preview Content\"";
 				DEVELOPMENT_TEAM = 3LK2DRBJ29;
@@ -599,6 +606,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "shl-app-ios/shl-app-ios.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"shl-app-ios/Preview Content\"";
 				DEVELOPMENT_TEAM = 3LK2DRBJ29;
