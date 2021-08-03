@@ -209,7 +209,7 @@ class GamesData: ObservableObject {
     }
 }
 
-struct Game: Codable, Identifiable  {
+struct Game: Codable, Identifiable, Equatable  {
     var id: Int {
         return game_id
     }
@@ -279,6 +279,7 @@ struct Standing: Codable, Identifiable {
     let gp: Int
     let rank: Int
     let points: Int
+    let diff: Int
     
     func getPointsPerGame() -> String {
         if (gp == 0) {

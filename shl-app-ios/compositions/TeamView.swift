@@ -16,7 +16,7 @@ struct StatsRowSingle: View {
             Text(LocalizedStringKey(left)).font(.system(size: 20, design: .rounded)).fontWeight(.semibold).frame(maxWidth: .infinity, alignment: .leading)
             Spacer()
             Text(right).font(.system(size: 20, design: .rounded)).fontWeight(.bold).frame(width: 65, alignment: .trailing)
-        }.padding(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
+        }.padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
     }
 }
 
@@ -32,10 +32,13 @@ struct TeamView: View {
     var body: some View {
         let _team = self.teams.getTeam(teamCode)
         let starred = starredTeams.isStarred(teamCode: teamCode)
+        let liveGames = games.getLiveGames(teamCodes: [teamCode])
+        let futureGames = games.getFutureGames(teamCodes: [teamCode])
+        let playedGames = games.getPlayedGames(teamCodes: [teamCode])
         ScrollView {
-            LazyVStack(alignment: .center, spacing: 10, content: {
-                Spacer(minLength: 25)
-                Text("Swedish Hockey League").fontWeight(.medium)
+            LazyVStack(alignment: .center, spacing: 10) {
+                Text("Swedish Hockey League").fontWeight(.semibold).font(.system(size: 15, design: .rounded))
+                        .foregroundColor(Color(UIColor.secondaryLabel))
                 TeamLogo(code: teamCode, size: .big)
                 Text(_team?.name ?? teamCode).font(.largeTitle).fontWeight(.medium)
                 StarButton(starred: starred) {
@@ -48,45 +51,55 @@ struct TeamView: View {
                 Spacer()
                 Group {
                     GroupedView(title: "Season_param \(season.getFormattedPrevSeason())" ) {
-                        Group {
+                        VStack {
                             StatsRowSingle(left: "Rank", right: "#\(standing.rank)")
                             StatsRowSingle(left: "Points", right: "\(standing.points)")
                             StatsRowSingle(left: "Games Played", right: "\(standing.gp)")
                             StatsRowSingle(left: "Points/Game", right: standing.getPointsPerGame())
-                        }.padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
+                            StatsRowSingle(left: "Goal Diff", right: "\(standing.diff)")
+                        }.padding(EdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14))
                     }
                     Spacer()
                 }
-                if (!games.getLiveGames(teamCodes: [teamCode]).isEmpty) {
+                if (!liveGames.isEmpty) {
                     Group {
                         GroupedView(title: "Live") {
-                            ForEach(games.getLiveGames(teamCodes: [teamCode])) { (item) in
+                            ForEach(liveGames) { (item) in
                                 LiveGame(game: item)
+                                if (item != liveGames.last) {
+                                    Divider()
+                                }
                             }
                         }
                         Spacer()
                     }
                 }
-                if (!games.getFutureGames(teamCodes: [teamCode]).isEmpty) {
+                if (!futureGames.isEmpty) {
                     Group {
                         GroupedView(title: "Coming") {
-                            ForEach(games.getFutureGames(teamCodes: [teamCode])) { (item) in
+                            ForEach(futureGames) { (item) in
                                 ComingGame(game: item)
+                                if (item != futureGames.last) {
+                                    Divider()
+                                }
                             }
                         }
                         Spacer()
                     }
                 }
-                if (!games.getPlayedGames(teamCodes: [teamCode]).isEmpty) {
+                if (!playedGames.isEmpty) {
                     Group {
                         GroupedView(title: "Played_param \(season.getFormattedPrevSeason())") {
-                            ForEach(games.getPlayedGames(teamCodes: [teamCode])) { (item) in
+                            ForEach(playedGames) { (item) in
                                 PlayedGame(game: item)
+                                if (item != playedGames.last) {
+                                    Divider()
+                                }
                             }
                         }
                     }
                 }
-            })
+            }
             .background(Color(UIColor.systemGroupedBackground))
         }.background(Color(UIColor.systemGroupedBackground))
         .navigationBarTitle("", displayMode: .inline)
@@ -114,12 +127,13 @@ struct TeamView_Previews: PreviewProvider {
         let teams = TeamsData()
         teams.teams["LHF"] = Team(code: "LHF", name: "Luleå HF")
         
-        return TeamView(teamCode: "LHF", standing: Standing(team_code: "LHF", gp: 5, rank: 1, points: 15))
+        return TeamView(teamCode: "LHF", standing: getStanding("LHF", rank: 1))
             .environmentObject(teams)
             .environmentObject(StarredTeams())
             .environmentObject(GamesData(data: [getLiveGame(score1: 13, score2: 2), getLiveGame(score1: 4, score2: 99),
                                                 getPlayedGame(), getPlayedGame(),
                                                 getFutureGame(), getFutureGame()]))
+            .environmentObject(Season())
             .environment(\.locale, .init(identifier: "sv"))
     }
 }

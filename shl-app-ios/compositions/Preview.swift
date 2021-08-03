@@ -27,5 +27,10 @@ func getFutureGame() -> Game {
 }
 
 func getStanding(_ teamCode: String, rank: Int) -> Standing {
-    return Standing(team_code: teamCode, gp: 4, rank: rank, points: 3)
+    return getStanding(teamCode, rank: rank, gp: 4, points: 15)
+}
+
+
+func getStanding(_ teamCode: String, rank: Int, gp: Int, points: Int) -> Standing {
+    return Standing(team_code: teamCode, gp: gp, rank: rank, points: points, diff: 10)
 }

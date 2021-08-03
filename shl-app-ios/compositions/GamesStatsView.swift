@@ -77,8 +77,10 @@ struct GamesStatsView: View {
     
     var body: some View {
             ScrollView {
+                Spacer(minLength: 10)
+                Text("Swedish Hockey League").fontWeight(.semibold).font(.system(size: 15, design: .rounded))
+                    .foregroundColor(Color(UIColor.secondaryLabel))
                 Spacer(minLength: 25)
-                Text("Swedish Hockey League").fontWeight(.medium)
                 HStack(alignment: .center, spacing: 0) {
                     VStack {
                         TeamLogo(code: game.home_team_code, size: LogoSize.big)
@@ -160,8 +162,10 @@ struct GamesStatsView: View {
                         ForEach(previousGames) { (item) in
                             NavigationLink(destination: GamesStatsView(game: item)) {
                                 PlayedGame(game: item)
-                            }.padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
-                            .buttonStyle(PlainButtonStyle())
+                            }.buttonStyle(PlainButtonStyle())
+                            if (item != previousGames.last) {
+                                Divider()
+                            }
                         }
                     }
                     Spacer(minLength: 40)
@@ -207,6 +211,7 @@ struct GamesStatsView_Previews: PreviewProvider {
                               game: getLiveGame())
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
             .environmentObject(teams)
+            .environmentObject(Season())
             .environment(\.locale, .init(identifier: "sv"))
     }
     
@@ -228,6 +233,7 @@ struct GamesStatsView_Future_Game_Previews: PreviewProvider {
                               game: getFutureGame())
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
             .environmentObject(teams)
+            .environmentObject(Season())
             .environment(\.locale, .init(identifier: "sv"))
     }
     
@@ -250,6 +256,7 @@ struct GamesStatsView_Future_No_Prev_Game_Previews: PreviewProvider {
                               game: getFutureGame())
             .environmentObject(GamesData(data: []))
             .environmentObject(teams)
+            .environmentObject(Season())
             .environment(\.locale, .init(identifier: "sv"))
     }
     

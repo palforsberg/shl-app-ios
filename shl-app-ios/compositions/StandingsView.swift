@@ -18,7 +18,7 @@ struct StandingsView: View {
     var body: some View {
         NavigationView {
             List {
-                Section(header: Text("Season_param \(season.getLongFormatted())").listHeader()) {
+                Section(header: Text("Season_param \(season.getFormatted())").listHeader()) {
                     ForEach(standings.get()) { item in
                         NavigationLink(destination: TeamView(teamCode: item.team_code, standing: item)) {
                             HStack() {
@@ -34,13 +34,13 @@ struct StandingsView: View {
                                     .frame(width: 10)
                                     .padding(.leading, -10)
                                 Text("\(item.gp)").points()
-                                Text(item.getPointsPerGame()).points()
                                 Text("\(item.points)").points()
                             }.padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
                         }.buttonStyle(PlainButtonStyle())
                     }
                 }
             }
+            .id(UUID()) // makes sure list is recreated when rerendered. To take care of reuse cell issues
             .listStyle(InsetGroupedListStyle())
             .navigationBarTitle(Text("SHL"))
             .onAppear(perform: {
@@ -61,15 +61,12 @@ struct StandingsView_Previews: PreviewProvider {
         let starredTeams = StarredTeams()
         starredTeams.addTeam(teamCode: "SAIK")
         
-        let standingsData = StandingsData(data: [getStanding("LHF", rank: 1), getStanding("SAIK", rank: 14)])
+        let standingsData = StandingsData(data: [getStanding("LHF", rank: 1, gp: 99, points: 999), getStanding("SAIK", rank: 14)])
         return StandingsView(provider: nil)
             .environmentObject(TeamsData())
             .environmentObject(starredTeams)
             .environmentObject(standingsData)
             .environmentObject(Season())
             .environment(\.locale, .init(identifier: "sv"))
-    }
-    static func getStanding(_ teamCode: String, rank: Int) -> Standing {
-        return Standing(team_code: teamCode, gp: 4, rank: rank, points: 3)
     }
 }

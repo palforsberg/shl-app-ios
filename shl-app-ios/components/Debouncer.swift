@@ -15,7 +15,6 @@ struct Debouncer {
         subject
             .debounce(for: .seconds(seconds), scheduler: RunLoop.main)
             .sink { index in
-                print ("Received index \(index)")
                 action()
             }.store(in: &cancellable)
     }

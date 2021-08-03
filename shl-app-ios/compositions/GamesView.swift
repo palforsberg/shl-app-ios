@@ -83,7 +83,7 @@ struct PlayedGame: View {
         VStack(alignment: .center, spacing: -1, content: {
             HStack {
                 TeamAvatar(game.home_team_code, alignment: .center)
-                    .opacity(homeLost ? 0.5 : 1.0)
+                    .opacity(homeLost ? 0.6 : 1.0)
                 Spacer()
                 Text("\(game.home_team_result)")
                     .font(.system(size: 30))
@@ -94,7 +94,7 @@ struct PlayedGame: View {
                     .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                 Spacer()
                 TeamAvatar(game.away_team_code, alignment: .center)
-                    .opacity(awayLost ? 0.5 : 1.0)
+                    .opacity(awayLost ? 0.6 : 1.0)
             }
             Text(LocalizedStringKey(game.start_date_time.getFormattedDate()))
                 .font(.system(size: 18, design: .rounded))
@@ -147,6 +147,7 @@ struct GamesView: View {
                     }
                 }
             }
+            .id(UUID()) // makes sure list is recreated when rerendered. To take care of reuse cell issues
             .listStyle(InsetGroupedListStyle())
             .navigationBarTitle(Text("Matches"))
             .navigationBarItems(trailing:NavigationLink(destination: SettingsView()) {

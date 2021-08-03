@@ -38,7 +38,6 @@ extension Text {
         return self
             .font(.system(size: 14, design: .rounded))
             .fontWeight(.medium)
-            .frame(width: 35)
-            .multilineTextAlignment(.trailing)
+            .frame(width: 35, alignment: .trailing)
     }
 }
