@@ -33,7 +33,12 @@ class Cache {
     func retrieve<T: Codable>(key: String, type: T.Type) -> T? {
         if let archived = storage.object(forKey: key) as? Data {
             print("[CACHE] GET cached \(type) from \(key)")
-            return try! decoder.decode(type.self, from: archived)
+            do {
+                return try decoder.decode(type.self, from: archived)
+            } catch {
+                print("[DATA] failed to decode cache \(error.localizedDescription)")
+                return nil
+            }
         }
         return nil
     }
@@ -107,7 +112,7 @@ class DataProvider {
                         completion(response)
                     }
                 } catch let error {
-                    print("[DATA] error \(error.localizedDescription)")
+                    print("[DATA] Failed to decode JSON \(error.localizedDescription)")
                     DispatchQueue.main.async {
                         if let cached = self.cache.retrieve(key: urlString, type: type) {
                             completion(cached)
@@ -115,7 +120,7 @@ class DataProvider {
                     }
                 }
             } else if let error = error {
-                print("[DATA] error \(error.localizedDescription)")
+                print("[DATA] Failed to retrieve data \(error.localizedDescription)")
                 DispatchQueue.main.async {
                     if let cached = self.cache.retrieve(key: urlString, type: type) {
                         completion(cached)
