@@ -57,9 +57,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
         let token = tokenParts.joined()
         print("[APP] Device Token: \(token)")
+        let firstTime = UserDefaults.standard.string(forKey: "apn_token") == nil
+        if firstTime {
+            DataProvider().addUser(apnToken: token, teams: StarredTeams.readFromDisk())
+        }
         UserDefaults.standard.setValue(token, forKey: "apn_token")
-
-        DataProvider().addUser(apnToken: token, teams: StarredTeams.readFromDisk())
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {

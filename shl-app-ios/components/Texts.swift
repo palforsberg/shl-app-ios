@@ -34,10 +34,11 @@ extension Text {
             .padding(.leading, 0)
     }
     
-    func points() -> some View {
-        return self
-            .font(.system(size: 14, design: .rounded))
-            .fontWeight(.medium)
-            .frame(width: 35, alignment: .trailing)
+    func starred(_ starred: Bool) -> some View {
+        return self.overlay(
+            RoundedRectangle(cornerRadius: 2)
+                .frame(height: 3).offset(y: 1)
+                .foregroundColor(Color(UIColor.systemYellow).opacity(starred ? 0.8 : 0)), alignment: .bottom)
+            .animation(.easeInOut(duration: 0.3))
     }
 }

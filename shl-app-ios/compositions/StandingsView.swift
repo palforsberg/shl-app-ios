@@ -7,6 +7,30 @@
 
 import SwiftUI
 
+
+extension Text {
+    
+    func points() -> some View {
+        return self
+            .font(.system(size: 15, design: .rounded))
+            .fontWeight(.semibold)
+            .frame(width: 34, alignment: .center)
+    }
+}
+
+struct StandingsHeader: View {
+    var season: String
+    var body: some View {
+        HStack {
+            Text("Season_param \(season)").listHeader()
+            Spacer()
+            Text("GP").points()
+            Text("P").points()
+            Spacer(minLength: 34)
+        }
+    }
+}
+
 struct StandingsView: View {
     @EnvironmentObject var standings: StandingsData
     @EnvironmentObject var teams: TeamsData
@@ -18,7 +42,7 @@ struct StandingsView: View {
     var body: some View {
         NavigationView {
             List {
-                Section(header: Text("Season_param \(season.getFormatted())").listHeader()) {
+                Section(header: StandingsHeader(season: season.getFormatted())) {
                     ForEach(standings.get()) { item in
                         NavigationLink(destination: TeamView(teamCode: item.team_code, standing: item)) {
                             HStack() {
@@ -29,10 +53,7 @@ struct StandingsView: View {
                                     .frame(width: 30)
                                     .foregroundColor(Color.gray)
                                 TeamAvatar(item.team_code)
-                                Image(systemName: "star.circle.fill")
-                                    .foregroundColor(starredTeams.isStarred(teamCode: item.team_code) ? Color(UIColor.systemYellow) : Color.clear)
-                                    .frame(width: 10)
-                                    .padding(.leading, -10)
+                                Spacer()
                                 Text("\(item.gp)").points()
                                 Text("\(item.points)").points()
                             }.padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
@@ -43,10 +64,8 @@ struct StandingsView: View {
             .id(UUID()) // makes sure list is recreated when rerendered. To take care of reuse cell issues
             .listStyle(InsetGroupedListStyle())
             .navigationBarTitle(Text("SHL"))
-            .onAppear(perform: {
-            })
             .navigationBarItems(trailing: NavigationLink(destination: SettingsView()) {
-                Image(systemName: "gear")
+                Image(systemName: "gear").frame(width: 44, height: 44, alignment: .trailing)
             })
         }.onReceive(season.$season, perform: { _ in
             provider?.getStandings(season: season.season) { (result) in
@@ -61,7 +80,9 @@ struct StandingsView_Previews: PreviewProvider {
         let starredTeams = StarredTeams()
         starredTeams.addTeam(teamCode: "SAIK")
         
-        let standingsData = StandingsData(data: [getStanding("LHF", rank: 1, gp: 99, points: 999), getStanding("SAIK", rank: 14)])
+        let standingsData = StandingsData(data: [
+                                            getStanding("LHF", rank: 1, gp: 99, points: 999),
+                                            getStanding("SAIK", rank: 14)])
         return StandingsView(provider: nil)
             .environmentObject(TeamsData())
             .environmentObject(starredTeams)

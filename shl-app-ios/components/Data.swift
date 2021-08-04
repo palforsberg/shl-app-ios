@@ -214,6 +214,11 @@ class GamesData: ObservableObject {
     }
 }
 
+enum GameType: String, Codable {
+    case playoff = "Playoff game"
+    case season = "Regular season game"
+    case kvalmatch = "Kvalmatch nedflyttning"
+}
 struct Game: Codable, Identifiable, Equatable  {
     var id: Int {
         return game_id
@@ -225,6 +230,7 @@ struct Game: Codable, Identifiable, Equatable  {
     let home_team_code: String
     let home_team_result: Int
     let start_date_time: Date
+    let game_type: String
     let played: Bool
     
     func hasTeam(_ teamCode: String) -> Bool {
@@ -256,6 +262,10 @@ struct Game: Codable, Identifiable, Equatable  {
     
     func isFuture() -> Bool {
         return start_date_time > Date()
+    }
+    
+    func getGameType() -> GameType? {
+        return GameType.init(rawValue: self.game_type)
     }
 }
 

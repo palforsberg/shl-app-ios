@@ -37,10 +37,16 @@ struct TeamView: View {
         let playedGames = games.getPlayedGames(teamCodes: [teamCode])
         ScrollView {
             LazyVStack(alignment: .center, spacing: 10) {
-                Text("Swedish Hockey League").fontWeight(.semibold).font(.system(size: 15, design: .rounded))
-                        .foregroundColor(Color(UIColor.secondaryLabel))
+                Group {
+                    Spacer(minLength: 5)
+                    Text("Swedish Hockey League").fontWeight(.semibold).font(.system(size: 15, design: .rounded))
+                            .foregroundColor(Color(UIColor.secondaryLabel))
+                    Spacer(minLength: 0)
+                }
                 TeamLogo(code: teamCode, size: .big)
-                Text(_team?.name ?? teamCode).font(.largeTitle).fontWeight(.medium)
+                Text(_team?.name ?? teamCode)
+                    .font(.largeTitle).fontWeight(.medium)
+                    .starred(starred)
                 StarButton(starred: starred) {
                     if (starred) {
                         starredTeams.removeTeam(teamCode: teamCode)
@@ -127,13 +133,23 @@ struct TeamView_Previews: PreviewProvider {
         let teams = TeamsData()
         teams.teams["LHF"] = Team(code: "LHF", name: "Luleå HF")
         
-        return TeamView(teamCode: "LHF", standing: getStanding("LHF", rank: 1))
-            .environmentObject(teams)
-            .environmentObject(StarredTeams())
-            .environmentObject(GamesData(data: [getLiveGame(score1: 13, score2: 2), getLiveGame(score1: 4, score2: 99),
-                                                getPlayedGame(), getPlayedGame(),
-                                                getFutureGame(), getFutureGame()]))
-            .environmentObject(Season())
-            .environment(\.locale, .init(identifier: "sv"))
+        return Group {
+            TeamView(teamCode: "LHF", standing: getStanding("LHF", rank: 1))
+                .environmentObject(teams)
+                .environmentObject(StarredTeams())
+                .environmentObject(GamesData(data: [getLiveGame(score1: 13, score2: 2), getLiveGame(score1: 4, score2: 99),
+                                                    getPlayedGame(), getPlayedGame(),
+                                                    getFutureGame(), getFutureGame()]))
+                .environmentObject(Season())
+                .environment(\.locale, .init(identifier: "sv"))
+            TeamView(teamCode: "LHF", standing: getStanding("LHF", rank: 1))
+                .environmentObject(teams)
+                .environmentObject(StarredTeams())
+                .environmentObject(GamesData(data: [getLiveGame(score1: 13, score2: 2), getLiveGame(score1: 4, score2: 99),
+                                                    getPlayedGame(), getPlayedGame(),
+                                                    getFutureGame(), getFutureGame()]))
+                .environmentObject(Season())
+                .environment(\.locale, .init(identifier: "sv"))
+        }
     }
 }

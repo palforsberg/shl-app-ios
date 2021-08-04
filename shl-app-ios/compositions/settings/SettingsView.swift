@@ -62,17 +62,20 @@ struct AppIconView: View {
     }
 }
 
-struct SeasonPicker: View {
+struct GeneralPicker<T: Equatable, Content: View>: View {
 
-    static var seasons = [2021, 2020, 2019, 2018, 2017]
+    var values: [T]
     
     @State var currentIndex: Int
     
-    let onChange: (Int) -> ()
+    let onChange: (T) -> ()
+    let content: (T) -> (Content)
 
-    init(onChange: @escaping (Int) -> (), season: Int) {
+    init(onChange: @escaping (T) -> (), values:[T], value: T, content: @escaping (T) -> (Content)) {
         self.onChange = onChange
-        self.currentIndex = SeasonPicker.seasons.firstIndex(of: season)!
+        self.currentIndex = values.firstIndex(of: value)!
+        self.values = values
+        self.content = content
     }
 
     var body: some View {
@@ -80,29 +83,59 @@ struct SeasonPicker: View {
             Picker(selection: $currentIndex, label: Label("Season", systemImage: "calendar")
                     .settingsItem()
                     .accentColor(Color.red)) {
-                ForEach(0..<SeasonPicker.seasons.count) { e in
+                ForEach(0..<self.values.count) { e in
                     HStack {
-                        Text(Season.getFormatted(season: SeasonPicker.seasons[e]))
-                            .font(.system(size: 16, design: .rounded))
-                            .fontWeight(.medium)
-                            .padding(.leading, 5)
+                        content(self.values[e])
                     }.tag(e)
                 }
             }.onChange(of: currentIndex) { value in
-                onChange(SeasonPicker.seasons[currentIndex])
+                onChange(self.values[currentIndex])
             }
         }
     }
 }
 
+struct SeasonPicker: View {
+
+    static var seasons = [2021, 2020, 2019, 2018, 2017]
+    
+    @Binding var currentSeason: Int
+
+    var body: some View {
+        GeneralPicker(onChange: { e in self.currentSeason = e }, values: SeasonPicker.seasons, value: currentSeason, content: {e in
+            Text(Season.getFormatted(season: e))
+                .font(.system(size: 16, design: .rounded))
+                .fontWeight(.medium)
+                .padding(.leading, 5)
+        })
+    }
+}
+
+struct FilterPicker: View {
+    var filters = [true, false]
+    
+    @Binding var currentVal: Bool
+    
+    var body: some View {
+        GeneralPicker(onChange: {e in self.currentVal = e}, values: filters, value: currentVal, content: {e in
+            Text("\(e ? "Only Starred" : "All")")
+                .font(.system(size: 16, design: .rounded))
+                .fontWeight(.medium)
+                .padding(.leading, 5)
+        })
+    }
+}
+
 struct SettingsView: View {
     @EnvironmentObject var season: Season
+    @State var onlyStarred = true
     
     var body: some View {
         List {
             Section(header: Text("")) {
-                SeasonPicker(onChange: { e in season.set(e) }, season: season.season)
+                SeasonPicker(currentSeason: $season.season)
                 AppIconView()
+                Label("Match Filter", systemImage: "loupe").settingsItem().accentColor(Color.purple)
                 Label("Notifications", systemImage: "app.badge").settingsItem().accentColor(Color.blue)
                 Label("Supporter", systemImage: "star").settingsItem().accentColor(Color.orange)
             }

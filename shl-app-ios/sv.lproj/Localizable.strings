@@ -13,6 +13,9 @@
 "Games Played" = "Antal Matcher";
 "Points/Game" = "Poäng/Match";
 "Starts In" = "Börjar om";
+"Regular season game" = "Säsongsspel";
+"Playoff game" = "Slutspel";
+"Kvalmatch nedflyttning" = "Kvalspel";
 
 "Shots" = "Skott";
 "Penalty Minutes" = "Straff Minuter";

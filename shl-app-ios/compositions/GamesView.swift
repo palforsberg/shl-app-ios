@@ -11,6 +11,7 @@ import SwiftUI
 struct TeamAvatar: View {
     var teamCode: String
     var alignment = Alignment.leading
+    @EnvironmentObject var starredTeams: StarredTeams
     
     init(_ teamCode: String) {
         self.teamCode = teamCode
@@ -22,12 +23,15 @@ struct TeamAvatar: View {
     }
     
     var body: some View {
+        let starred = starredTeams.isStarred(teamCode: teamCode)
         HStack {
             TeamLogo(code: teamCode, size: LogoSize.small)
                 .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-            Text(teamCode).font(.system(size: 24, design: .rounded)).fontWeight(.semibold)
+            Text(teamCode)
+                .font(.system(size: 24, design: .rounded)).fontWeight(.semibold)
+                .starred(starred)
                 .scaledToFit()
-                .minimumScaleFactor(0.8)
+                .minimumScaleFactor(0.6)
         }
         .frame(width: 115, height: 40, alignment: alignment)
         
@@ -62,12 +66,12 @@ struct ComingGame: View {
             VStack(alignment: .center, spacing: /*@START_MENU_TOKEN@*/nil/*@END_MENU_TOKEN@*/, content: {
                 Text(LocalizedStringKey(game.start_date_time.getFormattedDate()))
                     .fontWeight(.semibold)
-                    .foregroundColor(Color.init(Color.RGBColorSpace.sRGB, white: 0.4, opacity: 1.0))
+                    .foregroundColor(Color(UIColor.secondaryLabel))
                     .font(.system(size: 18, design: .rounded))
                     
                 Text("\(game.start_date_time.getFormattedTime())")
                     .font(.system(size: 15, design: .rounded))
-                    .foregroundColor(Color.init(Color.RGBColorSpace.sRGB, white: 0.4, opacity: 1.0))
+                    .foregroundColor(Color(UIColor.secondaryLabel))
             })
             Spacer()
             TeamAvatar(game.away_team_code, alignment: .center)
@@ -150,9 +154,9 @@ struct GamesView: View {
             .id(UUID()) // makes sure list is recreated when rerendered. To take care of reuse cell issues
             .listStyle(InsetGroupedListStyle())
             .navigationBarTitle(Text("Matches"))
-            .navigationBarItems(trailing:NavigationLink(destination: SettingsView()) {
-                                         Image(systemName: "gear")
-                                     })
+            .navigationBarItems(trailing: NavigationLink(destination: SettingsView()) {
+                Image(systemName: "gear").frame(width: 44, height: 44, alignment: .trailing)
+            })
         }.onReceive(season.$season, perform: { _ in
             provider?.getGames(season: season.season) { gd in
                 gamesData.set(data: gd)
