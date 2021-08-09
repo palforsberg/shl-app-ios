@@ -14,7 +14,6 @@ extension Text {
         return self
             .font(.system(size: 15, design: .rounded))
             .fontWeight(.semibold)
-            .frame(width: 34, alignment: .center)
     }
 }
 
@@ -25,9 +24,34 @@ struct StandingsHeader: View {
             Text("Season_param \(season)").listHeader()
             Spacer()
             Text("GP").points()
+                .frame(width: 34, alignment: .center)
             Text("P").points()
+                .frame(width: 34, alignment: .center)
             Spacer(minLength: 34)
         }
+    }
+}
+
+
+struct PointsLabel: View {
+    var val: String
+    var nrDigits = 3
+    var color = Color.primary
+    
+    var body: some View {
+        let str = "\(val)"
+        let nrZeros = nrDigits - str.count
+        HStack(spacing: 0) {
+            Text(genZeros(nrZeros)).points().foregroundColor(Color(UIColor.tertiaryLabel))
+            Text(str).foregroundColor(color).points()
+        }
+    }
+    
+    func genZeros(_ nr: Int) -> String {
+        guard nr > 0 else {
+            return ""
+        }
+        return String((0..<nr).map{ _ in "0" })
     }
 }
 
@@ -46,16 +70,16 @@ struct StandingsView: View {
                     ForEach(standings.get()) { item in
                         NavigationLink(destination: TeamView(teamCode: item.team_code, standing: item)) {
                             HStack() {
-                                Text("#\(item.rank)")
-                                    .font(.system(size: 16, design: .rounded))
-                                    .fontWeight(.semibold)
-                                    .points()
-                                    .frame(width: 30)
-                                    .foregroundColor(Color.gray)
+                                HStack(spacing: 0) {
+                                    Text("#").foregroundColor(Color(UIColor.tertiaryLabel))
+                                    PointsLabel(val: "\(item.rank)", nrDigits: 2, color: Color.secondary)
+                                }
                                 TeamAvatar(item.team_code)
                                 Spacer()
-                                Text("\(item.gp)").points()
-                                Text("\(item.points)").points()
+                                PointsLabel(val: "\(item.gp)")
+                                    .frame(width: 34, alignment: .center)
+                                PointsLabel(val: "\(item.points)")
+                                    .frame(width: 34, alignment: .center)
                             }.padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
                         }.buttonStyle(PlainButtonStyle())
                     }

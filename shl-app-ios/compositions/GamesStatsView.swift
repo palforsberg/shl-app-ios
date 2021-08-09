@@ -65,7 +65,8 @@ struct GamesStatsView: View {
     @State var previousGames: [Game] = []
     @State var prevHomeWins: Int = 0
     @State var prevHomeLoss: Int = 0
-    @State var prevHomeTies: Int = 0
+    @State var prevHomeWinsOt: Int = 0
+    @State var prevHomeLossOt: Int = 0
     @State var hasFetched = false
 
     @EnvironmentObject var gamesData: GamesData
@@ -148,17 +149,22 @@ struct GamesStatsView: View {
                     VStack {
                         Text("\(self.prevHomeWins)").font(.system(size: 20, design: .rounded)).fontWeight(.semibold)
                         Text("Wins").font(.system(size: 15, design: .rounded))
-                    }.frame(maxWidth: 50)
+                    }
                     Divider()
                     VStack {
-                        Text("\(self.prevHomeTies)").font(.system(size: 20, design: .rounded)).fontWeight(.semibold)
-                        Text("Ties").font(.system(size: 15, design: .rounded))
-                    }.frame(maxWidth: 50)
+                        Text("\(self.prevHomeWinsOt)").font(.system(size: 20, design: .rounded)).fontWeight(.semibold)
+                        Text("Wins OT").font(.system(size: 15, design: .rounded))
+                    }
+                    Divider()
+                    VStack {
+                        Text("\(self.prevHomeLossOt)").font(.system(size: 20, design: .rounded)).fontWeight(.semibold)
+                        Text("Wins OT").font(.system(size: 15, design: .rounded))
+                    }
                     Divider()
                     VStack {
                         Text("\(self.prevHomeLoss)").font(.system(size: 20, design: .rounded)).fontWeight(.semibold)
                         Text("Wins").font(.system(size: 15, design: .rounded))
-                    }.frame(maxWidth: 50)
+                    }
                 }
                 Spacer(minLength: 40)
                 if (!previousGames.isEmpty) {
@@ -187,9 +193,10 @@ struct GamesStatsView: View {
                 
                 let allPrevGames = self.gamesData.getGamesBetween(team1: game.home_team_code, team2: game.away_team_code)
                 self.previousGames = Array(allPrevGames.filter({ $0.game_uuid != game.game_uuid }).prefix(5))
-                self.prevHomeWins = allPrevGames.filter({ $0.didWin(game.home_team_code) }).count
-                self.prevHomeLoss = allPrevGames.filter({ !$0.didWin(game.home_team_code) }).count
-                self.prevHomeTies = allPrevGames.filter({ $0.home_team_result == $0.away_team_result }).count
+                self.prevHomeWins = allPrevGames.filter({ $0.didWin(game.home_team_code) && !$0.overtime }).count
+                self.prevHomeWinsOt = allPrevGames.filter({ $0.didWin(game.home_team_code) && $0.overtime }).count
+                self.prevHomeLoss = allPrevGames.filter({ !$0.didWin(game.home_team_code) && !$0.overtime }).count
+                self.prevHomeLossOt = allPrevGames.filter({ !$0.didWin(game.home_team_code) && $0.overtime }).count
                     
             })
             .navigationBarTitle("", displayMode: .inline)

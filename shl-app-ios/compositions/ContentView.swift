@@ -32,6 +32,7 @@ struct ContentView: View {
         .environmentObject(gameData)
         .environmentObject(season)
         .background(Color(UIColor.systemGroupedBackground))
+        .accentColor(Color(UIColor.systemYellow))
     }
 }
 

@@ -12,15 +12,42 @@
 	<dict>
 		<key>CFBundleAlternateIcons</key>
 		<dict>
-			<key>tik</key>
+			<key>tik-icon</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>tik</string>
+					<string>tik-icon</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<false/>
 			</dict>
+            <key>shl-icon</key>
+            <dict>
+                <key>CFBundleIconFiles</key>
+                <array>
+                    <string>shl-icon</string>
+                </array>
+                <key>UIPrerenderedIcon</key>
+                <false/>
+            </dict>
+            <key>lhf-icon</key>
+            <dict>
+                <key>CFBundleIconFiles</key>
+                <array>
+                    <string>lhf-icon</string>
+                </array>
+                <key>UIPrerenderedIcon</key>
+                <false/>
+            </dict>
+            <key>hv71-icon</key>
+            <dict>
+                <key>CFBundleIconFiles</key>
+                <array>
+                    <string>hv71-icon</string>
+                </array>
+                <key>UIPrerenderedIcon</key>
+                <false/>
+            </dict>
 		</dict>
 		<key>CFBundlePrimaryIcon</key>
 		<dict>

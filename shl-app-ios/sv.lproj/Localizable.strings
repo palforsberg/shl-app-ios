@@ -18,11 +18,11 @@
 "Kvalmatch nedflyttning" = "Kvalspel";
 
 "Shots" = "Skott";
-"Penalty Minutes" = "Straff Minuter";
+"Penalty Minutes" = "Straff-minuter";
 "Face Offs Won" = "Tekningar Vunna";
 "Hits" = "Tacklingar";
 "Wins" = "Vinster";
-"Ties" = "Lika";
+"Wins OT" = "Vinster ÖT";
 "Match History" = "Tidigare Matcher";
 "Goal Diff" = "Mål Diff";
 

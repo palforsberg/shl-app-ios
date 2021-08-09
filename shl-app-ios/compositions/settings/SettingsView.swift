@@ -22,7 +22,10 @@ extension Label {
 struct AppIconView: View {
 
     static var icons = [Icon(name: "Default", code: nil),
-                 Icon(name: "Timrå IK", code: "tik")]
+                        Icon(name: "SHL", code: "shl-icon"),
+                        Icon(name: "Timrå IK", code: "tik-icon"),
+                        Icon(name: "Luleå HF", code: "lhf-icon"),
+                        Icon(name: "HV71", code: "hv71-icon")]
 
     @State var currentIndex: Int
     
@@ -39,7 +42,7 @@ struct AppIconView: View {
                     HStack {
                         Image(uiImage: UIImage(named: AppIconView.icons[e].code ?? "default")!).resizable()
                             .frame(width: 30, height: 30, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .clipShape(RoundedRectangle(cornerRadius: 5))
                         Text(AppIconView.icons[e].name)
                             .font(.system(size: 16, design: .rounded))
                             .fontWeight(.medium)
@@ -49,7 +52,7 @@ struct AppIconView: View {
             }.onChange(of: currentIndex) { value in
                 if value != AppIconView.getCurrentIndex() {
                     UIApplication.shared.setAlternateIconName(AppIconView.icons[value].code){ error in
-                        print(error?.localizedDescription ?? "Success")
+                        print(error?.localizedDescription ?? "[SETTINGS] Changed app icon successfully")
                     }
                 }
                 

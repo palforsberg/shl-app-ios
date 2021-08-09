@@ -232,6 +232,7 @@ struct Game: Codable, Identifiable, Equatable  {
     let start_date_time: Date
     let game_type: String
     let played: Bool
+    let overtime: Bool
     
     func hasTeam(_ teamCode: String) -> Bool {
         return away_team_code == teamCode || home_team_code == teamCode
@@ -242,7 +243,7 @@ struct Game: Codable, Identifiable, Equatable  {
     }
     
     func homeWon() -> Bool {
-        return home_team_result > away_team_result
+        return played && home_team_result > away_team_result
     }
     
     func didWin(_ teamCode: String) -> Bool {
