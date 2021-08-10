@@ -13,10 +13,13 @@ struct ContentView: View {
     @ObservedObject var teams = TeamsData()
     @ObservedObject var gameData = GamesData(data: [])
     @ObservedObject var standings = StandingsData(data: [])
-    @ObservedObject var season = Season()
+    @ObservedObject var settings = AppDelegate.settings
     
     var provider: DataProvider? = DataProvider()
     
+    @State
+    var userService: UserService?
+
     var body: some View {
         TabView {
             GamesView(provider: provider).tabItem { Label("Home", systemImage: "house") }
@@ -25,12 +28,13 @@ struct ContentView: View {
             provider?.getTeams(completion: { ts in
                 teams.setTeams(teams: ts)
             })
+            userService = UserService(provider: provider, settings: settings, starredTeams: starredTeams)
         })
         .environmentObject(starredTeams)
         .environmentObject(standings)
         .environmentObject(teams)
         .environmentObject(gameData)
-        .environmentObject(season)
+        .environmentObject(settings)
         .background(Color(UIColor.systemGroupedBackground))
         .accentColor(Color(UIColor.systemYellow))
     }
@@ -46,7 +50,7 @@ struct ContentView_Previews: PreviewProvider {
         
         let starredTeams = StarredTeams()
         starredTeams.addTeam(teamCode: "LHF")
-        return ContentView(starredTeams: starredTeams,
+        return ContentView(
                     teams: teams,
                     gameData: GamesData(data: [getLiveGame(), getLiveGame(),
                                                getPlayedGame(), getPlayedGame(),

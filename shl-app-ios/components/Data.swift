@@ -9,10 +9,10 @@ import Foundation
 import SwiftUI
 
 let baseUrl = "http://86.107.103.138/shl-api"
-//let baseUrl = "http://192.168.1.74:8080"
+//let baseUrl = "http://192.168.141.229:8080"
 let gamesUrl = { (season: Int) -> String in return "\(baseUrl)/games/\(season)" }
 let standingsUrl = { (season: Int) -> String in return "\(baseUrl)/standings/\(season)" }
-let teamsUrl = "\(baseUrl)/teams"
+let teamsUrl = "\(baseUrl)/teams?season=2021"
 let userUrl = "\(baseUrl)/user"
 let gameStatsUrl = { (game: Game) -> String in
     return "\(baseUrl)/game/\(game.game_uuid)/\(game.game_id)"
@@ -55,7 +55,7 @@ class DataProvider {
 
     func getGames(season: Int, completion: @escaping ([Game]) -> ()) {
         let url = gamesUrl(season)
-        if season != Season.currentSeason {
+        if season != Settings.currentSeason {
             if let cached = cache.retrieve(key: url, type: [Game].self) {
                 completion(cached)
                 return
@@ -68,7 +68,7 @@ class DataProvider {
 
     func getStandings(season: Int, completion: @escaping ([Standing]) -> ()) {
         let url = standingsUrl(season)
-        if season != Season.currentSeason {
+        if season != Settings.currentSeason {
             if let cached = cache.retrieve(key: url, type: [Standing].self) {
                 completion(cached)
                 return
@@ -82,15 +82,15 @@ class DataProvider {
     }
     
     func getTeams(completion: @escaping ([Team]) -> ()) {
+        if let cached = cache.retrieve(key: teamsUrl, type: [Team].self) {
+            completion(cached)
+            return
+        }
         getData(url: teamsUrl, type: [Team].self, completion: completion)
     }
     
-    func addUser(apnToken: String?, teams: [String]) {
-        guard apnToken != nil && teams.count > 0 else {
-            return
-        }
-        let request = AddUser(apn_token: apnToken!, teams: teams)
-        postData(url: userUrl, data: request, completion: { print("[DATA] POST:ed user") })
+    func addUser(request: AddUser, completion: @escaping () -> ()) {
+        postData(url: userUrl, data: request, completion: completion)
     }
 
     func getData<T : Codable>(url urlString: String, type: T.Type, completion: @escaping (T) -> ()) {
@@ -130,19 +130,25 @@ class DataProvider {
         }.resume()
     }
     
-    func postData<T : Codable>(url: String, data: T, completion: @escaping () -> ()) {
-        guard let url = URL(string: url) else {
+    func postData<T : Codable & Equatable>(url urlString: String, data: T, completion: @escaping () -> ()) {
+        
+        guard isNewRequest(data, key: urlString) else {
+            print("[DATA] Idempotent \(data.self) Request")
+            return
+        }
+        guard let url = URL(string: urlString) else {
             print("[DATA] Your API end point is Invalid")
             return
         }
         print("[DATA] POST \(data) to \(url)")
+        
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.httpBody = try! JSONEncoder().encode(data)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        URLSession.shared.dataTask(with: request) { rspData, response, error in
             guard let response = response as? HTTPURLResponse,
                 error == nil else {
                 print("[DATA] error", error ?? "Unknown error")
@@ -152,8 +158,16 @@ class DataProvider {
                 print("[DATA] statusCode should be 200, but is \(response.statusCode)")
                 return
             }
+            self.cache.store(key: urlString, data: data)
             completion()
         }.resume()
+    }
+    
+    func isNewRequest<T: Codable & Equatable>(_ req: T, key: String) -> Bool {
+        guard let lastRequest = cache.retrieve(key: key, type: T.self) else {
+            return true
+        }
+        return lastRequest != req
     }
 }
 
@@ -364,8 +378,9 @@ struct Period: Codable {
     var awayFOW: Int16
 }
 
-struct AddUser: Codable {
-    var apn_token: String
+struct AddUser: Codable, Equatable {
+    var id: String
+    var apn_token: String?
     var teams: [String]
 }
 

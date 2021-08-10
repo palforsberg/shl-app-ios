@@ -110,13 +110,13 @@ struct PlayedGame: View {
 
 struct GamesView: View {
     @EnvironmentObject var starredTeams: StarredTeams
-    @EnvironmentObject var season: Season
     @EnvironmentObject var gamesData: GamesData
+    @EnvironmentObject var settings: Settings
     
     var provider: DataProvider?
     
     var body: some View {
-        let teamCodes = starredTeams.starredTeams
+        let teamCodes = settings.onlyStarred ? starredTeams.starredTeams : []
         let liveGames = gamesData.getLiveGames(teamCodes: teamCodes)
         let futureGames = gamesData.getFutureGames(teamCodes: teamCodes)
         let playedGames = gamesData.getPlayedGames(teamCodes: teamCodes)
@@ -142,7 +142,7 @@ struct GamesView: View {
                     }
                 }
                 if !playedGames.isEmpty {
-                    Section(header: Text("Played_param \(season.getFormattedPrevSeason())").listHeader()) {
+                    Section(header: Text("Played_param \(settings.getFormattedPrevSeason())").listHeader()) {
                         ForEach(playedGames) { (item) in
                             NavigationLink(destination: GamesStatsView(game: item)) {
                                 PlayedGame(game: item)
@@ -157,8 +157,8 @@ struct GamesView: View {
             .navigationBarItems(trailing: NavigationLink(destination: SettingsView()) {
                 Image(systemName: "gear").frame(width: 44, height: 44, alignment: .trailing)
             })
-        }.onReceive(season.$season, perform: { _ in
-            provider?.getGames(season: season.season) { gd in
+        }.onReceive(settings.$season, perform: { _ in
+            provider?.getGames(season: settings.season) { gd in
                 gamesData.set(data: gd)
             }
         })
@@ -176,8 +176,8 @@ struct GamesView_Previews: PreviewProvider {
         return GamesView(
                   provider: nil)
             .environmentObject(starredTeams)
-            .environmentObject(Season())
             .environmentObject(gamesData)
+            .environmentObject(Settings())
             .environment(\.locale, .init(identifier: "sv"))
     }
 }

@@ -32,4 +32,7 @@
 "App Icon" = "App Icon";
 "Notifications" = "Notifications";
 "Supporter" = "Supporter";
+"Game Filter" = "Game Filter";
+"NOTIF_BODY"="Get nofitications when your favourite teams starts a game or scores.";
+"SUPPORTER_BODY"="Become a supporter and get access to more icons, previous seasons and game fitlers.";
 

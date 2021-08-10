@@ -70,8 +70,9 @@ struct GamesStatsView: View {
     @State var hasFetched = false
 
     @EnvironmentObject var gamesData: GamesData
+    @EnvironmentObject var starredTeams: StarredTeams
     @EnvironmentObject var teamsData: TeamsData
-    @EnvironmentObject var season: Season
+    @EnvironmentObject var settings: Settings
     
     var provider: DataProvider? = DataProvider()
     var game: Game
@@ -92,8 +93,10 @@ struct GamesStatsView: View {
                         Text(teamsData.getName(game.home_team_code))
                             .font(.system(size: 15, design: .rounded))
                             .fontWeight(.medium)
+                            .starred(starredTeams.isStarred(teamCode: game.home_team_code))
                             .scaledToFit()
                             .minimumScaleFactor(0.8)
+                            
                     }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 80).frame(maxWidth: 140)
             
                     HStack(alignment: .center, spacing: 15) {
@@ -107,8 +110,10 @@ struct GamesStatsView: View {
                         Text(teamsData.getName(game.away_team_code))
                             .font(.system(size: 15, design: .rounded))
                             .fontWeight(.medium)
+                            .starred(starredTeams.isStarred(teamCode: game.away_team_code))
                             .scaledToFit()
                             .minimumScaleFactor(0.8)
+
                     }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 80).frame(maxWidth: 140)
                 }.frame(maxWidth: .infinity)
                 Spacer(minLength: 40)
@@ -168,7 +173,7 @@ struct GamesStatsView: View {
                 }
                 Spacer(minLength: 40)
                 if (!previousGames.isEmpty) {
-                    GroupedView(title: "Played_param \(season.getFormattedPrevSeason())") {
+                    GroupedView(title: "Played_param \(settings.getFormattedPrevSeason())") {
                         ForEach(previousGames) { (item) in
                             NavigationLink(destination: GamesStatsView(game: item)) {
                                 PlayedGame(game: item)
@@ -192,7 +197,7 @@ struct GamesStatsView: View {
                 }
                 
                 let allPrevGames = self.gamesData.getGamesBetween(team1: game.home_team_code, team2: game.away_team_code)
-                self.previousGames = Array(allPrevGames.filter({ $0.game_uuid != game.game_uuid }).prefix(5))
+                self.previousGames = allPrevGames.filter({ $0.game_uuid != game.game_uuid })
                 self.prevHomeWins = allPrevGames.filter({ $0.didWin(game.home_team_code) && !$0.overtime }).count
                 self.prevHomeWinsOt = allPrevGames.filter({ $0.didWin(game.home_team_code) && $0.overtime }).count
                 self.prevHomeLoss = allPrevGames.filter({ !$0.didWin(game.home_team_code) && !$0.overtime }).count
@@ -224,7 +229,7 @@ struct GamesStatsView_Previews: PreviewProvider {
                               game: getLiveGame())
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
             .environmentObject(teams)
-            .environmentObject(Season())
+            .environmentObject(Settings())
             .environmentObject(starredTeams)
             .environment(\.locale, .init(identifier: "sv"))
     }
@@ -247,7 +252,7 @@ struct GamesStatsView_Future_Game_Previews: PreviewProvider {
                               game: getFutureGame())
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
             .environmentObject(teams)
-            .environmentObject(Season())
+            .environmentObject(Settings())
             .environment(\.locale, .init(identifier: "sv"))
     }
     
@@ -270,7 +275,7 @@ struct GamesStatsView_Future_No_Prev_Game_Previews: PreviewProvider {
                               game: getFutureGame())
             .environmentObject(GamesData(data: []))
             .environmentObject(teams)
-            .environmentObject(Season())
+            .environmentObject(Settings())
             .environment(\.locale, .init(identifier: "sv"))
     }
     

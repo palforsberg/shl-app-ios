@@ -24,7 +24,7 @@ struct TeamView: View {
     @EnvironmentObject var starredTeams: StarredTeams
     @EnvironmentObject var teams: TeamsData
     @EnvironmentObject var games: GamesData
-    @EnvironmentObject var season: Season
+    @EnvironmentObject var settings: Settings
 
     let teamCode: String
     let standing: Standing
@@ -56,7 +56,7 @@ struct TeamView: View {
                 }
                 Spacer()
                 Group {
-                    GroupedView(title: "Season_param \(season.getFormattedPrevSeason())" ) {
+                    GroupedView(title: "Season_param \(settings.getFormattedPrevSeason())" ) {
                         VStack {
                             StatsRowSingle(left: "Rank", right: "#\(standing.rank)")
                             StatsRowSingle(left: "Points", right: "\(standing.points)")
@@ -95,7 +95,7 @@ struct TeamView: View {
                 }
                 if (!playedGames.isEmpty) {
                     Group {
-                        GroupedView(title: "Played_param \(season.getFormattedPrevSeason())") {
+                        GroupedView(title: "Played_param \(settings.getFormattedPrevSeason())") {
                             ForEach(playedGames) { (item) in
                                 PlayedGame(game: item)
                                 if (item != playedGames.last) {
@@ -140,7 +140,7 @@ struct TeamView_Previews: PreviewProvider {
                 .environmentObject(GamesData(data: [getLiveGame(score1: 13, score2: 2), getLiveGame(score1: 4, score2: 99),
                                                     getPlayedGame(), getPlayedGame(),
                                                     getFutureGame(), getFutureGame()]))
-                .environmentObject(Season())
+                .environmentObject(Settings())
                 .environment(\.locale, .init(identifier: "sv"))
             TeamView(teamCode: "LHF", standing: getStanding("LHF", rank: 1))
                 .environmentObject(teams)
@@ -148,7 +148,7 @@ struct TeamView_Previews: PreviewProvider {
                 .environmentObject(GamesData(data: [getLiveGame(score1: 13, score2: 2), getLiveGame(score1: 4, score2: 99),
                                                     getPlayedGame(), getPlayedGame(),
                                                     getFutureGame(), getFutureGame()]))
-                .environmentObject(Season())
+                .environmentObject(Settings())
                 .environment(\.locale, .init(identifier: "sv"))
         }
     }

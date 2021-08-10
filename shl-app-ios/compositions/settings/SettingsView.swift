@@ -106,7 +106,7 @@ struct SeasonPicker: View {
 
     var body: some View {
         GeneralPicker(onChange: { e in self.currentSeason = e }, values: SeasonPicker.seasons, value: currentSeason, content: {e in
-            Text(Season.getFormatted(season: e))
+            Text(Settings.getFormatted(season: e))
                 .font(.system(size: 16, design: .rounded))
                 .fontWeight(.medium)
                 .padding(.leading, 5)
@@ -114,33 +114,52 @@ struct SeasonPicker: View {
     }
 }
 
-struct FilterPicker: View {
-    var filters = [true, false]
+
+struct StateView<Content: View>: View {
+    @Environment(\.isEnabled) var isEnabled
     
-    @Binding var currentVal: Bool
-    
+    var content: () -> Content
     var body: some View {
-        GeneralPicker(onChange: {e in self.currentVal = e}, values: filters, value: currentVal, content: {e in
-            Text("\(e ? "Only Starred" : "All")")
-                .font(.system(size: 16, design: .rounded))
-                .fontWeight(.medium)
-                .padding(.leading, 5)
-        })
+        content().opacity(isEnabled ? 1.0 : 0.5)
     }
 }
 
 struct SettingsView: View {
-    @EnvironmentObject var season: Season
-    @State var onlyStarred = true
+    @EnvironmentObject var settings: Settings
     
     var body: some View {
         List {
-            Section(header: Text("")) {
-                SeasonPicker(currentSeason: $season.season)
-                AppIconView()
-                Label("Match Filter", systemImage: "loupe").settingsItem().accentColor(Color.purple)
-                Label("Notifications", systemImage: "app.badge").settingsItem().accentColor(Color.blue)
-                Label("Supporter", systemImage: "star").settingsItem().accentColor(Color.orange)
+            Section(header: Text(""), footer: Text("NOTIF_BODY").padding(.leading, 20).padding(.trailing, 20)) {
+                Toggle(isOn: $settings.notificationsEnabled, label: {
+                    Label("Notifications", systemImage: "app.badge").settingsItem().accentColor(Color.blue)
+                }).onChange(of: settings.notificationsEnabled) { enabled in
+                    if enabled {
+                        AppDelegate.registerForPushNotifications()
+                    }
+                }
+            }
+            Section(header: Text(""), footer: Text("SUPPORTER_BODY").padding(.leading, 20).padding(.trailing, 20)) {
+                Toggle(isOn: $settings.supporter, label: {
+                    Label("Supporter", systemImage: "star").settingsItem().accentColor(Color.orange)
+                })
+                Group {
+                    SeasonPicker(currentSeason: $settings.season)
+                    AppIconView()
+                    HStack {
+                        StateView {
+                            Label("Game Filter", systemImage: "loupe").settingsItem()
+                                .accentColor(Color.purple)
+                        }
+                        Spacer()
+                        Picker("", selection: $settings.onlyStarred) {
+                            Text("⭐️").tag(true)
+                            Text("🤷").tag(false)
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .frame(maxWidth: 120)
+                    }
+                }.disabled(!settings.supporter)
+                
             }
         }
         .listStyle(InsetGroupedListStyle())
@@ -151,7 +170,7 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
-            .environmentObject(Season())
+            .environmentObject(Settings())
             .environment(\.locale, .init(identifier: "sv"))
     }
 }

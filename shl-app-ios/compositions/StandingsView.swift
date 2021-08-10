@@ -59,14 +59,14 @@ struct StandingsView: View {
     @EnvironmentObject var standings: StandingsData
     @EnvironmentObject var teams: TeamsData
     @EnvironmentObject var starredTeams: StarredTeams
-    @EnvironmentObject var season: Season
+    @EnvironmentObject var settings: Settings
 
     var provider: DataProvider?
     
     var body: some View {
         NavigationView {
             List {
-                Section(header: StandingsHeader(season: season.getFormatted())) {
+                Section(header: StandingsHeader(season: settings.getFormattedSeason())) {
                     ForEach(standings.get()) { item in
                         NavigationLink(destination: TeamView(teamCode: item.team_code, standing: item)) {
                             HStack() {
@@ -91,8 +91,8 @@ struct StandingsView: View {
             .navigationBarItems(trailing: NavigationLink(destination: SettingsView()) {
                 Image(systemName: "gear").frame(width: 44, height: 44, alignment: .trailing)
             })
-        }.onReceive(season.$season, perform: { _ in
-            provider?.getStandings(season: season.season) { (result) in
+        }.onReceive(settings.$season, perform: { _ in
+            provider?.getStandings(season: settings.season) { (result) in
                 self.standings.set(data: result)
             }
         })
@@ -111,7 +111,7 @@ struct StandingsView_Previews: PreviewProvider {
             .environmentObject(TeamsData())
             .environmentObject(starredTeams)
             .environmentObject(standingsData)
-            .environmentObject(Season())
+            .environmentObject(Settings())
             .environment(\.locale, .init(identifier: "sv"))
     }
 }

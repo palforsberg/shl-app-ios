@@ -32,3 +32,6 @@
 "App Icon" = "App Ikon";
 "Notifications" = "Notifikationer";
 "Supporter" = "Supporter";
+"Game Filter" = "Match Filter";
+"NOTIF_BODY"="Få notifikationer när dina favorit lag börjar spela eller gör mål.";
+"SUPPORTER_BODY"="Bli supporter och få tillgång till olika ikoner, redan spelade säsonger o match filter.";

@@ -9,7 +9,7 @@ import Foundation
 
 
 class StarredTeams: ObservableObject {
-    var starredTeams: [String] {
+    @Published var starredTeams: [String] {
         didSet {
             StarredTeams.storage.setValue(starredTeams, forKey: "starredTeams")
             StarredTeams.storage.synchronize()
@@ -17,14 +17,9 @@ class StarredTeams: ObservableObject {
     }
     
     private static var storage = UserDefaults.standard
-    private var debouncer: Debouncer?
     
     init() {
         self.starredTeams = StarredTeams.readFromDisk()
-        self.debouncer = Debouncer({() in
-            let apnToken = UserDefaults.standard.string(forKey: "apn_token")
-            DataProvider().addUser(apnToken: apnToken, teams: self.starredTeams)
-        }, seconds: 1)
     }
 
     func isStarred(teamCode: String) -> Bool {
@@ -50,7 +45,6 @@ class StarredTeams: ObservableObject {
     
     func didChangeTeams() {
         self.objectWillChange.send()
-        debouncer?.send()
     }
     
     static func readFromDisk() -> [String] {
