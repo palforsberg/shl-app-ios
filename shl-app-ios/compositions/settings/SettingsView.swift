@@ -21,42 +21,37 @@ extension Label {
 }
 struct AppIconView: View {
 
-    static var icons = [Icon(name: "Default", code: nil),
-                        Icon(name: "SHL", code: "shl-icon"),
+    static var icons = [Icon(name: "Puck", code: nil),
+                        Icon(name: "Puck Inverted", code: "puck-icon-inverted"),
                         Icon(name: "Timrå IK", code: "tik-icon"),
                         Icon(name: "Luleå HF", code: "lhf-icon"),
                         Icon(name: "HV71", code: "hv71-icon")]
 
-    @State var currentIndex: Int
-    
-    init() {
-        self.currentIndex = AppIconView.getCurrentIndex()
-    }
+    @State var currentIndex: Int = AppIconView.getCurrentIndex()
     
     var body: some View {
-        Section {
-            Picker(selection: $currentIndex, label: Label("App Icon", systemImage: "app")
-                    .settingsItem()
-                    .accentColor(Color.green)) {
-                ForEach(0..<AppIconView.icons.count) { e in
-                    HStack {
-                        Image(uiImage: UIImage(named: AppIconView.icons[e].code ?? "default")!).resizable()
-                            .frame(width: 30, height: 30, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                            .clipShape(RoundedRectangle(cornerRadius: 5))
-                        Text(AppIconView.icons[e].name)
-                            .font(.system(size: 16, design: .rounded))
-                            .fontWeight(.medium)
-                            .padding(.leading, 5)
-                    }.tag(e)
-                }
-            }.onChange(of: currentIndex) { value in
-                if value != AppIconView.getCurrentIndex() {
-                    UIApplication.shared.setAlternateIconName(AppIconView.icons[value].code){ error in
-                        print(error?.localizedDescription ?? "[SETTINGS] Changed app icon successfully")
-                    }
-                }
-                
+        Picker(selection: $currentIndex, label: Label("App Icon", systemImage: "app")
+                .settingsItem()
+                .accentColor(Color.green)) {
+            ForEach(0..<AppIconView.icons.count) { e in
+                HStack {
+                    Image(uiImage: UIImage(named: AppIconView.icons[e].code ?? "puck-icon") ?? UIImage())
+                        .resizable()
+                        .frame(width: 30, height: 30, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        .clipShape(RoundedRectangle(cornerRadius: 5))
+                    Text(AppIconView.icons[e].name)
+                        .font(.system(size: 16, design: .rounded))
+                        .fontWeight(.medium)
+                        .padding(.leading, 5)
+                }.tag(e)
             }
+        }.onChange(of: currentIndex) { value in
+            if value != AppIconView.getCurrentIndex() {
+                UIApplication.shared.setAlternateIconName(AppIconView.icons[value].code){ error in
+                    print(error?.localizedDescription ?? "[SETTINGS] Changed app icon successfully")
+                }
+            }
+            
         }
     }
     
@@ -82,18 +77,16 @@ struct GeneralPicker<T: Equatable, Content: View>: View {
     }
 
     var body: some View {
-        Section {
-            Picker(selection: $currentIndex, label: Label("Season", systemImage: "calendar")
-                    .settingsItem()
-                    .accentColor(Color.red)) {
-                ForEach(0..<self.values.count) { e in
-                    HStack {
-                        content(self.values[e])
-                    }.tag(e)
-                }
-            }.onChange(of: currentIndex) { value in
-                onChange(self.values[currentIndex])
+        Picker(selection: $currentIndex, label: Label("Season", systemImage: "calendar")
+                .settingsItem()
+                .accentColor(Color.red)) {
+            ForEach(0..<self.values.count) { e in
+                HStack {
+                    content(self.values[e])
+                }.tag(e)
             }
+        }.onChange(of: currentIndex) { value in
+            onChange(self.values[currentIndex])
         }
     }
 }

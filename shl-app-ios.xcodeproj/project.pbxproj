@@ -7,25 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2339F65F26B58D31006DE5F0 /* default@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F65C26B58D31006DE5F0 /* default@3x.png */; };
-		2339F66026B58D31006DE5F0 /* default@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F65D26B58D31006DE5F0 /* default@1x.png */; };
-		2339F66126B58D31006DE5F0 /* default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F65E26B58D31006DE5F0 /* default@2x.png */; };
 		2339F66B26B6862A006DE5F0 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F66A26B6862A006DE5F0 /* TimerView.swift */; };
 		2339F66E26B857E7006DE5F0 /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F66D26B857E7006DE5F0 /* Debouncer.swift */; };
-		2339F6A326BFB5A4006DE5F0 /* hv71-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F69726BFB5A4006DE5F0 /* hv71-icon@3x.png */; };
-		2339F6A426BFB5A4006DE5F0 /* shl-icon@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F69826BFB5A4006DE5F0 /* shl-icon@1x.png */; };
-		2339F6A526BFB5A4006DE5F0 /* tik-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F69926BFB5A4006DE5F0 /* tik-icon@2x.png */; };
-		2339F6A626BFB5A4006DE5F0 /* lhf-icon@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F69A26BFB5A4006DE5F0 /* lhf-icon@1x.png */; };
-		2339F6A726BFB5A4006DE5F0 /* lhf-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F69B26BFB5A4006DE5F0 /* lhf-icon@2x.png */; };
-		2339F6A826BFB5A4006DE5F0 /* lhf-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F69C26BFB5A4006DE5F0 /* lhf-icon@3x.png */; };
-		2339F6A926BFB5A4006DE5F0 /* shl-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F69D26BFB5A4006DE5F0 /* shl-icon@2x.png */; };
-		2339F6AA26BFB5A4006DE5F0 /* tik-icon@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F69E26BFB5A4006DE5F0 /* tik-icon@1x.png */; };
-		2339F6AB26BFB5A4006DE5F0 /* hv71-icon@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F69F26BFB5A4006DE5F0 /* hv71-icon@1x.png */; };
-		2339F6AC26BFB5A4006DE5F0 /* shl-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F6A026BFB5A4006DE5F0 /* shl-icon@3x.png */; };
-		2339F6AD26BFB5A4006DE5F0 /* tik-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F6A126BFB5A4006DE5F0 /* tik-icon@3x.png */; };
-		2339F6AE26BFB5A4006DE5F0 /* hv71-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F6A226BFB5A4006DE5F0 /* hv71-icon@2x.png */; };
 		2339F6B226C0FB2B006DE5F0 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F6B126C0FB2B006DE5F0 /* Settings.swift */; };
 		2339F6B426C15075006DE5F0 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F6B326C15075006DE5F0 /* UserService.swift */; };
+		2339F6B626C25CDE006DE5F0 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2339F6B526C25CDE006DE5F0 /* Launch Screen.storyboard */; };
+		2339F74626C55F10006DE5F0 /* hv71-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F73726C55F10006DE5F0 /* hv71-icon@3x.png */; };
+		2339F74826C55F10006DE5F0 /* hv71-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F73926C55F10006DE5F0 /* hv71-icon@2x.png */; };
+		2339F74926C55F10006DE5F0 /* tik-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F73A26C55F10006DE5F0 /* tik-icon@2x.png */; };
+		2339F74A26C55F10006DE5F0 /* lhf-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F73B26C55F10006DE5F0 /* lhf-icon@2x.png */; };
+		2339F74F26C55F10006DE5F0 /* lhf-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F74026C55F10006DE5F0 /* lhf-icon@3x.png */; };
+		2339F75426C55F10006DE5F0 /* tik-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F74526C55F10006DE5F0 /* tik-icon@3x.png */; };
+		2339F75726C55FDF006DE5F0 /* puck-icon-inverted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F75526C55FDF006DE5F0 /* puck-icon-inverted@2x.png */; };
+		2339F75826C55FDF006DE5F0 /* puck-icon-inverted@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F75626C55FDF006DE5F0 /* puck-icon-inverted@3x.png */; };
+		2339F75B26C55FFA006DE5F0 /* puck-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F75926C55FFA006DE5F0 /* puck-icon@3x.png */; };
+		2339F75C26C55FFA006DE5F0 /* puck-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F75A26C55FFA006DE5F0 /* puck-icon@2x.png */; };
 		23537ED026B1D30200C9B6ED /* GamesStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ECF26B1D30200C9B6ED /* GamesStatsView.swift */; };
 		23537ED226B3FE6D00C9B6ED /* Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ED126B3FE6D00C9B6ED /* Preview.swift */; };
 		23537ED426B454B800C9B6ED /* Texts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ED326B454B800C9B6ED /* Texts.swift */; };
@@ -78,26 +74,22 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		2339F65C26B58D31006DE5F0 /* default@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "default@3x.png"; sourceTree = "<group>"; };
-		2339F65D26B58D31006DE5F0 /* default@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "default@1x.png"; sourceTree = "<group>"; };
-		2339F65E26B58D31006DE5F0 /* default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "default@2x.png"; sourceTree = "<group>"; };
 		2339F66A26B6862A006DE5F0 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
 		2339F66C26B844E6006DE5F0 /* shl-app-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "shl-app-ios.entitlements"; sourceTree = "<group>"; };
 		2339F66D26B857E7006DE5F0 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
-		2339F69726BFB5A4006DE5F0 /* hv71-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hv71-icon@3x.png"; sourceTree = "<group>"; };
-		2339F69826BFB5A4006DE5F0 /* shl-icon@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shl-icon@1x.png"; sourceTree = "<group>"; };
-		2339F69926BFB5A4006DE5F0 /* tik-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tik-icon@2x.png"; sourceTree = "<group>"; };
-		2339F69A26BFB5A4006DE5F0 /* lhf-icon@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lhf-icon@1x.png"; sourceTree = "<group>"; };
-		2339F69B26BFB5A4006DE5F0 /* lhf-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lhf-icon@2x.png"; sourceTree = "<group>"; };
-		2339F69C26BFB5A4006DE5F0 /* lhf-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lhf-icon@3x.png"; sourceTree = "<group>"; };
-		2339F69D26BFB5A4006DE5F0 /* shl-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shl-icon@2x.png"; sourceTree = "<group>"; };
-		2339F69E26BFB5A4006DE5F0 /* tik-icon@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tik-icon@1x.png"; sourceTree = "<group>"; };
-		2339F69F26BFB5A4006DE5F0 /* hv71-icon@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hv71-icon@1x.png"; sourceTree = "<group>"; };
-		2339F6A026BFB5A4006DE5F0 /* shl-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "shl-icon@3x.png"; sourceTree = "<group>"; };
-		2339F6A126BFB5A4006DE5F0 /* tik-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tik-icon@3x.png"; sourceTree = "<group>"; };
-		2339F6A226BFB5A4006DE5F0 /* hv71-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hv71-icon@2x.png"; sourceTree = "<group>"; };
 		2339F6B126C0FB2B006DE5F0 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		2339F6B326C15075006DE5F0 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
+		2339F6B526C25CDE006DE5F0 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		2339F73726C55F10006DE5F0 /* hv71-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hv71-icon@3x.png"; sourceTree = "<group>"; };
+		2339F73926C55F10006DE5F0 /* hv71-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hv71-icon@2x.png"; sourceTree = "<group>"; };
+		2339F73A26C55F10006DE5F0 /* tik-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tik-icon@2x.png"; sourceTree = "<group>"; };
+		2339F73B26C55F10006DE5F0 /* lhf-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lhf-icon@2x.png"; sourceTree = "<group>"; };
+		2339F74026C55F10006DE5F0 /* lhf-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lhf-icon@3x.png"; sourceTree = "<group>"; };
+		2339F74526C55F10006DE5F0 /* tik-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tik-icon@3x.png"; sourceTree = "<group>"; };
+		2339F75526C55FDF006DE5F0 /* puck-icon-inverted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "puck-icon-inverted@2x.png"; sourceTree = "<group>"; };
+		2339F75626C55FDF006DE5F0 /* puck-icon-inverted@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "puck-icon-inverted@3x.png"; sourceTree = "<group>"; };
+		2339F75926C55FFA006DE5F0 /* puck-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "puck-icon@3x.png"; sourceTree = "<group>"; };
+		2339F75A26C55FFA006DE5F0 /* puck-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "puck-icon@2x.png"; sourceTree = "<group>"; };
 		23537ECF26B1D30200C9B6ED /* GamesStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesStatsView.swift; sourceTree = "<group>"; };
 		23537ED126B3FE6D00C9B6ED /* Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preview.swift; sourceTree = "<group>"; };
 		23537ED326B454B800C9B6ED /* Texts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Texts.swift; sourceTree = "<group>"; };
@@ -156,21 +148,16 @@
 		23537ED726B57F5D00C9B6ED /* Icons */ = {
 			isa = PBXGroup;
 			children = (
-				2339F69F26BFB5A4006DE5F0 /* hv71-icon@1x.png */,
-				2339F6A226BFB5A4006DE5F0 /* hv71-icon@2x.png */,
-				2339F69726BFB5A4006DE5F0 /* hv71-icon@3x.png */,
-				2339F69A26BFB5A4006DE5F0 /* lhf-icon@1x.png */,
-				2339F69B26BFB5A4006DE5F0 /* lhf-icon@2x.png */,
-				2339F69C26BFB5A4006DE5F0 /* lhf-icon@3x.png */,
-				2339F69826BFB5A4006DE5F0 /* shl-icon@1x.png */,
-				2339F69D26BFB5A4006DE5F0 /* shl-icon@2x.png */,
-				2339F6A026BFB5A4006DE5F0 /* shl-icon@3x.png */,
-				2339F69E26BFB5A4006DE5F0 /* tik-icon@1x.png */,
-				2339F69926BFB5A4006DE5F0 /* tik-icon@2x.png */,
-				2339F6A126BFB5A4006DE5F0 /* tik-icon@3x.png */,
-				2339F65D26B58D31006DE5F0 /* default@1x.png */,
-				2339F65E26B58D31006DE5F0 /* default@2x.png */,
-				2339F65C26B58D31006DE5F0 /* default@3x.png */,
+				2339F73926C55F10006DE5F0 /* hv71-icon@2x.png */,
+				2339F73726C55F10006DE5F0 /* hv71-icon@3x.png */,
+				2339F73B26C55F10006DE5F0 /* lhf-icon@2x.png */,
+				2339F74026C55F10006DE5F0 /* lhf-icon@3x.png */,
+				2339F75A26C55FFA006DE5F0 /* puck-icon@2x.png */,
+				2339F75926C55FFA006DE5F0 /* puck-icon@3x.png */,
+				2339F75526C55FDF006DE5F0 /* puck-icon-inverted@2x.png */,
+				2339F75626C55FDF006DE5F0 /* puck-icon-inverted@3x.png */,
+				2339F73A26C55F10006DE5F0 /* tik-icon@2x.png */,
+				2339F74526C55F10006DE5F0 /* tik-icon@3x.png */,
 			);
 			path = Icons;
 			sourceTree = "<group>";
@@ -256,6 +243,7 @@
 				D1AFC2A325B07E8100490FCE /* TeamView.swift */,
 				23537ECF26B1D30200C9B6ED /* GamesStatsView.swift */,
 				23537ED126B3FE6D00C9B6ED /* Preview.swift */,
+				2339F6B526C25CDE006DE5F0 /* Launch Screen.storyboard */,
 			);
 			path = compositions;
 			sourceTree = "<group>";
@@ -391,24 +379,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2339F6A426BFB5A4006DE5F0 /* shl-icon@1x.png in Resources */,
-				2339F65F26B58D31006DE5F0 /* default@3x.png in Resources */,
-				2339F66126B58D31006DE5F0 /* default@2x.png in Resources */,
-				2339F6AB26BFB5A4006DE5F0 /* hv71-icon@1x.png in Resources */,
-				2339F6A626BFB5A4006DE5F0 /* lhf-icon@1x.png in Resources */,
 				D1AFF87025A84FCD00E50ADE /* Preview Assets.xcassets in Resources */,
-				2339F6AA26BFB5A4006DE5F0 /* tik-icon@1x.png in Resources */,
-				2339F6A826BFB5A4006DE5F0 /* lhf-icon@3x.png in Resources */,
-				2339F6A926BFB5A4006DE5F0 /* shl-icon@2x.png in Resources */,
-				2339F6AE26BFB5A4006DE5F0 /* hv71-icon@2x.png in Resources */,
-				2339F6A726BFB5A4006DE5F0 /* lhf-icon@2x.png in Resources */,
-				2339F6AC26BFB5A4006DE5F0 /* shl-icon@3x.png in Resources */,
-				2339F6A526BFB5A4006DE5F0 /* tik-icon@2x.png in Resources */,
+				2339F75826C55FDF006DE5F0 /* puck-icon-inverted@3x.png in Resources */,
+				2339F75C26C55FFA006DE5F0 /* puck-icon@2x.png in Resources */,
+				2339F74826C55F10006DE5F0 /* hv71-icon@2x.png in Resources */,
+				2339F74A26C55F10006DE5F0 /* lhf-icon@2x.png in Resources */,
+				2339F74926C55F10006DE5F0 /* tik-icon@2x.png in Resources */,
+				2339F6B626C25CDE006DE5F0 /* Launch Screen.storyboard in Resources */,
+				2339F75726C55FDF006DE5F0 /* puck-icon-inverted@2x.png in Resources */,
 				D1AFF8C525A88CF700E50ADE /* Localizable.strings in Resources */,
+				2339F74F26C55F10006DE5F0 /* lhf-icon@3x.png in Resources */,
+				2339F74626C55F10006DE5F0 /* hv71-icon@3x.png in Resources */,
 				D1AFF86D25A84FCD00E50ADE /* Assets.xcassets in Resources */,
-				2339F66026B58D31006DE5F0 /* default@1x.png in Resources */,
-				2339F6AD26BFB5A4006DE5F0 /* tik-icon@3x.png in Resources */,
-				2339F6A326BFB5A4006DE5F0 /* hv71-icon@3x.png in Resources */,
+				2339F75B26C55FFA006DE5F0 /* puck-icon@3x.png in Resources */,
+				2339F75426C55F10006DE5F0 /* tik-icon@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -624,6 +608,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "shl-app-ios/shl-app-ios.entitlements";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"shl-app-ios/Preview Content\"";
 				DEVELOPMENT_TEAM = 3LK2DRBJ29;
 				ENABLE_PREVIEWS = YES;
@@ -633,6 +618,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -648,6 +634,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "shl-app-ios/shl-app-ios.entitlements";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"shl-app-ios/Preview Content\"";
 				DEVELOPMENT_TEAM = 3LK2DRBJ29;
 				ENABLE_PREVIEWS = YES;
@@ -657,6 +644,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

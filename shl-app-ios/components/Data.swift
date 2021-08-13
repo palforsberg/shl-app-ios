@@ -8,11 +8,11 @@
 import Foundation
 import SwiftUI
 
-let baseUrl = "http://86.107.103.138/shl-api"
+let baseUrl = "https://palsserver.com/shl-api"
 //let baseUrl = "http://192.168.141.229:8080"
 let gamesUrl = { (season: Int) -> String in return "\(baseUrl)/games/\(season)" }
 let standingsUrl = { (season: Int) -> String in return "\(baseUrl)/standings/\(season)" }
-let teamsUrl = "\(baseUrl)/teams?season=2021"
+let teamsUrl = "\(baseUrl)/teams?season=\(Settings.currentSeason)"
 let userUrl = "\(baseUrl)/user"
 let gameStatsUrl = { (game: Game) -> String in
     return "\(baseUrl)/game/\(game.game_uuid)/\(game.game_id)"
@@ -133,7 +133,7 @@ class DataProvider {
     func postData<T : Codable & Equatable>(url urlString: String, data: T, completion: @escaping () -> ()) {
         
         guard isNewRequest(data, key: urlString) else {
-            print("[DATA] Idempotent \(data.self) Request")
+            print("[DATA] Idempotent \(type(of: data)) Request")
             return
         }
         guard let url = URL(string: urlString) else {

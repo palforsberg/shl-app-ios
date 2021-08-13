@@ -5,13 +5,49 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Puck-o</string>
+	<string>Puck O</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIcons</key>
 	<dict>
 		<key>CFBundleAlternateIcons</key>
 		<dict>
+			<key>hv71-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>hv71-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>lhf-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>lhf-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>puck-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>puck-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>puck-icon-inverted</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>puck-icon-inverted</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
 			<key>tik-icon</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -21,33 +57,6 @@
 				<key>UIPrerenderedIcon</key>
 				<false/>
 			</dict>
-            <key>shl-icon</key>
-            <dict>
-                <key>CFBundleIconFiles</key>
-                <array>
-                    <string>shl-icon</string>
-                </array>
-                <key>UIPrerenderedIcon</key>
-                <false/>
-            </dict>
-            <key>lhf-icon</key>
-            <dict>
-                <key>CFBundleIconFiles</key>
-                <array>
-                    <string>lhf-icon</string>
-                </array>
-                <key>UIPrerenderedIcon</key>
-                <false/>
-            </dict>
-            <key>hv71-icon</key>
-            <dict>
-                <key>CFBundleIconFiles</key>
-                <array>
-                    <string>hv71-icon</string>
-                </array>
-                <key>UIPrerenderedIcon</key>
-                <false/>
-            </dict>
 		</dict>
 		<key>CFBundlePrimaryIcon</key>
 		<dict>
@@ -68,9 +77,9 @@
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -87,6 +96,8 @@
 	<true/>
 	<key>UILaunchScreen</key>
 	<dict/>
+	<key>UILaunchStoryboardName</key>
+	<string>Launch Screen</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
