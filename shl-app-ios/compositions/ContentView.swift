@@ -9,6 +9,8 @@ import SwiftUI
 
 struct ContentView: View {
     
+    @Environment(\.colorScheme) var colorScheme
+    
     @ObservedObject var starredTeams = StarredTeams()
     @ObservedObject var teams = TeamsData()
     @ObservedObject var gameData = GamesData(data: [])
@@ -36,7 +38,9 @@ struct ContentView: View {
         .environmentObject(gameData)
         .environmentObject(settings)
         .background(Color(UIColor.systemGroupedBackground))
-        .accentColor(Color(UIColor.systemYellow))
+        .accentColor(colorScheme == .light
+                        ? Color.init(.displayP3, white: 0.1, opacity: 1)
+                        : Color.init(.displayP3, white: 0.9, opacity: 1))
     }
 }
 
@@ -58,5 +62,6 @@ struct ContentView_Previews: PreviewProvider {
                     standings: StandingsData(data: [getStanding("LHF", rank: 1), getStanding("TIK", rank: 2)]),
                     provider: nil)
             .environment(\.locale, .init(identifier: "sv"))
+            .environment(\.colorScheme, .light)
     }
 }
