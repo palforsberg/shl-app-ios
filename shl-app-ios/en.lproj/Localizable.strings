@@ -33,6 +33,17 @@
 "Notifications" = "Notifications";
 "Supporter" = "Supporter";
 "Game Filter" = "Game Filter";
+"All" = "All";
 "NOTIF_BODY"="Get nofitications when your favourite teams starts a game or scores.";
 "SUPPORTER_BODY"="Become a supporter and get access to more icons, previous seasons and game fitlers.";
 
+// Supporter View
+"App Icons" = "App icons";
+"More Seasons" = "More seasons";
+"Not Available" = "Not Available";
+"Restore Purchase" = "Restore purchase";
+"Purchase Restored" = "Purchase restored";
+"Support" = "Support";
+"Unlocked Premium" = "You have unlocked premium features for the season 2021/2022, thanks for your support!";
+"Unlock Premium %@" = "Unlock premium features for the season 2021/2022 for %@";
+"Thanks" = "Thanks!";

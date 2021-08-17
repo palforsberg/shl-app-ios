@@ -33,5 +33,16 @@
 "Notifications" = "Notifikationer";
 "Supporter" = "Supporter";
 "Game Filter" = "Match Filter";
+"All" = "Alla";
 "NOTIF_BODY"="Få notifikationer när dina favorit lag börjar spela eller gör mål.";
 "SUPPORTER_BODY"="Bli supporter och få tillgång till olika ikoner, redan spelade säsonger o match filter.";
+
+// Supporter
+"App Icons" = "App ikoner";
+"More Seasons" = "Fler säsonger";
+"Restore Purchase" = "Återställ köp";
+"Purchase Restored" = "Köpet har blivit återställt";
+"Support" = "Supporta";
+"Unlocked Premium" = "Du har låst upp premium features för säsongen 2021/2022, tack för ditt stöd!";
+"Unlock Premium %@" = "Lås upp premium features för säsongen 2021/2022 för %@";
+"Thanks" = "Tack ❤️🏒";

@@ -31,6 +31,7 @@ struct ContentView: View {
                 teams.setTeams(teams: ts)
             })
             userService = UserService(provider: provider, settings: settings, starredTeams: starredTeams)
+            Purchases.shared = Purchases(settings: settings)
         })
         .environmentObject(starredTeams)
         .environmentObject(standings)
