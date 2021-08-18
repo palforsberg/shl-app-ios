@@ -8,8 +8,11 @@
 import Foundation
 import SwiftUI
 
+#if DEBUG
+let baseUrl = "http://192.168.1.76:8080"
+#else
 let baseUrl = "https://palsserver.com/shl-api"
-//let baseUrl = "http://192.168.141.229:8080"
+#endif
 let gamesUrl = { (season: Int) -> String in return "\(baseUrl)/games/\(season)" }
 let standingsUrl = { (season: Int) -> String in return "\(baseUrl)/standings/\(season)" }
 let teamsUrl = "\(baseUrl)/teams?season=\(Settings.currentSeason)"

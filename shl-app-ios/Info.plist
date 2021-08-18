@@ -5,18 +5,72 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Puck O</string>
+	<string>Pucken</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIcons</key>
 	<dict>
 		<key>CFBundleAlternateIcons</key>
 		<dict>
+			<key>bif-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>bif-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>dif-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>dif-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>fbk-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>fbk-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>fhc-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>fhc-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
 			<key>hv71-icon</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
 					<string>hv71-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>iko-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>iko-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>lhc-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>lhc-icon</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<false/>
@@ -30,11 +84,47 @@
 				<key>UIPrerenderedIcon</key>
 				<false/>
 			</dict>
+			<key>lif-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>lif-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>mif-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>mif-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>ohk-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>ohk-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
 			<key>puck-icon</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
 					<string>puck-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>puck-icon-ice</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>puck-icon-ice</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<false/>
@@ -48,11 +138,56 @@
 				<key>UIPrerenderedIcon</key>
 				<false/>
 			</dict>
+			<key>puck-icon-night</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>puck-icon-night</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>puck-line</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>puck-line</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>rbk-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>rbk-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>saik-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>saik-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
 			<key>tik-icon</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
 					<string>tik-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>vlh-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>vlh-icon</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<false/>

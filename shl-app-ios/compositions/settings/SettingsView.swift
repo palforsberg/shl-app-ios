@@ -23,10 +23,26 @@ extension Label {
 struct AppIconView: View {
 
     static var icons = [Icon(name: "Puck", code: nil),
-                        Icon(name: "Puck Inverted", code: "puck-icon-inverted"),
-                        Icon(name: "Timrå IK", code: "tik-icon"),
+                        Icon(name: "Puck Is", code: "puck-icon-ice"),
+                        Icon(name: "Puck Inverterad", code: "puck-icon-inverted"),
+                        Icon(name: "Puck Natt", code: "puck-icon-night"),
+                        Icon(name: "Puck Sträckad", code: "puck-line"),
+                        Icon(name: "Brynäs IF", code: "bif-icon"),
+                        Icon(name: "Djurgården IF", code: "dif-icon"),
+                        Icon(name: "Färjestad BK", code: "fbk-icon"),
+                        Icon(name: "Frölunda HC", code: "fhc-icon"),
+                        Icon(name: "HV71", code: "hv71-icon"),
+                        Icon(name: "IK Oskarshamn", code: "iko-icon"),
+                        Icon(name: "Lindköpings HC", code: "lhc-icon"),
                         Icon(name: "Luleå HF", code: "lhf-icon"),
-                        Icon(name: "HV71", code: "hv71-icon")]
+                        Icon(name: "Leksands IF", code: "lif-icon"),
+                        Icon(name: "IF Malmö Redhawks", code: "mif-icon"),
+                        Icon(name: "Örebro Hockey", code: "ohk-icon"),
+                        Icon(name: "Rögle BK", code: "rbk-icon"),
+                        Icon(name: "Skellefteå AIK", code: "saik-icon"),
+                        Icon(name: "Timrå IK", code: "tik-icon"),
+                        Icon(name: "Växjö Lakers", code: "vlh-icon"),
+    ]
 
     @State var currentIndex: Int = AppIconView.getCurrentIndex()
     
@@ -149,7 +165,7 @@ struct Puck: View {
         self.geo = geo
     }
     var body: some View {
-        Image(colorScheme == .light ? "launch-puck" : "launch-puck-light")
+        Image(uiImage: UIImage(named: colorScheme == .light ? "launch-puck-2" : "launch-puck-light-2") ?? UIImage())
             .resizable()
             .scaleEffect(0.1)
             .scaledToFit()
@@ -190,7 +206,6 @@ struct SupporterView: View {
                     Puck(geo).pos(0.25, 0.11).animation(.easeOut(duration: 0.2))
                     Puck(geo).pos(0.65, 0.08).animation(.easeOut(duration: 0.3))
                     Puck(geo).pos(0.2, 0.64).animation(.easeOut(duration: 0.4))
-                    Puck(geo).pos(0.4, 0.55).animation(.easeOut(duration: 0.5))
                     Puck(geo).pos(0.7, 0.6).animation(.easeOut(duration: 0.5))
                     Puck(geo).pos(0.75, 0.85).animation(.easeOut(duration: 0.6))
                 }

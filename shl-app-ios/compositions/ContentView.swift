@@ -55,14 +55,16 @@ struct ContentView_Previews: PreviewProvider {
         
         let starredTeams = StarredTeams()
         starredTeams.addTeam(teamCode: "LHF")
+        starredTeams.addTeam(teamCode: "TIK")
+        starredTeams.addTeam(teamCode: "TIK")
         return ContentView(
-                    teams: teams,
-                    gameData: GamesData(data: [getLiveGame(), getLiveGame(),
-                                               getPlayedGame(), getPlayedGame(),
-                                               getFutureGame(), getFutureGame()]),
+            teams: teams,
+            gameData: GamesData(data: [getLiveGame(t1: "LHF", score1: 4, t2: "FHC", score2: 2),
+                                       getLiveGame(t1: "MIF", score1: 1, t2: "TIK", score2: 3),
+                                       getPlayedGame(), getPlayedGame(),
+                                       getFutureGame(), getFutureGame()]),
                     standings: StandingsData(data: [getStanding("LHF", rank: 1), getStanding("TIK", rank: 2)]),
                     provider: nil)
             .environment(\.locale, .init(identifier: "sv"))
-            .environment(\.colorScheme, .light)
     }
 }

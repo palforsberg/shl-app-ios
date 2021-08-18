@@ -137,7 +137,8 @@ struct TeamView_Previews: PreviewProvider {
             TeamView(teamCode: "LHF", standing: getStanding("LHF", rank: 1))
                 .environmentObject(teams)
                 .environmentObject(StarredTeams())
-                .environmentObject(GamesData(data: [getLiveGame(score1: 13, score2: 2), getLiveGame(score1: 4, score2: 99),
+                .environmentObject(GamesData(data: [getLiveGame(t1: "LHF", score1: 13, t2: "FHC", score2: 2),
+                                                    getLiveGame(t1: "LHF", score1: 13, t2: "FHC", score2: 2),
                                                     getPlayedGame(), getPlayedGame(),
                                                     getFutureGame(), getFutureGame()]))
                 .environmentObject(Settings())
@@ -145,7 +146,8 @@ struct TeamView_Previews: PreviewProvider {
             TeamView(teamCode: "LHF", standing: getStanding("LHF", rank: 1))
                 .environmentObject(teams)
                 .environmentObject(StarredTeams())
-                .environmentObject(GamesData(data: [getLiveGame(score1: 13, score2: 2), getLiveGame(score1: 4, score2: 99),
+                .environmentObject(GamesData(data: [getLiveGame(t1: "LHF", score1: 13, t2: "FHC", score2: 2),
+                                                    getLiveGame(t1: "LHF", score1: 13, t2: "FHC", score2: 2),
                                                     getPlayedGame(), getPlayedGame(),
                                                     getFutureGame(), getFutureGame()]))
                 .environmentObject(Settings())

@@ -16,11 +16,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch-puck" translatesAutoresizingMaskIntoConstraints="NO" id="te8-pE-nhf">
-                                <rect key="frame" x="95" y="247.66666666666663" width="200" height="180"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch-puck-light-2.png" translatesAutoresizingMaskIntoConstraints="NO" id="te8-pE-nhf">
+                                <rect key="frame" x="122.66666666666669" y="270" width="145" height="135"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="180" id="Loc-L6-a7f"/>
-                                    <constraint firstAttribute="width" constant="200" id="uiY-yk-MDg"/>
+                                    <constraint firstAttribute="height" constant="135" id="GuI-P1-Ijq"/>
+                                    <constraint firstAttribute="width" constant="145" id="OBM-Ru-ltu"/>
                                 </constraints>
                             </imageView>
                         </subviews>
@@ -34,11 +34,11 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="52.173913043478265" y="375"/>
+            <point key="canvasLocation" x="50.769230769230766" y="374.64454976303318"/>
         </scene>
     </scenes>
     <resources>
-        <image name="launch-puck" width="278" height="261.66665649414062"/>
+        <image name="launch-puck-light-2.png" width="230" height="213.66667175292969"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

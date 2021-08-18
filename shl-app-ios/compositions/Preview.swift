@@ -13,12 +13,11 @@ func getPlayedGame() -> Game {
 }
 
 func getLiveGame() -> Game {
-    return getLiveGame(score1: 2, score2: 0 )
+    return getLiveGame(t1: "LHF", score1: 2, t2: "FHC", score2: 0 )
 }
 
-
-func getLiveGame(score1: Int, score2: Int) -> Game {
-    return Game(game_id: 1, game_uuid: "123", away_team_code: "FHC", away_team_result: score2, home_team_code: "LHF", home_team_result: score1, start_date_time: Date().addingTimeInterval(TimeInterval(-2_000)), game_type: GameType.season.rawValue, played: false, overtime: false)
+func getLiveGame(t1: String, score1: Int, t2: String, score2: Int) -> Game {
+    return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: score2, home_team_code: t1, home_team_result: score1, start_date_time: Date().addingTimeInterval(TimeInterval(-2_000)), game_type: GameType.season.rawValue, played: false, overtime: false)
 }
 
 func getFutureGame() -> Game {
