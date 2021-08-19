@@ -60,6 +60,7 @@
 		2339F81226CD2538006DE5F0 /* launch-puck-light-2@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F80F26CD2538006DE5F0 /* launch-puck-light-2@1x.png */; };
 		2339F81326CD2538006DE5F0 /* launch-puck-light-2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F81026CD2538006DE5F0 /* launch-puck-light-2@2x.png */; };
 		2339F81426CD2538006DE5F0 /* launch-puck-light-2@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F81126CD2538006DE5F0 /* launch-puck-light-2@3x.png */; };
+		2339F81A26CE67B7006DE5F0 /* RotateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F81926CE67B7006DE5F0 /* RotateButton.swift */; };
 		23537ED026B1D30200C9B6ED /* GamesStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ECF26B1D30200C9B6ED /* GamesStatsView.swift */; };
 		23537ED226B3FE6D00C9B6ED /* Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ED126B3FE6D00C9B6ED /* Preview.swift */; };
 		23537ED426B454B800C9B6ED /* Texts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ED326B454B800C9B6ED /* Texts.swift */; };
@@ -166,6 +167,7 @@
 		2339F80F26CD2538006DE5F0 /* launch-puck-light-2@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "launch-puck-light-2@1x.png"; sourceTree = "<group>"; };
 		2339F81026CD2538006DE5F0 /* launch-puck-light-2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "launch-puck-light-2@2x.png"; sourceTree = "<group>"; };
 		2339F81126CD2538006DE5F0 /* launch-puck-light-2@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "launch-puck-light-2@3x.png"; sourceTree = "<group>"; };
+		2339F81926CE67B7006DE5F0 /* RotateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotateButton.swift; sourceTree = "<group>"; };
 		23537ECF26B1D30200C9B6ED /* GamesStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesStatsView.swift; sourceTree = "<group>"; };
 		23537ED126B3FE6D00C9B6ED /* Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preview.swift; sourceTree = "<group>"; };
 		23537ED326B454B800C9B6ED /* Texts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Texts.swift; sourceTree = "<group>"; };
@@ -375,6 +377,7 @@
 				2339F6B126C0FB2B006DE5F0 /* Settings.swift */,
 				2339F6B326C15075006DE5F0 /* UserService.swift */,
 				2339F75F26CA3B10006DE5F0 /* Purchases.swift */,
+				2339F81926CE67B7006DE5F0 /* RotateButton.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -572,6 +575,7 @@
 				D1AFF8B425A8831100E50ADE /* Data.swift in Sources */,
 				2339F6B426C15075006DE5F0 /* UserService.swift in Sources */,
 				D1AAF85525AB0851008D3D62 /* ImageLoader.swift in Sources */,
+				2339F81A26CE67B7006DE5F0 /* RotateButton.swift in Sources */,
 				23537ED226B3FE6D00C9B6ED /* Preview.swift in Sources */,
 				D1AFF86B25A84FCB00E50ADE /* ContentView.swift in Sources */,
 				D1AFF89725A8537B00E50ADE /* GamesView.swift in Sources */,
@@ -760,7 +764,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "shl-app-ios/shl-app-ios.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"shl-app-ios/Preview Content\"";
 				DEVELOPMENT_TEAM = 3LK2DRBJ29;
 				ENABLE_PREVIEWS = YES;
@@ -786,7 +790,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "shl-app-ios/shl-app-ios.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"shl-app-ios/Preview Content\"";
 				DEVELOPMENT_TEAM = 3LK2DRBJ29;
 				ENABLE_PREVIEWS = YES;

@@ -113,6 +113,8 @@ struct GamesView: View {
     @EnvironmentObject var gamesData: GamesData
     @EnvironmentObject var settings: Settings
     
+    @State var reloading = false
+    
     var provider: DataProvider?
     
     var body: some View {
@@ -154,22 +156,41 @@ struct GamesView: View {
             .id(UUID()) // makes sure list is recreated when rerendered. To take care of reuse cell issues
             .listStyle(InsetGroupedListStyle())
             .navigationBarTitle(Text("Matches"))
-            .navigationBarItems(trailing: NavigationLink(destination: SettingsView()) {
-                Image(systemName: "gear").frame(width: 44, height: 44, alignment: .trailing)
+            .navigationBarItems(trailing: HStack {
+                StateView {
+                    RotateButton(action: self.reloadData, label: Image(systemName: "arrow.clockwise.circle"))
+                }.disabled(self.reloading)
+                
+                NavigationLink(destination: SettingsView()) {
+                    Image(systemName: "gear").frame(width: 44, height: 44, alignment: .trailing)
+                    
+                }
             })
-        }.onReceive(settings.$season, perform: { _ in
-            provider?.getGames(season: settings.season) { gd in
-                gamesData.set(data: gd)
-            }
-        })
+        }.onReceive(settings.$season, perform: { _ in self.reloadData() } )
+    }
+    
+    func reloadData() {
+        self.reloading = true
+        provider?.getGames(season: settings.season) { gd in
+            gamesData.set(data: gd)
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+            self.reloading = false
+        }
     }
 }
 
 struct GamesView_Previews: PreviewProvider {
     static var previews: some View {
-        let gamesData = GamesData(data: [getLiveGame(), getLiveGame(),
-                                         getPlayedGame(), getPlayedGame(),
-                                         getFutureGame(), getFutureGame()])
+        let gamesData = GamesData(data: [
+                                    getLiveGame(t1: "MIF", score1: 1, t2: "TIK", score2: 3),
+                                    getLiveGame(t1: "LHF", score1: 4, t2: "FHC", score2: 2),
+                                                       
+                                    getPlayedGame(t1: "LHF", s1: 4, t2: "FBK", s2: 1),
+                                    getPlayedGame(t1: "LIF", s1: 3, t2: "TIK", s2: 1),
+                
+                                    getFutureGame(t1: "LHF", t2: "TIK"),
+                                    getFutureGame()])
         let starredTeams = StarredTeams()
         starredTeams.addTeam(teamCode: "LHF")
         

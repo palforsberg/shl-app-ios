@@ -28,14 +28,14 @@ class Cache {
     
     func store<T : Codable>(key: String, data: T) {
         if let json = try? encoder.encode(data) {
-            storage.set(json, forKey: key)
+            storage.set(json, forKey: getKey(key))
             storage.synchronize()
         }
     }
     
     func retrieve<T: Codable>(key: String, type: T.Type) -> T? {
-        if let archived = storage.object(forKey: key) as? Data {
-            print("[CACHE] GET cached \(type) from \(key)")
+        if let archived = storage.object(forKey: getKey(key)) as? Data {
+            print("[CACHE] GET cached \(type) from \(getKey(key))")
             do {
                 return try decoder.decode(type.self, from: archived)
             } catch {
@@ -44,6 +44,11 @@ class Cache {
             }
         }
         return nil
+    }
+    
+    func getKey(_ key: String) -> String {
+        // to make it possible to change the datamodel between versions
+        return "\(key)_v0.1.1"
     }
 }
 
@@ -237,8 +242,8 @@ enum GameType: String, Codable {
     case kvalmatch = "Kvalmatch nedflyttning"
 }
 struct Game: Codable, Identifiable, Equatable  {
-    var id: Int {
-        return game_id
+    var id: String {
+        return game_uuid
     }
     let game_id: Int
     let game_uuid: String
@@ -409,7 +414,7 @@ extension Date {
     func getFormattedDate() -> String {
          let dateformat = DateFormatter()
          
-         dateformat.locale = Locale.current
+        dateformat.locale = Locale.current
          let dateDelta = Date.daysBetween(from: Date(), to: self)
      
          if (dateDelta < 1) {

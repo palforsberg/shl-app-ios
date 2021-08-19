@@ -9,7 +9,11 @@ import Foundation
 
 
 func getPlayedGame() -> Game {
-    return Game(game_id: 1, game_uuid: "123", away_team_code: "FHC", away_team_result: 0, home_team_code: "LHF", home_team_result: 2, start_date_time: Date().addingTimeInterval(TimeInterval(-2_000)), game_type: GameType.season.rawValue, played: true, overtime: false)
+    return getPlayedGame(t1: "LHF", s1: 2, t2: "FHC", s2: 0)
+}
+
+func getPlayedGame(t1: String, s1: Int, t2: String, s2: Int) -> Game {
+    return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: s2, home_team_code: t1, home_team_result: s1, start_date_time: Date().addingTimeInterval(TimeInterval(-2_000)), game_type: GameType.season.rawValue, played: true, overtime: false)
 }
 
 func getLiveGame() -> Game {
@@ -21,8 +25,12 @@ func getLiveGame(t1: String, score1: Int, t2: String, score2: Int) -> Game {
 }
 
 func getFutureGame() -> Game {
-    let futDate = Calendar.current.date(byAdding: DateComponents(day:5), to: Date())
-    return Game(game_id: 1, game_uuid: "123", away_team_code: "FHC", away_team_result: 0, home_team_code: "LHF", home_team_result: 2, start_date_time: futDate!,
+    return getFutureGame(t1: "LHF", t2: "FBK")
+}
+
+func getFutureGame(t1: String, t2: String) -> Game {
+    let futDate = Calendar.current.date(byAdding: DateComponents(day:5), to: Date()) ?? Date()
+    return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: 0, home_team_code: t1, home_team_result: 0, start_date_time: futDate,
                 game_type: GameType.season.rawValue, played: false, overtime: false)
 }
 

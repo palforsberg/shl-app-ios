@@ -63,6 +63,8 @@ struct StandingsView: View {
 
     var provider: DataProvider?
     
+    @State var reloading = false
+    
     var body: some View {
         NavigationView {
             List {
@@ -88,14 +90,25 @@ struct StandingsView: View {
             .id(UUID()) // makes sure list is recreated when rerendered. To take care of reuse cell issues
             .listStyle(InsetGroupedListStyle())
             .navigationBarTitle(Text("SHL"))
-            .navigationBarItems(trailing: NavigationLink(destination: SettingsView()) {
-                Image(systemName: "gear").frame(width: 44, height: 44, alignment: .trailing)
+            .navigationBarItems(trailing: HStack {
+                StateView {
+                    RotateButton(action: self.reloadData, label: Image(systemName: "arrow.clockwise.circle"))
+                }.disabled(self.reloading)
+                NavigationLink(destination: SettingsView()) {
+                    Image(systemName: "gear").frame(width: 44, height: 44, alignment: .trailing)
+                }
             })
-        }.onReceive(settings.$season, perform: { _ in
-            provider?.getStandings(season: settings.season) { (result) in
-                self.standings.set(data: result)
-            }
-        })
+        }.onReceive(settings.$season, perform: { _ in self.reloadData() })
+    }
+    
+    func reloadData() {
+        self.reloading = true
+        provider?.getStandings(season: settings.season) { (result) in
+            self.standings.set(data: result)
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+            self.reloading = false
+        }
     }
 }
 

@@ -253,6 +253,7 @@ struct GamesStatsView_Future_Game_Previews: PreviewProvider {
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
             .environmentObject(teams)
             .environmentObject(Settings())
+            .environmentObject(StarredTeams())
             .environment(\.locale, .init(identifier: "sv"))
     }
     
@@ -276,6 +277,7 @@ struct GamesStatsView_Future_No_Prev_Game_Previews: PreviewProvider {
             .environmentObject(GamesData(data: []))
             .environmentObject(teams)
             .environmentObject(Settings())
+            .environmentObject(StarredTeams())
             .environment(\.locale, .init(identifier: "sv"))
     }
     
