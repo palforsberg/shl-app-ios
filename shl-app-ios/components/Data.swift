@@ -8,11 +8,11 @@
 import Foundation
 import SwiftUI
 
-#if DEBUG
-let baseUrl = "http://192.168.1.76:8080"
-#else
+//#if DEBUG
+//let baseUrl = "http://192.168.141.229:8080"
+//#else
 let baseUrl = "https://palsserver.com/shl-api"
-#endif
+//#endif
 let gamesUrl = { (season: Int) -> String in return "\(baseUrl)/games/\(season)" }
 let standingsUrl = { (season: Int) -> String in return "\(baseUrl)/standings/\(season)" }
 let teamsUrl = "\(baseUrl)/teams?season=\(Settings.currentSeason)"
@@ -120,7 +120,7 @@ class DataProvider {
                         completion(response)
                     }
                 } catch let error {
-                    print("[DATA] Failed to decode JSON \(error.localizedDescription)")
+                    print("[DATA] Failed to decode JSON \(error)")
                     DispatchQueue.main.async {
                         if let cached = self.cache.retrieve(key: urlString, type: type) {
                             completion(cached)
@@ -255,6 +255,7 @@ struct Game: Codable, Identifiable, Equatable  {
     let game_type: String
     let played: Bool
     let overtime: Bool
+    let penalty_shots: Bool
     
     func hasTeam(_ teamCode: String) -> Bool {
         return away_team_code == teamCode || home_team_code == teamCode
@@ -273,6 +274,10 @@ struct Game: Codable, Identifiable, Equatable  {
             return homeWon()
         }
         return !homeWon()
+    }
+    
+    func didFinishedInOt() -> Bool {
+        return self.overtime || self.penalty_shots
     }
     
     func isPlayed() -> Bool {
@@ -357,6 +362,39 @@ struct GameStatsData: Codable {
 struct GameStats: Codable {
     var recaps: AllPeriods
     var gameState: String
+    var playersByTeam: [String: TeamPlayers]?
+    
+    func getPeriodNr() -> String? {
+        if gameState == "GameEnded" {
+            return "Game ended"
+        }
+        if recaps.period4 != nil {
+            return "Overtime"
+        } else if recaps.period3 != nil {
+            return "Period 3"
+        } else if recaps.period2 != nil {
+            return "Period 2"
+        } else if recaps.period1 != nil {
+            return "Period 1"
+        }
+        return nil
+    }
+    
+    func getTopPlayers() -> [Player] {
+        var allPlayers = [Player]()
+        playersByTeam?.forEach({ (key: String, value: TeamPlayers) in
+            allPlayers.append(contentsOf: value.players ?? [])
+        })
+        
+        return Array(allPlayers
+                        .filter({ p in p.getScore() > 0 })
+                        .sorted(by: { p1, p2 in p1.getScore() >= p2.getScore() })
+                        .prefix(5))
+    }
+}
+
+struct TeamPlayers: Codable {
+    var players: [Player]?
 }
 
 struct AllPeriods: Codable {
@@ -374,16 +412,35 @@ struct AllPeriods: Codable {
 
 struct Period: Codable {
     var periodNumber: Int8
-    var homeG: Int16
-    var awayG: Int16
-    var homeHits: Int16
-    var homeSOG: Int16
-    var homePIM: Int16
-    var homeFOW: Int16
-    var awayHits: Int16
-    var awaySOG: Int16
-    var awayPIM: Int16
-    var awayFOW: Int16
+    var homeG: Int
+    var awayG: Int
+    var homeHits: Int
+    var homeSOG: Int
+    var homePIM: Int
+    var homeFOW: Int
+    var awayHits: Int
+    var awaySOG: Int
+    var awayPIM: Int
+    var awayFOW: Int
+}
+
+struct Player: Codable, Identifiable {
+    var id: String {
+        return "\(player)\(firstName)\(familyName)"
+    }
+    var player: Int
+    var team: String
+    var firstName: String
+    var familyName: String
+    var toi: String
+    var jersey: Int
+    var g: Int
+    var a: Int
+    var pim: Int
+    
+    func getScore() -> Int {
+        return (g * 6) + (a * 3) + (pim * 1)
+    }
 }
 
 struct AddUser: Codable, Equatable {

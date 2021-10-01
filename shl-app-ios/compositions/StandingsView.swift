@@ -27,7 +27,7 @@ struct StandingsHeader: View {
                 .frame(width: 34, alignment: .center)
             Text("P").points()
                 .frame(width: 34, alignment: .center)
-            Spacer(minLength: 34)
+            Spacer(minLength: 17)
         }
     }
 }
@@ -87,16 +87,17 @@ struct StandingsView: View {
                     }
                 }
             }
-            .id(UUID()) // makes sure list is recreated when rerendered. To take care of reuse cell issues
+            .refreshable {
+                guard !self.reloading else {
+                    return
+                }
+                self.reloadData()
+            }
+            .id(settings.season) // makes sure list is recreated when rerendered. To take care of reuse cell issues
             .listStyle(InsetGroupedListStyle())
             .navigationBarTitle(Text("SHL"))
-            .navigationBarItems(trailing: HStack {
-                StateView {
-                    RotateButton(action: self.reloadData, label: Image(systemName: "arrow.clockwise.circle"))
-                }.disabled(self.reloading)
-                NavigationLink(destination: SettingsView()) {
-                    Image(systemName: "gear").frame(width: 44, height: 44, alignment: .trailing)
-                }
+            .navigationBarItems(trailing: NavigationLink(destination: SettingsView()) {
+                Image(systemName: "gearshape.circle").frame(width: 44, height: 44, alignment: .trailing)
             })
         }.onReceive(settings.$season, perform: { _ in self.reloadData() })
     }

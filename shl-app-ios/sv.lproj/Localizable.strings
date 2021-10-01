@@ -13,18 +13,21 @@
 "Games Played" = "Antal Matcher";
 "Points/Game" = "Poäng/Match";
 "Starts In" = "Börjar om";
+
+// Game stats
 "Regular season game" = "Säsongsspel";
 "Playoff game" = "Slutspel";
 "Kvalmatch nedflyttning" = "Kvalspel";
-
 "Shots" = "Skott";
 "Penalty Minutes" = "Straff-minuter";
 "Face Offs Won" = "Tekningar Vunna";
 "Hits" = "Tacklingar";
 "Wins" = "Vinster";
 "Wins OT" = "Vinster ÖT";
-"Match History" = "Tidigare Matcher";
+"Match History" = "Alla Matcher";
 "Goal Diff" = "Mål Diff";
+"Overtime" = "Övertid";
+"Game ended" = "Slut";
 
 // Settings
 "Season" = "Säsong";

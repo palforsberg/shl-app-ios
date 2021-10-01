@@ -8,6 +8,7 @@
 import SwiftUI
 
 enum LogoSize {
+    case mini
     case small
     case medium
     case big
@@ -23,6 +24,7 @@ struct TeamLogo: View {
     
     func getSize() -> CGFloat {
         switch size {
+            case .mini: return 19
             case .small: return 30
             case .medium: return 25
             case .big: return 50

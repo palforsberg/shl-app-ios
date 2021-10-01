@@ -13,10 +13,11 @@
 "Games Played" = "Games Played";
 "Points/Game" = "Points/Game";
 "Starts In" = "Starts In";
+
+// Game Stats
 "Regular season game" = "Season game";
 "Playoff game" = "Playoff game";
 "Kvalmatch nedflyttning" = "Relegation game";
-
 "Shots" = "Shots";
 "Penalty Minutes" = "Penalty Minutes";
 "Face Offs Won" = "Face Offs Won";
@@ -25,6 +26,8 @@
 "Wins OT" = "Wins OT";
 "Match History" = "Match History";
 "Goal Diff" = "Goal Diff";
+"Overtime" = "Overtime";
+"Game ended" = "Game ended";
 
 // Settings
 "Season" = "Season";

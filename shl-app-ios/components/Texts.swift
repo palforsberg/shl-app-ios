@@ -39,6 +39,6 @@ extension Text {
             RoundedRectangle(cornerRadius: 2)
                 .frame(height: 3).frame(maxWidth: starred ? .infinity : 0).offset(y: 1)
                 .foregroundColor(Color(UIColor.systemYellow).opacity(starred ? 1 : 0)), alignment: .bottom)
-            .animation(.easeInOut(duration: 0.2))
+            .animation(.easeInOut(duration: 0.2), value: starred)
     }
 }

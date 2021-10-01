@@ -24,8 +24,8 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            GamesView(provider: provider).tabItem { Label("Home", systemImage: "house") }
-            StandingsView(provider: provider).tabItem { Label("Standings", systemImage: "list.bullet") }
+            GamesView(provider: provider).tabItem { Label("Home", systemImage: "house.circle") }
+            StandingsView(provider: provider).tabItem { Label("Standings", systemImage: "list.bullet.circle") }
         }.onAppear(perform: {
             provider?.getTeams(completion: { ts in
                 teams.setTeams(teams: ts)
