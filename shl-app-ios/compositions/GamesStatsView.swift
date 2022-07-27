@@ -142,6 +142,9 @@ struct GamesStatsView: View {
     
     var body: some View {
             ScrollView {
+                PullToRefresh(coordinateSpaceName: "game_stats_scrollview") {
+                    self.reloadData()
+                }
                 Spacer(minLength: 10)
                 Text("Swedish Hockey League").fontWeight(.semibold).font(.system(size: 15, design: .rounded))
                     .foregroundColor(Color(UIColor.secondaryLabel))
@@ -229,6 +232,7 @@ struct GamesStatsView: View {
             })
             .navigationBarTitle("", displayMode: .inline)
             .background(Color(UIColor.systemGroupedBackground))
+            .coordinateSpace(name: "game_stats_scrollview")
     }
     
     func reloadData() {

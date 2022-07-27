@@ -50,18 +50,18 @@ struct AppIconView: View {
         Picker(selection: $currentIndex, label: Label("App Icon", systemImage: "app")
                 .settingsItem()
                 .accentColor(Color.green)) {
-            ForEach(0..<AppIconView.icons.count) { e in
-                HStack {
-                    Image(uiImage: UIImage(named: AppIconView.icons[e].code ?? "puck-icon") ?? UIImage())
-                        .resizable()
-                        .frame(width: 30, height: 30, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                        .clipShape(RoundedRectangle(cornerRadius: 5))
-                    Text(AppIconView.icons[e].name)
-                        .font(.system(size: 16, design: .rounded))
-                        .fontWeight(.medium)
-                        .padding(.leading, 5)
-                }.tag(e)
-            }
+                    ForEach(0..<AppIconView.icons.count, id: \.self) { e in
+                        HStack {
+                            Image(uiImage: UIImage(named: AppIconView.icons[e].code ?? "puck-icon") ?? UIImage())
+                                .resizable()
+                                .frame(width: 30, height: 30, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                                .clipShape(RoundedRectangle(cornerRadius: 5))
+                            Text(AppIconView.icons[e].name)
+                                .font(.system(size: 16, design: .rounded))
+                                .fontWeight(.medium)
+                                .padding(.leading, 5)
+                        }.tag(e)
+                    }
         }.onChange(of: currentIndex) { value in
             if value != AppIconView.getCurrentIndex() {
                 UIApplication.shared.setAlternateIconName(AppIconView.icons[value].code){ error in
@@ -97,11 +97,11 @@ struct GeneralPicker<T: Equatable, Content: View>: View {
         Picker(selection: $currentIndex, label: Label("Season", systemImage: "calendar")
                 .settingsItem()
                 .accentColor(Color.red)) {
-            ForEach(0..<self.values.count) { e in
-                HStack {
-                    content(self.values[e])
-                }.tag(e)
-            }
+                    ForEach(0..<self.values.count, id: \.self) { e in
+                        HStack {
+                            content(self.values[e])
+                        }.tag(e)
+                    }
         }.onChange(of: currentIndex) { value in
             onChange(self.values[currentIndex])
         }
@@ -110,7 +110,7 @@ struct GeneralPicker<T: Equatable, Content: View>: View {
 
 struct SeasonPicker: View {
 
-    static var seasons = [2021, 2020, 2019, 2018, 2017]
+    static var seasons = [2022, 2021, 2020, 2019, 2018]
     
     @Binding var currentSeason: Int
 
