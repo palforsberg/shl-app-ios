@@ -45,7 +45,8 @@ struct TeamView: View {
                 }
                 TeamLogo(code: teamCode, size: .big)
                 Text(_team?.name ?? teamCode)
-                    .font(.largeTitle).fontWeight(.medium)
+                    .font(.system(size: 32, design: .rounded))
+                    .fontWeight(.semibold)
                     .starred(starred)
                 StarButton(starred: starred) {
                     if (starred) {
@@ -117,7 +118,7 @@ struct StarButton: View {
     var action: () -> Void
     var body: some View {
         Button(action: action, label: {
-            Image(systemName: starred ? "star.circle.fill" : "star.circle")
+            Image(systemName: starred ? "star.fill" : "star")
                 .foregroundColor(Color(UIColor.systemYellow))
             Text("Favourite")
         })

@@ -8,11 +8,11 @@
 import Foundation
 import SwiftUI
 
-//#if DEBUG
-//let baseUrl = "http://192.168.141.229:8080"
-//#else
+#if DEBUG
+let baseUrl = "http://192.168.141.229:8080"
+#else
 let baseUrl = "https://palsserver.com/shl-api"
-//#endif
+#endif
 let gamesUrl = { (season: Int) -> String in return "\(baseUrl)/games/\(season)" }
 let standingsUrl = { (season: Int) -> String in return "\(baseUrl)/standings/\(season)" }
 let teamsUrl = "\(baseUrl)/teams?season=\(Settings.currentSeason)"
@@ -21,10 +21,12 @@ let gameStatsUrl = { (game: Game) -> String in
     return "\(baseUrl)/game/\(game.game_uuid)/\(game.game_id)"
 }
 
+
+let jsonDecoder = getJsonDecoder()
+
 class Cache {
     var storage = UserDefaults.standard
     var encoder = JSONEncoder()
-    var decoder = JSONDecoder()
     
     func store<T : Codable>(key: String, data: T) {
         if let json = try? encoder.encode(data) {
@@ -37,7 +39,7 @@ class Cache {
         if let archived = storage.object(forKey: getKey(key)) as? Data {
             print("[CACHE] GET cached \(type) from \(getKey(key))")
             do {
-                return try decoder.decode(type.self, from: archived)
+                return try jsonDecoder.decode(type.self, from: archived)
             } catch {
                 print("[DATA] failed to decode cache \(error.localizedDescription)")
                 return nil
@@ -48,97 +50,72 @@ class Cache {
     
     func getKey(_ key: String) -> String {
         // to make it possible to change the datamodel between versions
-        return "\(key)_v0.1.1"
+        return "\(key)_v0.1.3"
     }
 }
 
 class DataProvider {
     
     private let cache = Cache()
-    let decoder = JSONDecoder()
 
     init() {
-        decoder.dateDecodingStrategy = JSONDecoder.DateDecodingStrategy.iso8601
     }
 
-    func getGames(season: Int, completion: @escaping ([Game]) -> ()) {
+    func getGames(season: Int) async -> [Game]? {
         let url = gamesUrl(season)
         if season != Settings.currentSeason {
             if let cached = cache.retrieve(key: url, type: [Game].self) {
-                completion(cached)
-                return
+                return cached
             }
         }
-        getData(url: url, type: [Game].self, completion: { (e: [Game]) -> () in
-            completion(e)
-        })
+        return await getData(url: url, type: [Game].self)
     }
 
-    func getStandings(season: Int, completion: @escaping ([Standing]) -> ()) {
+    func getStandings(season: Int) async -> [Standing]? {
         let url = standingsUrl(season)
         if season != Settings.currentSeason {
             if let cached = cache.retrieve(key: url, type: [Standing].self) {
-                completion(cached)
-                return
+                return cached
             }
         }
-        getData(url: standingsUrl(season), type: [Standing].self, completion: completion)
+        return await getData(url: standingsUrl(season), type: [Standing].self)
     }
     
-    func getGameStats(game: Game, completion: @escaping (GameStats) -> ()) {
-        getData(url: gameStatsUrl(game), type: GameStats.self, completion: completion)
+    func getGameStats(game: Game) async -> GameStats? {
+        return await getData(url: gameStatsUrl(game), type: GameStats.self)
     }
     
-    func getTeams(completion: @escaping ([Team]) -> ()) {
+    func getTeams() async -> [Team]? {
         if let cached = cache.retrieve(key: teamsUrl, type: [Team].self) {
-            completion(cached)
-            return
+            return cached
         }
-        getData(url: teamsUrl, type: [Team].self, completion: completion)
+        return await getData(url: teamsUrl, type: [Team].self)
     }
     
-    func addUser(request: AddUser, completion: @escaping () -> ()) {
-        postData(url: userUrl, data: request, completion: completion)
+    func addUser(request: AddUser, completion: @escaping () -> ()) async {
+        await postData(url: userUrl, data: request)
     }
 
-    func getData<T : Codable>(url urlString: String, type: T.Type, completion: @escaping (T) -> ()) {
+    func getData<T : Codable>(url urlString: String, type: T.Type) async -> T? {
         guard let url = URL(string: urlString) else {
             print("[DATA] Your API end point is Invalid")
-            return
+            return nil
         }
         let request = URLRequest(url: url)
         print("[DATA] GET \(type) from \(url)")
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let data = data {
-                do {
-                    let decoder = JSONDecoder()
-                    decoder.dateDecodingStrategy = JSONDecoder.DateDecodingStrategy.iso8601
-                    let response = try decoder.decode(type, from: data)
-                    self.cache.store(key: urlString, data: response)
-                    DispatchQueue.main.async {
-                        completion(response)
-                    }
-                } catch let error {
-                    print("[DATA] Failed to decode JSON \(error)")
-                    DispatchQueue.main.async {
-                        if let cached = self.cache.retrieve(key: urlString, type: type) {
-                            completion(cached)
-                        }
-                    }
-                }
-            } else if let error = error {
-                print("[DATA] Failed to retrieve data \(error.localizedDescription)")
-                DispatchQueue.main.async {
-                    if let cached = self.cache.retrieve(key: urlString, type: type) {
-                        completion(cached)
-                    }
-                }
-            }
-        }.resume()
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
+            let parsed = try jsonDecoder.decode(type, from: data)
+            self.cache.store(key: urlString, data: parsed)
+            return parsed
+        } catch let error {
+            print("[DATA] Failed to retrieve data \(error.localizedDescription)")
+            return self.cache.retrieve(key: urlString, type: type)
+        }
     }
     
-    func postData<T : Codable & Equatable>(url urlString: String, data: T, completion: @escaping () -> ()) {
+    func postData<T : Codable & Equatable>(url urlString: String, data: T) async {
         
         guard isNewRequest(data, key: urlString) else {
             print("[DATA] Idempotent \(type(of: data)) Request")
@@ -156,10 +133,10 @@ class DataProvider {
         request.httpBody = try! JSONEncoder().encode(data)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        URLSession.shared.dataTask(with: request) { rspData, response, error in
-            guard let response = response as? HTTPURLResponse,
-                error == nil else {
-                print("[DATA] error", error ?? "Unknown error")
+        do {
+            let (_, response) = try await URLSession.shared.data(for: request)
+            guard let response = response as? HTTPURLResponse else {
+                print("[DATA] error", response)
                 return
             }
             guard response.statusCode == 200 else {
@@ -167,8 +144,9 @@ class DataProvider {
                 return
             }
             self.cache.store(key: urlString, data: data)
-            completion()
-        }.resume()
+        } catch {
+            print("[DATA] error", error)
+        }
     }
     
     func isNewRequest<T: Codable & Equatable>(_ req: T, key: String) -> Bool {
@@ -245,7 +223,7 @@ struct Game: Codable, Identifiable, Equatable  {
     var id: String {
         return game_uuid
     }
-    let game_id: Int
+    let game_id: String
     let game_uuid: String
     let away_team_code: String
     let away_team_result: Int
@@ -437,6 +415,7 @@ struct Player: Codable, Identifiable {
     var g: Int
     var a: Int
     var pim: Int
+    var position: String
     
     func getScore() -> Int {
         return (g * 6) + (a * 3) + (pim * 1)
@@ -495,5 +474,32 @@ extension Date {
     
     static func daysBetween(from: Date, to: Date) -> Int {
         return Calendar.current.dateComponents([.day], from: from, to: to).day!
+    }
+}
+
+
+func getJsonDecoder() -> JSONDecoder {
+    let jsonDecoder = JSONDecoder()
+    let isoDateFormatter = ISO8601DateFormatter()
+    jsonDecoder.dateDecodingStrategy = JSONDecoder.DateDecodingStrategy.custom({ (decoder) -> Date in
+        let container = try decoder.singleValueContainer()
+        var dateStr = try container.decode(String.self)
+        if dateStr.contains(".") {
+            dateStr = dateStr.replacingOccurrences(of: "\\.\\d+", with: "", options: .regularExpression)
+        }
+        return isoDateFormatter.date(from: dateStr)!
+    })
+    return jsonDecoder
+}
+
+struct RuntimeError: Error {
+    let message: String
+
+    init(_ message: String) {
+        self.message = message
+    }
+
+    public var localizedDescription: String {
+        return message
     }
 }

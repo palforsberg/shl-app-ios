@@ -26,13 +26,13 @@ struct ContentView: View {
         TabView {
             GamesView(provider: provider).tabItem { Label("Home", systemImage: "house.circle") }
             StandingsView(provider: provider).tabItem { Label("Standings", systemImage: "list.bullet.circle") }
-        }.onAppear(perform: {
-            provider?.getTeams(completion: { ts in
+        }.task {
+            if let ts = await provider?.getTeams() {
                 teams.setTeams(teams: ts)
-            })
+            }
             userService = UserService(provider: provider, settings: settings, starredTeams: starredTeams)
             Purchases.shared = Purchases(settings: settings)
-        })
+        }
         .environmentObject(starredTeams)
         .environmentObject(standings)
         .environmentObject(teams)

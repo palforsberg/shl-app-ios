@@ -21,11 +21,13 @@ class UserService {
         self.debouncer = Debouncer({
             let apnToken = settings.notificationsEnabled ? settings.apnToken : nil
             let request = AddUser(id: settings.uuid, apn_token: apnToken, teams: starredTeams.starredTeams)
-            #if !DEBUG
-            provider?.addUser(request: request, completion: {})
-            #else
-            print("[USER] Stop adding user in debug mode")
-            #endif
+//            #if !DEBUG
+            Task {
+                await provider?.addUser(request: request, completion: {})
+            }
+//            #else
+//            print("[USER] Stop adding user in debug mode")
+//            #endif
         }, seconds: 2)
         
         // when any of the parameters change, send to debouncer which updates the server

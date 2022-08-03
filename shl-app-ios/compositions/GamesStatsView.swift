@@ -55,7 +55,7 @@ struct PeriodStatsView: View {
                 StatsRow(left: "\(stats?.homePIM ?? 0)", center: "Penalty Minutes", right: "\(stats?.awayPIM ?? 0)")
                 StatsRow(left: "\(stats?.homeFOW ?? 0)", center: "Face Offs Won", right: "\(stats?.awayFOW ?? 0)")
                 StatsRow(left: "\(stats?.homeHits ?? 0)", center: "Hits", right: "\(stats?.awayHits ?? 0)")
-            }.padding(EdgeInsets(top: 15, leading: 30, bottom: 15, trailing: 30))
+            }.padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
         }
     }
 }
@@ -112,6 +112,7 @@ struct TopPlayerView: View {
             HStack {
                 TeamLogo(code: player.team, size: .mini)
                 Text("\(player.firstName) \(player.familyName)").fontWeight(.semibold).font(.system(size: 16, design: .rounded))
+                Text("\(player.position)").fontWeight(.regular).font(.system(size: 16, design: .rounded))
                 Spacer()
                 Text("#\(player.jersey)").fontWeight(.semibold).font(.system(size: 15, design: .rounded))
             }.padding(.bottom, -4)
@@ -119,9 +120,9 @@ struct TopPlayerView: View {
                 Text("G \(player.g)").fontWeight(.semibold).font(.system(size: 14, design: .rounded)).opacity(player.g == 0 ? 0.4 : 1)
                 Text("A \(player.a)").fontWeight(.semibold).font(.system(size: 14, design: .rounded)).opacity(player.a == 0 ? 0.4 : 1)
                 Text("PIM \(player.pim)").fontWeight(.semibold).font(.system(size: 14, design: .rounded)).opacity(player.pim == 0 ? 0.4 : 1)
+                Text("TOI \(player.toi)").fontWeight(.semibold).font(.system(size: 14, design: .rounded)).opacity(0.4)
                 Spacer()
-                Text(player.toi).fontWeight(.semibold).font(.system(size: 14, design: .rounded))
-            }.padding(.leading, 28)
+            }.padding(.leading, 27)
         }
     }
 }
@@ -143,7 +144,9 @@ struct GamesStatsView: View {
     var body: some View {
             ScrollView {
                 PullToRefresh(coordinateSpaceName: "game_stats_scrollview") {
-                    self.reloadData()
+                    Task {
+                        await self.reloadData()
+                    }
                 }
                 Spacer(minLength: 10)
                 Text("Swedish Hockey League").fontWeight(.semibold).font(.system(size: 15, design: .rounded))
@@ -204,7 +207,7 @@ struct GamesStatsView: View {
                             ForEach(topPlayers) { p in
                                 TopPlayerView(player: p)
                             }
-                        }.padding(EdgeInsets(top: 7, leading: 40, bottom: 8, trailing: 45))
+                        }.padding(EdgeInsets(top: 7, leading: 30, bottom: 8, trailing: 35))
                         Spacer(minLength: 30)
                     }
                     MatchHistoryView(homeTeam: game.home_team_code, awayTeam: game.away_team_code)
@@ -224,19 +227,23 @@ struct GamesStatsView: View {
                     }
                 }
             }
-            .onAppear(perform: {
-                self.reloadData()
+            .task {
+                await self.reloadData()
                 let allPrevGames = self.gamesData.getGamesBetween(team1: game.home_team_code, team2: game.away_team_code)
                 self.previousGames = allPrevGames.filter({ $0.game_uuid != game.game_uuid })
-                    
-            })
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .onGameNotification)) { data in
+                Task {
+                    await self.reloadData()
+                }
+            }
             .navigationBarTitle("", displayMode: .inline)
             .background(Color(UIColor.systemGroupedBackground))
             .coordinateSpace(name: "game_stats_scrollview")
     }
     
-    func reloadData() {
-        provider?.getGameStats(game: game) { stats in
+    func reloadData() async {
+        if let stats = await provider?.getGameStats(game: game) {
             self.gameStats = stats
             self.topPlayers = stats.getTopPlayers()
             self.hasFetched = true

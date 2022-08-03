@@ -38,6 +38,46 @@ struct TeamAvatar: View {
     }
 }
 
+struct LiveGame2: View {
+    var game: Game
+    var body: some View {
+        HStack {
+            VStack {
+                TeamLogo(code: game.home_team_code, size: .small)
+                Text("Luleå")
+                    .font(.system(size: 14, design: .rounded))
+                    .fontWeight(.medium)
+                    .starred(false)
+                    .scaledToFit()
+                    .padding(EdgeInsets(top: -2, leading: 0, bottom: 0, trailing: 0    ))
+                    .minimumScaleFactor(0.8)
+                    
+            }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 50)
+            Spacer()
+            Text("\(game.home_team_result)")
+                .font(.system(size: 30))
+                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+            Text("-")
+            Text("\(game.away_team_result)")
+                .font(.system(size: 30))
+                .fontWeight(.bold)
+            Spacer()
+            VStack {
+                TeamLogo(code: game.away_team_code, size: .small)
+                Text("Frölunda")
+                    .font(.system(size: 14, design: .rounded))
+                    .fontWeight(.medium)
+                    .starred(false)
+                    .scaledToFit()
+                    .padding(EdgeInsets(top: -2, leading: 0, bottom: 0, trailing: 0    ))
+                    .minimumScaleFactor(0.6)
+                    
+            }.frame(width: 100, height: 50)
+        }.padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
+    }
+}
+
+
 struct LiveGame: View {
     var game: Game
     var body: some View {
@@ -155,9 +195,12 @@ struct GamesView: View {
             }
             .refreshable {
                 guard !self.reloading else {
+                    do {
+                        try await Task.sleep(nanoseconds: 500 * 1_000_000)
+                    } catch {}
                     return
                 }
-                self.reloadData()
+                await self.reloadData()
             }
             .id(settings.season) // makes sure list is recreated when rerendered. To take care of reuse cell issues
             .listStyle(InsetGroupedListStyle())
@@ -165,12 +208,22 @@ struct GamesView: View {
             .navigationBarItems(trailing: NavigationLink(destination: SettingsView()) {
                 Image(systemName: "gearshape.circle").frame(width: 44, height: 44, alignment: .trailing)
             })
-        }.onReceive(settings.$season, perform: { _ in self.reloadData() } )
+        }
+        .onReceive(settings.$season) { _ in
+            Task {
+                await self.reloadData()
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .onGameNotification)) { _ in
+            Task {
+                await self.reloadData()
+            }
+        }
     }
     
-    func reloadData() {
+    func reloadData() async {
         self.reloading = true
-        provider?.getGames(season: settings.season) { gd in
+        if let gd = await provider?.getGames(season: settings.season) {
             gamesData.set(data: gd)
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 10) {

@@ -26,7 +26,7 @@ struct TeamLogo: View {
         switch size {
             case .mini: return 19
             case .small: return 30
-            case .medium: return 25
+            case .medium: return 35
             case .big: return 50
         }
     }

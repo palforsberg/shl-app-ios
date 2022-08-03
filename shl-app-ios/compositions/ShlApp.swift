@@ -23,6 +23,7 @@ struct ShlApp: App {
 }
 
 
+
 class AppDelegate: NSObject, UIApplicationDelegate {
     
     static var settings = Settings()
@@ -30,6 +31,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         application.applicationIconBadgeNumber = 0
         return true
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        print("[APP] Did receive nofitication \(userInfo)")
+        let notif = GameNofitication (team: userInfo["team"] as? String, game_uuid: userInfo["game_uuid"] as? String)
+        NotificationCenter.default.post(name: .onGameNotification, object: notif)
     }
     
     /**
@@ -64,4 +71,14 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("[APP] Failed to register: \(error.localizedDescription)")
     }
+}
+
+
+extension NSNotification.Name {
+    static let onGameNotification = Notification.Name("onGameNotification")
+}
+
+struct GameNofitication {
+    let team: String?
+    let game_uuid: String?
 }

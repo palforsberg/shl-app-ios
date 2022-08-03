@@ -89,9 +89,12 @@ struct StandingsView: View {
             }
             .refreshable {
                 guard !self.reloading else {
+                    do {
+                        try await Task.sleep(nanoseconds: 500 * 1_000_000)
+                    } catch {}
                     return
                 }
-                self.reloadData()
+                await self.reloadData()
             }
             .id(settings.season) // makes sure list is recreated when rerendered. To take care of reuse cell issues
             .listStyle(InsetGroupedListStyle())
@@ -99,12 +102,16 @@ struct StandingsView: View {
             .navigationBarItems(trailing: NavigationLink(destination: SettingsView()) {
                 Image(systemName: "gearshape.circle").frame(width: 44, height: 44, alignment: .trailing)
             })
-        }.onReceive(settings.$season, perform: { _ in self.reloadData() })
+        }.onReceive(settings.$season, perform: { _ in
+            Task {
+                await self.reloadData()
+            }
+        })
     }
     
-    func reloadData() {
+    func reloadData() async {
         self.reloading = true
-        provider?.getStandings(season: settings.season) { (result) in
+        if let result = await provider?.getStandings(season: settings.season) {
             self.standings.set(data: result)
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
