@@ -74,7 +74,7 @@
 		D1AFF86B25A84FCB00E50ADE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF86A25A84FCB00E50ADE /* ContentView.swift */; };
 		D1AFF86D25A84FCD00E50ADE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D1AFF86C25A84FCD00E50ADE /* Assets.xcassets */; };
 		D1AFF87025A84FCD00E50ADE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D1AFF86F25A84FCD00E50ADE /* Preview Assets.xcassets */; };
-		D1AFF89725A8537B00E50ADE /* GamesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF89625A8537B00E50ADE /* GamesView.swift */; };
+		D1AFF89725A8537B00E50ADE /* SeasonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF89625A8537B00E50ADE /* SeasonView.swift */; };
 		D1AFF8A125A8550500E50ADE /* StandingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF8A025A8550500E50ADE /* StandingsView.swift */; };
 		D1AFF8B425A8831100E50ADE /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF8B325A8831100E50ADE /* Data.swift */; };
 		D1AFF8C525A88CF700E50ADE /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D1AFF8C725A88CF700E50ADE /* Localizable.strings */; };
@@ -164,7 +164,7 @@
 		D1AFF86C25A84FCD00E50ADE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D1AFF86F25A84FCD00E50ADE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		D1AFF87125A84FCD00E50ADE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D1AFF89625A8537B00E50ADE /* GamesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesView.swift; sourceTree = "<group>"; };
+		D1AFF89625A8537B00E50ADE /* SeasonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonView.swift; sourceTree = "<group>"; };
 		D1AFF8A025A8550500E50ADE /* StandingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsView.swift; sourceTree = "<group>"; };
 		D1AFF8B325A8831100E50ADE /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		D1AFF8C625A88CF700E50ADE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -292,7 +292,7 @@
 				23537EDE26B5800E00C9B6ED /* settings */,
 				D1AFF86825A84FCB00E50ADE /* ShlApp.swift */,
 				D1AFF86A25A84FCB00E50ADE /* ContentView.swift */,
-				D1AFF89625A8537B00E50ADE /* GamesView.swift */,
+				D1AFF89625A8537B00E50ADE /* SeasonView.swift */,
 				D1AFF8A025A8550500E50ADE /* StandingsView.swift */,
 				D1AFC2A325B07E8100490FCE /* TeamView.swift */,
 				23537ECF26B1D30200C9B6ED /* GamesStatsView.swift */,
@@ -455,7 +455,7 @@
 				2339F6B426C15075006DE5F0 /* UserService.swift in Sources */,
 				23537ED226B3FE6D00C9B6ED /* Preview.swift in Sources */,
 				D1AFF86B25A84FCB00E50ADE /* ContentView.swift in Sources */,
-				D1AFF89725A8537B00E50ADE /* GamesView.swift in Sources */,
+				D1AFF89725A8537B00E50ADE /* SeasonView.swift in Sources */,
 				2339F66B26B6862A006DE5F0 /* TimerView.swift in Sources */,
 				D1AFF86925A84FCB00E50ADE /* ShlApp.swift in Sources */,
 				23537ED626B57B9C00C9B6ED /* SettingsView.swift in Sources */,

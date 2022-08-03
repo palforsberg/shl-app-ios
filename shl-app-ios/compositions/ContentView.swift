@@ -24,7 +24,7 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            GamesView(provider: provider).tabItem { Label("Home", systemImage: "house.circle") }
+            SeasonView(provider: provider).tabItem { Label("Home", systemImage: "house.circle") }
             StandingsView(provider: provider).tabItem { Label("Standings", systemImage: "list.bullet.circle") }
         }.task {
             if let ts = await provider?.getTeams() {

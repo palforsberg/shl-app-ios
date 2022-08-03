@@ -148,7 +148,7 @@ struct PlayedGame: View {
     }
 }
 
-struct GamesView: View {
+struct SeasonView: View {
     @EnvironmentObject var starredTeams: StarredTeams
     @EnvironmentObject var gamesData: GamesData
     @EnvironmentObject var settings: Settings
@@ -232,7 +232,7 @@ struct GamesView: View {
     }
 }
 
-struct GamesView_Previews: PreviewProvider {
+struct SeasonView_Previews: PreviewProvider {
     static var previews: some View {
         let gamesData = GamesData(data: [
                                     getLiveGame(t1: "MIF", score1: 1, t2: "TIK", score2: 3),
@@ -246,7 +246,7 @@ struct GamesView_Previews: PreviewProvider {
         let starredTeams = StarredTeams()
         starredTeams.addTeam(teamCode: "LHF")
         
-        return GamesView(
+        return SeasonView(
                   provider: nil)
             .environmentObject(starredTeams)
             .environmentObject(gamesData)
