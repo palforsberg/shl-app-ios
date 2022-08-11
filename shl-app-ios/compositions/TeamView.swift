@@ -48,6 +48,7 @@ struct TeamView: View {
                     .font(.system(size: 32, design: .rounded))
                     .fontWeight(.semibold)
                     .starred(starred)
+                Spacer(minLength: 6)
                 StarButton(starred: starred) {
                     if (starred) {
                         starredTeams.removeTeam(teamCode: teamCode)
@@ -120,11 +121,12 @@ struct StarButton: View {
         Button(action: action, label: {
             Image(systemName: starred ? "star.fill" : "star")
                 .foregroundColor(Color(UIColor.systemYellow))
-            Text("Favourite")
+            Text("Favourite").fontWeight(.semibold)
+                .font(.system(size: 18, design: .rounded))
         })
-        .padding(6)
+        .padding(EdgeInsets(top: 9, leading: 16, bottom: 10, trailing: 20 ))
         .background(Color(UIColor.systemGray5))
-        .cornerRadius(12)
+        .cornerRadius(24)
         .buttonStyle(PlainButtonStyle())
     }
 }
@@ -132,21 +134,13 @@ struct StarButton: View {
 struct TeamView_Previews: PreviewProvider {
     static var previews: some View {
         let teams = TeamsData()
-        teams.teams["LHF"] = Team(code: "LHF", name: "Luleå HF")
-        
+        teams.teams["LHF"] = Team(code: "LHF", name: "Luleå HF", shortname: "Luleå")
+        let starred = StarredTeams()
+        starred.addTeam(teamCode: "LHF")
         return Group {
             TeamView(teamCode: "LHF", standing: getStanding("LHF", rank: 1))
                 .environmentObject(teams)
-                .environmentObject(StarredTeams())
-                .environmentObject(GamesData(data: [getLiveGame(t1: "LHF", score1: 13, t2: "FHC", score2: 2),
-                                                    getLiveGame(t1: "LHF", score1: 13, t2: "FHC", score2: 2),
-                                                    getPlayedGame(), getPlayedGame(),
-                                                    getFutureGame(), getFutureGame()]))
-                .environmentObject(Settings())
-                .environment(\.locale, .init(identifier: "sv"))
-            TeamView(teamCode: "LHF", standing: getStanding("LHF", rank: 1))
-                .environmentObject(teams)
-                .environmentObject(StarredTeams())
+                .environmentObject(starred)
                 .environmentObject(GamesData(data: [getLiveGame(t1: "LHF", score1: 13, t2: "FHC", score2: 2),
                                                     getLiveGame(t1: "LHF", score1: 13, t2: "FHC", score2: 2),
                                                     getPlayedGame(), getPlayedGame(),

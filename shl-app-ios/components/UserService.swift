@@ -20,10 +20,10 @@ class UserService {
         self.provider = provider
         self.debouncer = Debouncer({
             let apnToken = settings.notificationsEnabled ? settings.apnToken : nil
-            let request = AddUser(id: settings.uuid, apn_token: apnToken, teams: starredTeams.starredTeams)
+            let request = AddUser(id: settings.uuid, apn_token: apnToken, teams: starredTeams.starredTeams, ios_version: UserService.getOsVersion(), app_version: UserService.getBuildVersionNumber())
 //            #if !DEBUG
             Task {
-                await provider?.addUser(request: request, completion: {})
+                await provider?.addUser(request: request)
             }
 //            #else
 //            print("[USER] Stop adding user in debug mode")
@@ -36,5 +36,14 @@ class UserService {
             settings.$apnToken.sink { _ in self.debouncer.send() },
             settings.$notificationsEnabled.sink { _ in self.debouncer.send() }
         ]
+    }
+    
+    static func getOsVersion() -> String {
+        let os = ProcessInfo.processInfo.operatingSystemVersion
+        return String(os.majorVersion) + "." + String(os.minorVersion) + "." + String(os.patchVersion)
+    }
+    
+    static func getBuildVersionNumber() -> String? {
+        return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
     }
 }

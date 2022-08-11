@@ -35,8 +35,14 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("[APP] Did receive nofitication \(userInfo)")
-        let notif = GameNofitication (team: userInfo["team"] as? String, game_uuid: userInfo["game_uuid"] as? String)
+        
+        let aps = userInfo["aps"] as? [String: Any]
+        let alert = aps?["alert"] as? [String: String]
+        let title = alert?["title"]
+        
+        let notif = GameNofitication (team: userInfo["team"] as? String, game_uuid: userInfo["game_uuid"] as? String, title: title)
         NotificationCenter.default.post(name: .onGameNotification, object: notif)
+        completionHandler(UIBackgroundFetchResult.noData)
     }
     
     /**
@@ -81,4 +87,5 @@ extension NSNotification.Name {
 struct GameNofitication {
     let team: String?
     let game_uuid: String?
+    let title: String?
 }

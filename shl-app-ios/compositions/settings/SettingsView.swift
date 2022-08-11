@@ -28,7 +28,6 @@ struct AppIconView: View {
                         Icon(name: "Puck Natt", code: "puck-icon-night"),
                         Icon(name: "Puck Sträckad", code: "puck-line"),
                         Icon(name: "Brynäs IF", code: "bif-icon"),
-                        Icon(name: "Djurgården IF", code: "dif-icon"),
                         Icon(name: "Färjestad BK", code: "fbk-icon"),
                         Icon(name: "Frölunda HC", code: "fhc-icon"),
                         Icon(name: "HV71", code: "hv71-icon"),

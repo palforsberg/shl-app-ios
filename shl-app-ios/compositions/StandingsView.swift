@@ -127,7 +127,20 @@ struct StandingsView_Previews: PreviewProvider {
         
         let standingsData = StandingsData(data: [
                                             getStanding("LHF", rank: 1, gp: 99, points: 999),
-                                            getStanding("SAIK", rank: 14)])
+                                            getStanding("SAIK", rank: 2),
+                                            getStanding("TIK", rank: 3),
+                                            getStanding("VLH", rank: 4),
+                                            getStanding("RBK", rank: 5),
+                                            getStanding("LIF", rank: 6),
+                                            getStanding("OHK", rank: 7),
+                                            getStanding("FHC", rank: 8),
+                                            getStanding("FBK", rank: 9),
+                                            getStanding("MIF", rank: 10),
+                                            getStanding("IKO", rank: 11),
+                                            getStanding("LHC", rank: 12),
+                                            getStanding("BIF", rank: 13),
+                                            getStanding("HV71", rank: 14),
+        ])
         return StandingsView(provider: nil)
             .environmentObject(TeamsData())
             .environmentObject(starredTeams)

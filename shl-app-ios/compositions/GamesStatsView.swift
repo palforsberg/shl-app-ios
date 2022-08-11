@@ -35,10 +35,10 @@ struct GroupedView<Content: View>: View {
                     .padding(.bottom, -4)
             }
             ZStack {
-                RoundedRectangle(cornerRadius: 10.0).foregroundColor(Color(UIColor.secondarySystemGroupedBackground))
+                RoundedRectangle(cornerRadius: 25.0).foregroundColor(Color(UIColor.secondarySystemGroupedBackground))
                 VStack {
                     content()
-                }.padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+                }.padding(EdgeInsets(top: 6, leading: 10, bottom: 6, trailing: 10))
             }
         }.padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 15))
     }
@@ -154,18 +154,18 @@ struct GamesStatsView: View {
                 Spacer(minLength: 0)
                 Text(LocalizedStringKey(game.getGameType()?.rawValue ?? ""))
                     .fontWeight(.semibold).font(.system(size: 15, design: .rounded))
-                    .foregroundColor(Color(UIColor.secondaryLabel))
+                    .foregroundColor(.black)
                 Spacer(minLength: 25)
                 Group { // Header
                     HStack(alignment: .center, spacing: 0) {
                         VStack {
                             TeamLogo(code: game.home_team_code, size: LogoSize.big)
-                            Text(teamsData.getName(game.home_team_code))
-                                .font(.system(size: 15, design: .rounded))
+                            Text(teamsData.getShortname(game.home_team_code))
+                                .font(.system(size: 20, design: .rounded))
                                 .fontWeight(.medium)
                                 .starred(starredTeams.isStarred(teamCode: game.home_team_code))
                                 .scaledToFit()
-                                .minimumScaleFactor(0.8)
+                                .minimumScaleFactor(0.6)
                                 
                         }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 80).frame(maxWidth: 140)
                 
@@ -177,12 +177,12 @@ struct GamesStatsView: View {
                         
                         VStack {
                             TeamLogo(code: game.away_team_code, size: LogoSize.big)
-                            Text(teamsData.getName(game.away_team_code))
-                                .font(.system(size: 15, design: .rounded))
+                            Text(teamsData.getShortname(game.away_team_code))
+                                .font(.system(size: 20, design: .rounded))
                                 .fontWeight(.medium)
                                 .starred(starredTeams.isStarred(teamCode: game.away_team_code))
                                 .scaledToFit()
-                                .minimumScaleFactor(0.8)
+                                .minimumScaleFactor(0.6)
 
                         }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 80).frame(maxWidth: 140)
                     }.frame(maxWidth: .infinity)
@@ -234,7 +234,9 @@ struct GamesStatsView: View {
             }
             .onReceive(NotificationCenter.default.publisher(for: .onGameNotification)) { data in
                 Task {
-                    await self.reloadData()
+                    if (data.object as? GameNofitication)?.game_uuid == game.game_uuid {
+                        await self.reloadData()
+                    }
                 }
             }
             .navigationBarTitle("", displayMode: .inline)
@@ -259,9 +261,9 @@ struct GamesStatsView_Previews: PreviewProvider {
     static var previews: some View {
         let teams = TeamsData()
         teams.setTeams(teams: [
-            Team(code: "LHF", name: "Luleå HF"),
-            Team(code: "FBK", name: "Färjestad BK"),
-            Team(code: "FHC", name: "Frölunda HC")
+            Team(code: "LHF", name: "Luleå HF", shortname: "Luleå"),
+            Team(code: "FBK", name: "Färjestad BK", shortname: "Färjestad"),
+            Team(code: "FHC", name: "Frölunda HC", shortname: "Frölunda")
         ])
         let allPeriods = AllPeriods(gameRecap: getPeriod(),
                                     period1: getPeriod(),
@@ -290,9 +292,9 @@ struct GamesStatsView_Future_Game_Previews: PreviewProvider {
     static var previews: some View {
         let teams = TeamsData()
         teams.setTeams(teams: [
-            Team(code: "LHF", name: "Luleå HF"),
-            Team(code: "FBK", name: "Färjestad BK"),
-            Team(code: "FHC", name: "Frölunda HC")
+            Team(code: "LHF", name: "Luleå HF", shortname: "Luleå"),
+            Team(code: "FBK", name: "Färjestad BK", shortname: "Färjestad"),
+            Team(code: "FHC", name: "Frölunda HC", shortname: "Frölunda")
         ])
         
         return GamesStatsView(gameStats: GameStats(recaps: AllPeriods(), gameState: "", playersByTeam: getPlayersWithZeroScore()),
@@ -314,9 +316,9 @@ struct GamesStatsView_Future_No_Prev_Game_Previews: PreviewProvider {
     static var previews: some View {
         let teams = TeamsData()
         teams.setTeams(teams: [
-            Team(code: "LHF", name: "Luleå HF"),
-            Team(code: "FBK", name: "Färjestad BK"),
-            Team(code: "FHC", name: "Frölunda HC")
+            Team(code: "LHF", name: "Luleå HF", shortname: "Luleå"),
+            Team(code: "FBK", name: "Färjestad BK", shortname: "Färjestad"),
+            Team(code: "FHC", name: "Frölunda HC", shortname: "Frölunda")
         ])
         let allPeriods = AllPeriods(gameRecap: nil)
         

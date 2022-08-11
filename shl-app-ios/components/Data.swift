@@ -50,7 +50,7 @@ class Cache {
     
     func getKey(_ key: String) -> String {
         // to make it possible to change the datamodel between versions
-        return "\(key)_v0.1.3"
+        return "\(key)_v0.1.4"
     }
 }
 
@@ -92,7 +92,7 @@ class DataProvider {
         return await getData(url: teamsUrl, type: [Team].self)
     }
     
-    func addUser(request: AddUser, completion: @escaping () -> ()) async {
+    func addUser(request: AddUser) async {
         await postData(url: userUrl, data: request)
     }
 
@@ -126,7 +126,6 @@ class DataProvider {
             return
         }
         print("[DATA] POST \(data) to \(url)")
-        
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -320,6 +319,10 @@ class TeamsData: ObservableObject {
     func getName(_ code: String) -> String {
         return teams[code]?.name ?? code
     }
+    
+    func getShortname(_ code: String) -> String {
+        return teams[code]?.shortname ?? code
+    }
 
     func setTeams(teams: [Team]) {
         for team in teams {
@@ -331,6 +334,7 @@ class TeamsData: ObservableObject {
 struct Team: Codable {
     let code: String
     let name: String
+    let shortname: String
 }
 
 struct GameStatsData: Codable {
@@ -426,6 +430,8 @@ struct AddUser: Codable, Equatable {
     var id: String
     var apn_token: String?
     var teams: [String]
+    var ios_version: String?
+    var app_version: String?
 }
 
 extension Date {

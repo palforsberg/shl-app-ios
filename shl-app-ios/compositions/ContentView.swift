@@ -7,6 +7,37 @@
 
 import SwiftUI
 
+
+struct GoalAlert: View {
+    
+    @Binding var alert: String?
+    
+    var body: some View {
+        if alert != nil {
+            VStack {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 50)
+                        .fill(Color(UIColor.systemYellow))
+                        .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 3)
+                    Text("🚨 \(alert!) 🚨")
+                        .font(.system(size: 18, design: .rounded))
+                        .fontWeight(.bold)
+                        .foregroundColor(.black)
+                }.frame(width: .infinity, height: 70, alignment: .top)
+                    .padding(EdgeInsets(top: 0, leading: 30, bottom: 0, trailing: 30))
+                    .transition(.scale)
+                    .gesture(TapGesture().onEnded { _ in
+                        withAnimation {
+                            self.alert = nil
+                        }
+                    })
+                    Spacer()
+            }
+            .transition(AnyTransition.move(edge: .top).combined(with: .opacity))
+            .zIndex(1)
+        }
+    }
+}
 struct ContentView: View {
     
     @Environment(\.colorScheme) var colorScheme
@@ -21,11 +52,17 @@ struct ContentView: View {
     
     @State
     var userService: UserService?
+    
+    @State
+    var alert: String? = nil
 
     var body: some View {
-        TabView {
-            SeasonView(provider: provider).tabItem { Label("Home", systemImage: "house.circle") }
-            StandingsView(provider: provider).tabItem { Label("Standings", systemImage: "list.bullet.circle") }
+        ZStack {
+            TabView {
+                SeasonView(provider: provider).tabItem { Label("Home", systemImage: "house.circle") }
+                StandingsView(provider: provider).tabItem { Label("Standings", systemImage: "list.bullet.circle") }
+            }
+            GoalAlert(alert: $alert)
         }.task {
             if let ts = await provider?.getTeams() {
                 teams.setTeams(teams: ts)
@@ -38,6 +75,16 @@ struct ContentView: View {
         .environmentObject(teams)
         .environmentObject(gameData)
         .environmentObject(settings)
+        .onReceive(NotificationCenter.default.publisher(for: .onGameNotification)) { data in
+            withAnimation {
+                self.alert = (data.object as? GameNofitication)?.title
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                withAnimation {
+                    self.alert = nil
+                }
+            }
+        }
         .background(Color(UIColor.systemGroupedBackground))
         .accentColor(colorScheme == .light
                         ? Color.init(.displayP3, white: 0.1, opacity: 1)
@@ -49,9 +96,9 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         let teams = TeamsData()
-        teams.setTeams(teams: [Team(code: "LHF", name: "Luleå HF"),
-                               Team(code: "FHC", name: "Frölunda HC"),
-                               Team(code: "SAIK", name: "Skellefteå AIK")])
+        teams.setTeams(teams: [Team(code: "LHF", name: "Luleå HF", shortname: "Luleå"),
+                               Team(code: "FHC", name: "Frölunda HC", shortname: "Frölunda"),
+                               Team(code: "SAIK", name: "Skellefteå AIK", shortname: "Skellefteå")])
         
         let starredTeams = StarredTeams()
         starredTeams.addTeam(teamCode: "LHF")
@@ -78,7 +125,7 @@ struct ContentView_Previews: PreviewProvider {
                 getStanding("TIK", rank: 6),
                 getStanding("MIF", rank: 7),
                 getStanding("SAIK", rank: 8),
-            ]), provider: nil)
+            ]), provider: nil, alert: "MÅÅÅL för Skellefteå")
             .environment(\.locale, .init(identifier: "sv"))
     }
 }
