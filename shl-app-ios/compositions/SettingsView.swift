@@ -13,11 +13,21 @@ struct Icon {
     let code: String?
 }
 
-extension Label {
-    func settingsItem() -> some View {
-        return self
-            .font(.system(size: 18, design: .rounded))
-            .padding(.top, 10).padding(.bottom, 10)
+struct IconLabel: View {
+    var text: String
+    var color: Color
+    var systemName: String
+    
+    var body: some View {
+        StateView {
+            HStack(spacing: 10) {
+                Image(systemName: systemName)
+                    .foregroundColor(color)
+                Text(LocalizedStringKey(text))
+                    .font(.system(size: 18, design: .rounded))
+                    .padding(.top, 10).padding(.bottom, 10)
+            }
+        }
     }
 }
 struct AppIconView: View {
@@ -27,31 +37,29 @@ struct AppIconView: View {
                         Icon(name: "Puck Inverterad", code: "puck-icon-inverted"),
                         Icon(name: "Puck Natt", code: "puck-icon-night"),
                         Icon(name: "Puck Sträckad", code: "puck-line"),
-                        Icon(name: "Brynäs IF", code: "bif-icon"),
-                        Icon(name: "Färjestad BK", code: "fbk-icon"),
-                        Icon(name: "Frölunda HC", code: "fhc-icon"),
+                        Icon(name: "Brynäs", code: "bif-icon"),
+                        Icon(name: "Färjestad", code: "fbk-icon"),
+                        Icon(name: "Frölunda", code: "fhc-icon"),
                         Icon(name: "HV71", code: "hv71-icon"),
-                        Icon(name: "IK Oskarshamn", code: "iko-icon"),
-                        Icon(name: "Lindköpings HC", code: "lhc-icon"),
-                        Icon(name: "Luleå HF", code: "lhf-icon"),
-                        Icon(name: "Leksands IF", code: "lif-icon"),
-                        Icon(name: "IF Malmö Redhawks", code: "mif-icon"),
-                        Icon(name: "Örebro Hockey", code: "ohk-icon"),
-                        Icon(name: "Rögle BK", code: "rbk-icon"),
-                        Icon(name: "Skellefteå AIK", code: "saik-icon"),
-                        Icon(name: "Timrå IK", code: "tik-icon"),
-                        Icon(name: "Växjö Lakers", code: "vlh-icon"),
+                        Icon(name: "Oskarshamn", code: "iko-icon"),
+                        Icon(name: "Lindköpings", code: "lhc-icon"),
+                        Icon(name: "Luleå", code: "lhf-icon"),
+                        Icon(name: "Leksands", code: "lif-icon"),
+                        Icon(name: "Malmö", code: "mif-icon"),
+                        Icon(name: "Örebro", code: "ohk-icon"),
+                        Icon(name: "Rögle", code: "rbk-icon"),
+                        Icon(name: "Skellefteå", code: "saik-icon"),
+                        Icon(name: "Timrå", code: "tik-icon"),
+                        Icon(name: "Växjö", code: "vlh-icon"),
     ]
 
     @State var currentIndex: Int = AppIconView.getCurrentIndex()
     
     var body: some View {
-        Picker(selection: $currentIndex, label: Label("App Icon", systemImage: "app")
-                .settingsItem()
-                .accentColor(Color.green)) {
+        Picker(selection: $currentIndex, label: IconLabel(text: "App Icon", color: .green, systemName: "app")) {
                     ForEach(0..<AppIconView.icons.count, id: \.self) { e in
                         HStack {
-                            Image(uiImage: UIImage(named: AppIconView.icons[e].code ?? "puck-icon") ?? UIImage())
+                            Image(uiImage: UIImage(named: AppIconView.icons[e].code ?? "puck-icon")?.withSize(targetSize: CGSize(width: 30, height: 30)) ?? UIImage())
                                 .resizable()
                                 .frame(width: 30, height: 30, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                                 .clipShape(RoundedRectangle(cornerRadius: 5))
@@ -67,7 +75,6 @@ struct AppIconView: View {
                     print(error?.localizedDescription ?? "[SETTINGS] Changed app icon successfully")
                 }
             }
-            
         }
     }
     
@@ -93,9 +100,7 @@ struct GeneralPicker<T: Equatable, Content: View>: View {
     }
 
     var body: some View {
-        Picker(selection: $currentIndex, label: Label("Season", systemImage: "calendar")
-                .settingsItem()
-                .accentColor(Color.red)) {
+        Picker(selection: $currentIndex, label: IconLabel(text: "Season", color: .red, systemName: "calendar")) {
                     ForEach(0..<self.values.count, id: \.self) { e in
                         HStack {
                             content(self.values[e])
@@ -311,27 +316,26 @@ struct SettingsView: View {
     
     var body: some View {
         List {
-            Section(header: Text(""), footer: Text("NOTIF_BODY").padding(.leading, 20).padding(.trailing, 20)) {
+            Section(header: Text(""), footer: Text("NOTIF_BODY")
+                .padding(.leading, 20).padding(.trailing, 20).padding(.top, 6)) {
                 Toggle(isOn: $settings.notificationsEnabled, label: {
-                    Label("Notifications", systemImage: "app.badge").settingsItem().accentColor(Color.blue)
+                    IconLabel(text: "Notifications", color: .blue, systemName: "app.badge")
                 }).onChange(of: settings.notificationsEnabled) { enabled in
                     if enabled {
                         AppDelegate.registerForPushNotifications()
                     }
                 }
             }
-            Section(header: Text(""), footer: Text("SUPPORTER_BODY").padding(.leading, 20).padding(.trailing, 20)) {
+            Section(header: Text(""), footer: Text("SUPPORTER_BODY")
+                .padding(.leading, 20).padding(.trailing, 20).padding(.top, 6)) {
                 NavigationLink(destination: SupporterView()) {
-                    Label("Supporter", systemImage: settings.supporter ? "star.fill" : "star").settingsItem().accentColor(Color.yellow)
+                    IconLabel(text: "Supporter", color: .yellow, systemName: settings.supporter ? "star.fill" : "star")
                 }
                 Group {
                     AppIconView()
                     SeasonPicker(currentSeason: $settings.season)
                     HStack {
-                        StateView {
-                            Label("Game Filter", systemImage: "loupe").settingsItem()
-                                .accentColor(Color.purple)
-                        }
+                        IconLabel(text: "Game Filter", color: .purple, systemName: "loupe")
                         Spacer()
                         Picker("", selection: $settings.onlyStarred) {
                             Text("⭐️").tag(true)
@@ -340,8 +344,13 @@ struct SettingsView: View {
                         .pickerStyle(SegmentedPickerStyle())
                         .frame(maxWidth: 130)
                     }
-                }.disabled(!settings.supporter)
-                
+                    
+                }
+                #if DEBUG
+                .disabled(false)
+                #else
+                .disabled(!settings.supporter)
+                #endif
             }
         }
         .listStyle(InsetGroupedListStyle())

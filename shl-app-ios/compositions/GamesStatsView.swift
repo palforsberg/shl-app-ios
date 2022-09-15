@@ -15,11 +15,21 @@ struct StatsRow: View {
     
     var body: some View {
         HStack() {
-            Text(left).font(.system(size: 20, design: .rounded)).fontWeight(.bold).frame(width: 45, alignment: .leading)
+            Text(left)
+                .font(.system(size: 20, design: .rounded))
+                .fontWeight(.bold).frame(width: 45, alignment: .leading)
+                .monospacedDigit()
             Spacer()
-            Text(LocalizedStringKey(center)).font(.system(size: 18, design: .rounded)).fontWeight(.semibold).frame(maxWidth: .infinity, alignment: .center)
+            Text(LocalizedStringKey(center))
+                .font(.system(size: 18, design: .rounded))
+                .fontWeight(.semibold).frame(maxWidth: .infinity, alignment: .center)
+                .scaledToFit()
+                .minimumScaleFactor(0.8)
             Spacer()
-            Text(right).font(.system(size: 20, design: .rounded)).fontWeight(.bold).frame(width: 45, alignment: .trailing)
+            Text(right)
+                .font(.system(size: 20, design: .rounded))
+                .fontWeight(.bold).frame(width: 45, alignment: .trailing)
+                .monospacedDigit()
         }.padding(EdgeInsets(top: 3, leading: 0, bottom: 3, trailing: 0))
     }
 }
@@ -154,7 +164,7 @@ struct GamesStatsView: View {
                 Spacer(minLength: 0)
                 Text(LocalizedStringKey(game.getGameType()?.rawValue ?? ""))
                     .fontWeight(.semibold).font(.system(size: 15, design: .rounded))
-                    .foregroundColor(.black)
+                    .foregroundColor(Color(UIColor.secondaryLabel))
                 Spacer(minLength: 25)
                 Group { // Header
                     HStack(alignment: .center, spacing: 0) {
@@ -171,8 +181,12 @@ struct GamesStatsView: View {
                 
                         HStack(alignment: .center, spacing: 15) {
                             Text("\(gameStats?.recaps.gameRecap?.homeG ?? game.home_team_result)").font(.system(size: 40, design: .rounded)).fontWeight(.semibold)
+                                .scaledToFit()
+                                .minimumScaleFactor(0.6)
                             Text("vs").font(.system(size: 20, design: .rounded)).padding(.top, 5)
                             Text("\(gameStats?.recaps.gameRecap?.awayG ?? game.away_team_result)").font(.system(size: 40, design: .rounded)).fontWeight(.semibold)
+                                .scaledToFit()
+                                .minimumScaleFactor(0.6)
                         }.padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5))
                         
                         VStack {
@@ -218,16 +232,14 @@ struct GamesStatsView: View {
                                 NavigationLink(destination: GamesStatsView(game: item)) {
                                     PlayedGame(game: item)
                                 }.buttonStyle(PlainButtonStyle())
-                                if (item != previousGames.last) {
-                                    Divider()
-                                }
+                                    .padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
                             }
                         }
                         Spacer(minLength: 40)
                     }
                 }
             }
-            .task {
+            .task { // runs before view appears
                 await self.reloadData()
                 let allPrevGames = self.gamesData.getGamesBetween(team1: game.home_team_code, team2: game.away_team_code)
                 self.previousGames = allPrevGames.filter({ $0.game_uuid != game.game_uuid })
@@ -259,12 +271,7 @@ struct GamesStatsView: View {
 
 struct GamesStatsView_Previews: PreviewProvider {
     static var previews: some View {
-        let teams = TeamsData()
-        teams.setTeams(teams: [
-            Team(code: "LHF", name: "Luleå HF", shortname: "Luleå"),
-            Team(code: "FBK", name: "Färjestad BK", shortname: "Färjestad"),
-            Team(code: "FHC", name: "Frölunda HC", shortname: "Frölunda")
-        ])
+        let teams = getTeamsData()
         let allPeriods = AllPeriods(gameRecap: getPeriod(),
                                     period1: getPeriod(),
                                     period2: getPeriod(),
@@ -290,12 +297,7 @@ struct GamesStatsView_Previews: PreviewProvider {
 
 struct GamesStatsView_Future_Game_Previews: PreviewProvider {
     static var previews: some View {
-        let teams = TeamsData()
-        teams.setTeams(teams: [
-            Team(code: "LHF", name: "Luleå HF", shortname: "Luleå"),
-            Team(code: "FBK", name: "Färjestad BK", shortname: "Färjestad"),
-            Team(code: "FHC", name: "Frölunda HC", shortname: "Frölunda")
-        ])
+        let teams = getTeamsData()
         
         return GamesStatsView(gameStats: GameStats(recaps: AllPeriods(), gameState: "", playersByTeam: getPlayersWithZeroScore()),
                               provider: nil,
@@ -314,12 +316,7 @@ struct GamesStatsView_Future_Game_Previews: PreviewProvider {
 
 struct GamesStatsView_Future_No_Prev_Game_Previews: PreviewProvider {
     static var previews: some View {
-        let teams = TeamsData()
-        teams.setTeams(teams: [
-            Team(code: "LHF", name: "Luleå HF", shortname: "Luleå"),
-            Team(code: "FBK", name: "Färjestad BK", shortname: "Färjestad"),
-            Team(code: "FHC", name: "Frölunda HC", shortname: "Frölunda")
-        ])
+        let teams = getTeamsData()
         let allPeriods = AllPeriods(gameRecap: nil)
         
         return GamesStatsView(gameStats: GameStats(recaps: allPeriods, gameState: "GameEnded", playersByTeam: getPlayersWithZeroScore()),

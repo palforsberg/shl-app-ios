@@ -42,3 +42,25 @@ extension Text {
             .animation(.easeInOut(duration: 0.2), value: starred)
     }
 }
+
+extension UIScreen {
+    static var isMini: Bool {
+        get {
+            UIScreen.main.bounds.size.width <= 380
+        }
+    }
+}
+
+extension UIImage {
+    func withSize(targetSize: CGSize) -> UIImage {
+        // Draw and return the resized UIImage
+        let scaledImage = UIGraphicsImageRenderer(size: targetSize).image { _ in
+            self.draw(in: CGRect(
+                origin: .zero,
+                size: targetSize
+            ))
+        }
+        
+        return scaledImage
+    }
+}

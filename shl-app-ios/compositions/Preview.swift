@@ -13,7 +13,7 @@ func getPlayedGame() -> Game {
 }
 
 func getPlayedGame(t1: String, s1: Int, t2: String, s2: Int) -> Game {
-    return Game(game_id: "1", game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: s2, home_team_code: t1, home_team_result: s1, start_date_time: Date().addingTimeInterval(TimeInterval(-2_000)), game_type: GameType.season.rawValue, played: true, overtime: false, penalty_shots: false)
+    return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: s2, home_team_code: t1, home_team_result: s1, start_date_time: Date().addingTimeInterval(TimeInterval(-2_000)), game_type: GameType.season.rawValue, played: true, overtime: false, penalty_shots: false)
 }
 
 func getLiveGame() -> Game {
@@ -21,7 +21,7 @@ func getLiveGame() -> Game {
 }
 
 func getLiveGame(t1: String, score1: Int, t2: String, score2: Int) -> Game {
-    return Game(game_id: "1", game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: score2, home_team_code: t1, home_team_result: score1, start_date_time: Date().addingTimeInterval(TimeInterval(-2_000)), game_type: GameType.season.rawValue, played: false, overtime: false, penalty_shots: false)
+    return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: score2, home_team_code: t1, home_team_result: score1, start_date_time: Date().addingTimeInterval(TimeInterval(-2_000)), game_type: GameType.season.rawValue, played: false, overtime: false, penalty_shots: false)
 }
 
 func getFutureGame() -> Game {
@@ -29,8 +29,12 @@ func getFutureGame() -> Game {
 }
 
 func getFutureGame(t1: String, t2: String) -> Game {
-    let futDate = Calendar.current.date(byAdding: DateComponents(day:5), to: Date()) ?? Date()
-    return Game(game_id: "1", game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: 0, home_team_code: t1, home_team_result: 0, start_date_time: futDate,
+   return getFutureGame(t1: t1, t2: t2, days: 5)
+}
+
+func getFutureGame(t1: String, t2: String, days: Int) -> Game {
+    let futDate = Calendar.current.date(byAdding: DateComponents(day: days), to: Date()) ?? Date()
+    return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: 0, home_team_code: t1, home_team_result: 0, start_date_time: futDate,
                 game_type: GameType.season.rawValue, played: false, overtime: false, penalty_shots: false)
 }
 
@@ -63,4 +67,26 @@ func getPlayersWithZeroScore() -> [String: TeamPlayers] {
 
 func getPlayer(id: Int, g: Int, a: Int, pim: Int) -> Player {
     return Player(player: id, team: "LHF", firstName: "Lars", familyName: "Larsson", toi: "13:37", jersey: 69, g: g, a: a, pim: pim, position: "LD")
+}
+
+func getTeamsData() -> TeamsData {
+    let teamsData = TeamsData()
+    teamsData.setTeams(teams: [
+        Team( code: "TIK", name: "Timrå IK", shortname: "Timrå" ),
+        Team( code: "VLH", name: "Växjö Lakers", shortname: "Växjö" ),
+        Team( code: "RBK", name: "Rögle BK", shortname: "Rögle" ),
+        Team( code: "LIF", name: "Leksands IF", shortname: "Leksand" ),
+        Team( code: "SAIK", name: "Skellefteå AIK", shortname: "Skellefteå" ),
+        Team( code: "LHF", name: "Luleå HF", shortname: "Luleå" ),
+        Team( code: "OHK", name: "Örebro Hockey", shortname: "Örebro" ),
+        Team( code: "FHC", name: "Frölunda HC", shortname: "Frölunda" ),
+        Team( code: "FBK", name: "Färjestad BK", shortname: "Färjestad" ),
+        Team( code: "MIF", name: "IF Malmö Redhawks", shortname: "Malmö" ),
+        Team( code: "DIF", name: "Djurgården IF", shortname: "Djurgården" ),
+        Team( code: "IKO", name: "IK Oskarshamn", shortname: "Oskarshamn" ),
+        Team( code: "LHC", name: "Linköpings HC", shortname: "Linköping" ),
+        Team( code: "BIF", name: "Brynäs IF", shortname: "Brynäs" ),
+        Team( code: "HV71", name: "HV71", shortname: "HV71"),
+    ])
+    return teamsData
 }

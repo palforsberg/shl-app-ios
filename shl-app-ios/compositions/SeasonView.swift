@@ -8,6 +8,30 @@
 import SwiftUI
 
 
+struct GameScore: View {
+    var s1: Int
+    var s2: Int
+    var body: some View {
+        HStack {
+            Text("\(s1)")
+                .font(.system(size: 30, design: .rounded))
+                .fontWeight(.bold)
+                .monospacedDigit()
+                .scaledToFit()
+                .minimumScaleFactor(0.6)
+            Text("-").font(.system(size: 20, design: .rounded))
+                .scaledToFit()
+                .minimumScaleFactor(0.1)
+            Text("\(s2)")
+                .font(.system(size: 30, design: .rounded))
+                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                .monospacedDigit()
+                .scaledToFit()
+                .minimumScaleFactor(0.6)
+        }
+    }
+}
+
 struct TeamAvatar: View {
     var teamCode: String
     var alignment = Alignment.leading
@@ -33,8 +57,10 @@ struct TeamAvatar: View {
                 .scaledToFit()
                 .minimumScaleFactor(0.6)
         }
-        .frame(width: 115, height: 40, alignment: alignment)
-        
+        .frame(width: self.getWidth(), alignment: alignment)
+    }
+    private func getWidth() -> CGFloat {
+        return UIScreen.isMini ? 80.0 : 115.0
     }
 }
 
@@ -49,7 +75,7 @@ struct LiveGame2: View {
                     .fontWeight(.medium)
                     .starred(false)
                     .scaledToFit()
-                    .padding(EdgeInsets(top: -2, leading: 0, bottom: 0, trailing: 0    ))
+                    .padding(EdgeInsets(top: -2, leading: 0, bottom: 0, trailing: 0))
                     .minimumScaleFactor(0.8)
                     
             }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 50)
@@ -84,16 +110,10 @@ struct LiveGame: View {
         HStack {
             TeamAvatar(game.home_team_code, alignment: .center)
             Spacer()
-            Text("\(game.home_team_result)")
-                .font(.system(size: 30, design: .rounded))
-                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-            Text("-").font(.system(size: 20, design: .rounded))
-            Text("\(game.away_team_result)")
-                .font(.system(size: 30, design: .rounded))
-                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+            GameScore(s1: game.home_team_result, s2: game.away_team_result)
             Spacer()
             TeamAvatar(game.away_team_code, alignment: .center)
-        }.padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
+        }
     }
 }
 
@@ -108,6 +128,8 @@ struct ComingGame: View {
                     .fontWeight(.semibold)
                     .foregroundColor(Color(UIColor.secondaryLabel))
                     .font(.system(size: 18, design: .rounded))
+                    .scaledToFit()
+                    .minimumScaleFactor(0.6)
                     
                 Text("\(game.start_date_time.getFormattedTime())")
                     .font(.system(size: 15, design: .rounded))
@@ -115,7 +137,7 @@ struct ComingGame: View {
             })
             Spacer()
             TeamAvatar(game.away_team_code, alignment: .center)
-        }.padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
+        }
     }
 }
 
@@ -129,13 +151,7 @@ struct PlayedGame: View {
                 TeamAvatar(game.home_team_code, alignment: .center)
                     .opacity(homeLost ? 0.6 : 1.0)
                 Spacer()
-                Text("\(game.home_team_result)")
-                    .font(.system(size: 30))
-                    .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                Text("-")
-                Text("\(game.away_team_result)")
-                    .font(.system(size: 30))
-                    .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                GameScore(s1: game.home_team_result, s2: game.away_team_result)
                 Spacer()
                 TeamAvatar(game.away_team_code, alignment: .center)
                     .opacity(awayLost ? 0.6 : 1.0)
@@ -144,7 +160,7 @@ struct PlayedGame: View {
                 .font(.system(size: 18, design: .rounded))
                 .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                 .foregroundColor(Color.init(white: 0.6))
-        }).padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
+        })
     }
 }
 
@@ -170,6 +186,7 @@ struct SeasonView: View {
                         ForEach(liveGames) { (item) in
                             NavigationLink(destination: GamesStatsView(game: item)) {
                                 LiveGame(game: item)
+                                    .padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
                             }
                         }
                     }
@@ -179,6 +196,7 @@ struct SeasonView: View {
                         ForEach(futureGames) { (item) in
                             NavigationLink(destination: GamesStatsView(game: item)) {
                                 ComingGame(game: item)
+                                    .padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
                             }
                         }
                     }
@@ -188,6 +206,7 @@ struct SeasonView: View {
                         ForEach(playedGames) { (item) in
                             NavigationLink(destination: GamesStatsView(game: item)) {
                                 PlayedGame(game: item)
+                                    .padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
                             }
                         }
                     }
@@ -241,8 +260,8 @@ struct SeasonView_Previews: PreviewProvider {
                                     getPlayedGame(t1: "LHF", s1: 4, t2: "FBK", s2: 1),
                                     getPlayedGame(t1: "LIF", s1: 3, t2: "TIK", s2: 1),
                 
-                                    getFutureGame(t1: "LHF", t2: "TIK"),
-                                    getFutureGame()])
+                                    getFutureGame(t1: "LHF", t2: "TIK", days: 1),
+                                    getFutureGame(t1: "LHF", t2: "TIK", days: 2)])
         let starredTeams = StarredTeams()
         starredTeams.addTeam(teamCode: "LHF")
         
@@ -250,6 +269,7 @@ struct SeasonView_Previews: PreviewProvider {
                   provider: nil)
             .environmentObject(starredTeams)
             .environmentObject(gamesData)
+            .environmentObject(getTeamsData())
             .environmentObject(Settings())
             .environment(\.locale, .init(identifier: "sv"))
     }

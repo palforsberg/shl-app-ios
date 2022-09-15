@@ -16,6 +16,7 @@ struct StatsRowSingle: View {
             Text(LocalizedStringKey(left)).font(.system(size: 20, design: .rounded)).fontWeight(.semibold).frame(maxWidth: .infinity, alignment: .leading)
             Spacer()
             Text(right).font(.system(size: 20, design: .rounded)).fontWeight(.bold).frame(width: 65, alignment: .trailing)
+                .monospacedDigit()
         }.padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
     }
 }
@@ -74,9 +75,7 @@ struct TeamView: View {
                         GroupedView(title: "Live") {
                             ForEach(liveGames) { (item) in
                                 LiveGame(game: item)
-                                if (item != liveGames.last) {
-                                    Divider()
-                                }
+                                    .padding(EdgeInsets(top: 10, leading: -10, bottom: 14, trailing: -10))
                             }
                         }
                         Spacer()
@@ -87,9 +86,7 @@ struct TeamView: View {
                         GroupedView(title: "Coming") {
                             ForEach(futureGames) { (item) in
                                 ComingGame(game: item)
-                                if (item != futureGames.last) {
-                                    Divider()
-                                }
+                                    .padding(EdgeInsets(top: 10, leading: -10, bottom: 14, trailing: -10))
                             }
                         }
                         Spacer()
@@ -100,9 +97,7 @@ struct TeamView: View {
                         GroupedView(title: "Played_param \(settings.getFormattedPrevSeason())") {
                             ForEach(playedGames) { (item) in
                                 PlayedGame(game: item)
-                                if (item != playedGames.last) {
-                                    Divider()
-                                }
+                                    .padding(EdgeInsets(top: 10, leading: -10, bottom: 14, trailing: -10))
                             }
                         }
                     }
@@ -133,8 +128,7 @@ struct StarButton: View {
 
 struct TeamView_Previews: PreviewProvider {
     static var previews: some View {
-        let teams = TeamsData()
-        teams.teams["LHF"] = Team(code: "LHF", name: "Luleå HF", shortname: "Luleå")
+        let teams = getTeamsData()
         let starred = StarredTeams()
         starred.addTeam(teamCode: "LHF")
         return Group {

@@ -16,9 +16,10 @@ struct GoalAlert: View {
         if alert != nil {
             VStack {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 50)
+                    RoundedRectangle(cornerRadius: 20)
                         .fill(Color(UIColor.systemYellow))
-                        .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 3)
+                        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 0)
+                        .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 3)
                     Text("🚨 \(alert!) 🚨")
                         .font(.system(size: 18, design: .rounded))
                         .fontWeight(.bold)
@@ -95,10 +96,7 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        let teams = TeamsData()
-        teams.setTeams(teams: [Team(code: "LHF", name: "Luleå HF", shortname: "Luleå"),
-                               Team(code: "FHC", name: "Frölunda HC", shortname: "Frölunda"),
-                               Team(code: "SAIK", name: "Skellefteå AIK", shortname: "Skellefteå")])
+        let teams = getTeamsData()
         
         let starredTeams = StarredTeams()
         starredTeams.addTeam(teamCode: "LHF")

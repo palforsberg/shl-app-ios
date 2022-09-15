@@ -238,14 +238,6 @@
 			path = Icons;
 			sourceTree = "<group>";
 		};
-		23537EDE26B5800E00C9B6ED /* settings */ = {
-			isa = PBXGroup;
-			children = (
-				23537ED526B57B9C00C9B6ED /* SettingsView.swift */,
-			);
-			path = settings;
-			sourceTree = "<group>";
-		};
 		D1AFF85C25A84FCB00E50ADE = {
 			isa = PBXGroup;
 			children = (
@@ -289,13 +281,13 @@
 		D1AFF8A525A8570B00E50ADE /* compositions */ = {
 			isa = PBXGroup;
 			children = (
-				23537EDE26B5800E00C9B6ED /* settings */,
 				D1AFF86825A84FCB00E50ADE /* ShlApp.swift */,
 				D1AFF86A25A84FCB00E50ADE /* ContentView.swift */,
 				D1AFF89625A8537B00E50ADE /* SeasonView.swift */,
 				D1AFF8A025A8550500E50ADE /* StandingsView.swift */,
 				D1AFC2A325B07E8100490FCE /* TeamView.swift */,
 				23537ECF26B1D30200C9B6ED /* GamesStatsView.swift */,
+				23537ED526B57B9C00C9B6ED /* SettingsView.swift */,
 				23537ED126B3FE6D00C9B6ED /* Preview.swift */,
 				2339F6B526C25CDE006DE5F0 /* Launch Screen.storyboard */,
 			);
@@ -563,7 +555,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.4;
+				MARKETING_VERSION = 0.1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -708,7 +700,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.4;
+				MARKETING_VERSION = 0.1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -735,7 +727,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.4;
+				MARKETING_VERSION = 0.1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

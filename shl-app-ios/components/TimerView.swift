@@ -13,6 +13,7 @@ struct TimeLabel : View {
     let label: String
     var body: some View {
         Text("\(time ?? 0)").font(.system(size: 20, design: .rounded)).fontWeight(.semibold)
+            .monospacedDigit()
         Text(label).font(.system(size: 16, design: .rounded)).fontWeight(.medium)
             .padding(.trailing, 8).padding(.top, 3)
     }

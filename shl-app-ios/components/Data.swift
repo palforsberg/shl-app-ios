@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 #if DEBUG
-let baseUrl = "http://192.168.141.229:8080"
+let baseUrl = "http://192.168.1.136:8080"
 #else
 let baseUrl = "https://palsserver.com/shl-api"
 #endif
@@ -50,7 +50,7 @@ class Cache {
     
     func getKey(_ key: String) -> String {
         // to make it possible to change the datamodel between versions
-        return "\(key)_v0.1.4"
+        return "\(key)_v0.1.5"
     }
 }
 
@@ -110,7 +110,7 @@ class DataProvider {
             self.cache.store(key: urlString, data: parsed)
             return parsed
         } catch let error {
-            print("[DATA] Failed to retrieve data \(error.localizedDescription)")
+            print("[DATA] Failed to retrieve data \(error)")
             return self.cache.retrieve(key: urlString, type: type)
         }
     }
@@ -222,7 +222,7 @@ struct Game: Codable, Identifiable, Equatable  {
     var id: String {
         return game_uuid
     }
-    let game_id: String
+    let game_id: Int
     let game_uuid: String
     let away_team_code: String
     let away_team_result: Int
@@ -441,12 +441,8 @@ extension Date {
         dateformat.locale = Locale.current
         let dateDelta = Date.daysBetween(from: Date(), to: self)
     
-        if (dateDelta < 1) {
-            dateformat.doesRelativeDateFormatting = true
-            dateformat.dateStyle = .short
-            dateformat.timeStyle = .short
-        } else if (dateDelta < 7) {
-            dateformat.dateFormat = "E HH:mm"
+        if (abs(dateDelta) < 7) {
+            dateformat.dateFormat = "EEEE"
         } else {
             dateformat.dateFormat = "dd/MM HH:mm"
         }

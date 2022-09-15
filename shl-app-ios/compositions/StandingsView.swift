@@ -43,7 +43,9 @@ struct PointsLabel: View {
         let nrZeros = nrDigits - str.count
         HStack(spacing: 0) {
             Text(genZeros(nrZeros)).points().foregroundColor(Color(UIColor.tertiaryLabel))
+                .monospacedDigit()
             Text(str).foregroundColor(color).points()
+                .monospacedDigit()
         }
     }
     
