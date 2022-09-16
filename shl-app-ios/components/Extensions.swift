@@ -64,3 +64,50 @@ extension UIImage {
         return scaledImage
     }
 }
+
+
+extension Date {
+   func getFormattedDateAndTime() -> String {
+        let dateformat = DateFormatter()
+        
+        dateformat.locale = Locale.current
+        let dateDelta = Date.daysBetween(from: Date(), to: self)
+    
+        if (abs(dateDelta) < 7) {
+            dateformat.dateFormat = "EEEE"
+        } else {
+            dateformat.dateFormat = "dd/MM HH:mm"
+        }
+        return dateformat.string(from: self)
+    }
+    
+    func getFormattedDate() -> String {
+         let dateformat = DateFormatter()
+         
+        dateformat.locale = Locale.current
+         let dateDelta = Date.daysBetween(from: Date(), to: self)
+     
+         if (dateDelta < 1) {
+             dateformat.doesRelativeDateFormatting = true
+             dateformat.dateStyle = .short
+         } else if (dateDelta < 7) {
+             dateformat.dateFormat = "E"
+         } else {
+             dateformat.dateFormat = "dd/MM"
+         }
+         return dateformat.string(from: self)
+     }
+    
+    
+    func getFormattedTime() -> String {
+        let dateformat = DateFormatter()
+        dateformat.locale = Locale.current
+        dateformat.dateFormat = "HH:mm"
+        return dateformat.string(from: self)
+     }
+    
+    static func daysBetween(from: Date, to: Date) -> Int {
+        return Calendar.current.dateComponents([.day], from: from, to: to).day!
+    }
+}
+
