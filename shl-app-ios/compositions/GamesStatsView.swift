@@ -41,7 +41,7 @@ struct GroupedView<Content: View>: View {
     var body: some View {
         VStack {
             if let t = title {
-                Text(t).listHeader()
+                Text(t).listHeader(true)
                     .padding(.bottom, -4)
             }
             ZStack {
@@ -120,7 +120,7 @@ struct TopPlayerView: View {
     var body: some View {
         VStack {
             HStack {
-                TeamLogo(code: player.team, size: .mini)
+                TeamLogo(code: player.team, size: 19)
                 Text("\(player.firstName) \(player.familyName)").fontWeight(.semibold).font(.system(size: 16, design: .rounded))
                 Text("\(player.position)").fontWeight(.regular).font(.system(size: 16, design: .rounded))
                 Spacer()
@@ -153,9 +153,12 @@ struct GamesStatsView: View {
     
     var body: some View {
             ScrollView {
-                PullToRefresh(coordinateSpaceName: "game_stats_scrollview") {
-                    Task {
-                        await self.reloadData()
+                if #available(iOS 16.0, *) {
+                } else {
+                    PullToRefresh(coordinateSpaceName: "game_stats_scrollview") {
+                        Task {
+                            await self.reloadData()
+                        }
                     }
                 }
                 Spacer(minLength: 10)
@@ -169,7 +172,7 @@ struct GamesStatsView: View {
                 Group { // Header
                     HStack(alignment: .center, spacing: 0) {
                         VStack {
-                            TeamLogo(code: game.home_team_code, size: LogoSize.big)
+                            TeamLogo(code: game.home_team_code, size: 50.0)
                             Text(teamsData.getShortname(game.home_team_code))
                                 .font(.system(size: 20, design: .rounded))
                                 .fontWeight(.medium)
@@ -190,7 +193,7 @@ struct GamesStatsView: View {
                         }.padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5))
                         
                         VStack {
-                            TeamLogo(code: game.away_team_code, size: LogoSize.big)
+                            TeamLogo(code: game.away_team_code, size: 50)
                             Text(teamsData.getShortname(game.away_team_code))
                                 .font(.system(size: 20, design: .rounded))
                                 .fontWeight(.medium)
@@ -206,7 +209,7 @@ struct GamesStatsView: View {
                     Text("Starts In").listHeader(false)
                     TimerView(referenceDate: game.start_date_time)
                     Spacer(minLength: 40)
-                } else if let periodString = gameStats?.getPeriodNr() {
+                } else if let periodString = gameStats?.status {
                     Text(LocalizedStringKey(periodString)).font(.system(size: 18, design: .rounded)).fontWeight(.semibold)
                     Spacer(minLength: 20)
                 }
@@ -250,6 +253,9 @@ struct GamesStatsView: View {
                         await self.reloadData()
                     }
                 }
+            }
+            .refreshable {
+                await self.reloadData()
             }
             .navigationBarTitle("", displayMode: .inline)
             .background(Color(UIColor.systemGroupedBackground))

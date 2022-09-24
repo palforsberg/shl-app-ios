@@ -50,7 +50,7 @@ class Cache {
     
     func getKey(_ key: String) -> String {
         // to make it possible to change the datamodel between versions
-        return "\(key)_v0.1.5"
+        return "\(key)_v0.1.6"
     }
 }
 
@@ -69,6 +69,10 @@ class DataProvider {
             }
         }
         return await getData(url: url, type: [Game].self)
+    }
+    
+    func getCachedGames() -> [Game] {
+        return cache.retrieve(key: gamesUrl(Settings.currentSeason), type: [Game].self) ?? []
     }
 
     func getStandings(season: Int) async -> [Standing]? {
@@ -179,7 +183,7 @@ class GamesData: ObservableObject {
                         .filter({ $0.isLive() })
                         .filter(getTeamFilter(teamCodes: teamCodes)))
     }
-    
+
     func getPlayedGames(teamCodes: [String]) -> [Game] {
         return Array(getGames()
             .sorted { (a, b) -> Bool in
@@ -218,6 +222,16 @@ enum GameType: String, Codable {
     case season = "Regular season game"
     case kvalmatch = "Kvalmatch nedflyttning"
 }
+enum GameStatus: String, Codable {
+    case coming = "Coming"
+    case period1 = "Period1"
+    case period2 = "Period2"
+    case period3 = "Period3"
+    case overtime = "Overtime"
+    case shootout = "Shootout"
+    case finished = "Finished"
+    case intermission = "Intermission"
+}
 struct Game: Codable, Identifiable, Equatable  {
     var id: String {
         return game_uuid
@@ -233,6 +247,7 @@ struct Game: Codable, Identifiable, Equatable  {
     let played: Bool
     let overtime: Bool
     let penalty_shots: Bool
+    let status: String?
     
     func hasTeam(_ teamCode: String) -> Bool {
         return away_team_code == teamCode || home_team_code == teamCode
@@ -271,6 +286,10 @@ struct Game: Codable, Identifiable, Equatable  {
     
     func getGameType() -> GameType? {
         return GameType.init(rawValue: self.game_type)
+    }
+
+    func getStatus() -> GameStatus? {
+        return self.status != nil ? GameStatus.init(rawValue: self.status!) : nil
     }
 }
 
@@ -345,22 +364,7 @@ struct GameStats: Codable {
     var recaps: AllPeriods
     var gameState: String
     var playersByTeam: [String: TeamPlayers]?
-    
-    func getPeriodNr() -> String? {
-        if gameState == "GameEnded" {
-            return "Game ended"
-        }
-        if recaps.period4 != nil {
-            return "Overtime"
-        } else if recaps.period3 != nil {
-            return "Period 3"
-        } else if recaps.period2 != nil {
-            return "Period 2"
-        } else if recaps.period1 != nil {
-            return "Period 1"
-        }
-        return nil
-    }
+    var status: String?
     
     func getTopPlayers() -> [Player] {
         var allPlayers = [Player]()
@@ -370,8 +374,13 @@ struct GameStats: Codable {
         
         return Array(allPlayers
                         .filter({ p in p.getScore() > 0 })
+                        .sorted(by: { p1, p2 in p1.id >= p2.id })
                         .sorted(by: { p1, p2 in p1.getScore() >= p2.getScore() })
                         .prefix(5))
+    }
+    
+    func getStatus() -> GameStatus? {
+        return self.status != nil ? GameStatus.init(rawValue: self.status!) : nil
     }
 }
 

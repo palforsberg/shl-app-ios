@@ -14,6 +14,16 @@
 "Points/Game" = "Points/Game";
 "Starts In" = "Starts In";
 
+// Game Status
+"Coming" = "Coming";
+"Period1" = "Period 1";
+"Period2" = "Period 2";
+"Period3" = "Period 3";
+"Intermission" = "Paused";
+"Overtime" = "Overtime";
+"Shootout" = "Shootout";
+"Finished" = "Finished";
+
 // Game Stats
 "Regular season game" = "Season game";
 "Playoff game" = "Playoff game";

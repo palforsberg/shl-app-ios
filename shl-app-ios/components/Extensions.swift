@@ -18,7 +18,7 @@ extension UIFont {
 
 extension Text {
 
-    func listHeader(_ leading: Bool = true) -> some View {
+    func listHeader(_ leading: Bool = false) -> some View {
         let txt = self
             .font(.system(size: 18, design: .rounded))
             .fontWeight(.semibold)
@@ -67,22 +67,8 @@ extension UIImage {
 
 
 extension Date {
-   func getFormattedDateAndTime() -> String {
-        let dateformat = DateFormatter()
-        
-        dateformat.locale = Locale.current
-        let dateDelta = Date.daysBetween(from: Date(), to: self)
-    
-        if (abs(dateDelta) < 7) {
-            dateformat.dateFormat = "EEEE"
-        } else {
-            dateformat.dateFormat = "dd/MM HH:mm"
-        }
-        return dateformat.string(from: self)
-    }
-    
     func getFormattedDate() -> String {
-         let dateformat = DateFormatter()
+        let dateformat = DateFormatter()
          
         dateformat.locale = Locale.current
          let dateDelta = Date.daysBetween(from: Date(), to: self)
@@ -95,7 +81,8 @@ extension Date {
          } else {
              dateformat.dateFormat = "dd/MM"
          }
-         return dateformat.string(from: self)
+        // return "\(Int.random(in: 0..<100))"
+        return dateformat.string(from: self)
      }
     
     

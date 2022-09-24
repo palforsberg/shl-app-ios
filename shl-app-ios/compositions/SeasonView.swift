@@ -49,7 +49,7 @@ struct TeamAvatar: View {
     var body: some View {
         let starred = starredTeams.isStarred(teamCode: teamCode)
         HStack {
-            TeamLogo(code: teamCode, size: LogoSize.small)
+            TeamLogo(code: teamCode)
                 .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
             Text(teamCode)
                 .font(.system(size: 24, design: .rounded)).fontWeight(.semibold)
@@ -69,7 +69,7 @@ struct LiveGame2: View {
     var body: some View {
         HStack {
             VStack {
-                TeamLogo(code: game.home_team_code, size: .small)
+                TeamLogo(code: game.home_team_code)
                 Text("Luleå")
                     .font(.system(size: 14, design: .rounded))
                     .fontWeight(.medium)
@@ -89,7 +89,7 @@ struct LiveGame2: View {
                 .fontWeight(.bold)
             Spacer()
             VStack {
-                TeamLogo(code: game.away_team_code, size: .small)
+                TeamLogo(code: game.away_team_code)
                 Text("Frölunda")
                     .font(.system(size: 14, design: .rounded))
                     .fontWeight(.medium)
@@ -107,12 +107,17 @@ struct LiveGame2: View {
 struct LiveGame: View {
     var game: Game
     var body: some View {
-        HStack {
-            TeamAvatar(game.home_team_code, alignment: .center)
-            Spacer()
-            GameScore(s1: game.home_team_result, s2: game.away_team_result)
-            Spacer()
-            TeamAvatar(game.away_team_code, alignment: .center)
+        VStack(alignment: .center, spacing: -1) {
+            HStack {
+                TeamAvatar(game.home_team_code, alignment: .center)
+                Spacer()
+                GameScore(s1: game.home_team_result, s2: game.away_team_result)
+                Spacer()
+                TeamAvatar(game.away_team_code, alignment: .center)
+            }
+            Text(LocalizedStringKey(game.status ?? ""))
+                .font(.system(size: 18, weight: .semibold, design: .rounded))
+                .foregroundColor(Color(UIColor.secondaryLabel))
         }
     }
 }
@@ -132,7 +137,7 @@ struct ComingGame: View {
                     .minimumScaleFactor(0.6)
                     
                 Text("\(game.start_date_time.getFormattedTime())")
-                    .font(.system(size: 15, design: .rounded))
+                    .font(.system(size: 18, weight: .semibold, design: .rounded))
                     .foregroundColor(Color(UIColor.secondaryLabel))
             })
             Spacer()
@@ -146,7 +151,7 @@ struct PlayedGame: View {
     var body: some View {
         let homeLost = game.home_team_result < game.away_team_result
         let awayLost = game.home_team_result > game.away_team_result
-        VStack(alignment: .center, spacing: -1, content: {
+        VStack(alignment: .center, spacing: -1) {
             HStack {
                 TeamAvatar(game.home_team_code, alignment: .center)
                     .opacity(homeLost ? 0.6 : 1.0)
@@ -157,10 +162,9 @@ struct PlayedGame: View {
                     .opacity(awayLost ? 0.6 : 1.0)
             }
             Text(LocalizedStringKey(game.start_date_time.getFormattedDate()))
-                .font(.system(size: 18, design: .rounded))
-                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                .foregroundColor(Color.init(white: 0.6))
-        })
+                .font(.system(size: 18, weight: .semibold, design: .rounded))
+                .foregroundColor(Color(UIColor.secondaryLabel))
+        }
     }
 }
 
@@ -169,7 +173,7 @@ struct SeasonView: View {
     @EnvironmentObject var gamesData: GamesData
     @EnvironmentObject var settings: Settings
     
-    @State var reloading = false
+    @State var lastReload = Date(timeIntervalSince1970: 0)
     
     var provider: DataProvider?
     
@@ -196,6 +200,7 @@ struct SeasonView: View {
                         ForEach(futureGames) { (item) in
                             NavigationLink(destination: GamesStatsView(game: item)) {
                                 ComingGame(game: item)
+                                    .id(arc4random())
                                     .padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
                             }
                         }
@@ -206,6 +211,7 @@ struct SeasonView: View {
                         ForEach(playedGames) { (item) in
                             NavigationLink(destination: GamesStatsView(game: item)) {
                                 PlayedGame(game: item)
+                                    .id(arc4random())
                                     .padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
                             }
                         }
@@ -213,13 +219,17 @@ struct SeasonView: View {
                 }
             }
             .refreshable {
-                guard !self.reloading else {
+                let tenSeconds: Double = 10
+                let throttled = await self.reloadThrottledWithInterval(tenSeconds)
+                if throttled {
                     do {
                         try await Task.sleep(nanoseconds: 500 * 1_000_000)
                     } catch {}
-                    return
                 }
-                await self.reloadData()
+            }
+            .task { // runs before view appears
+                debugPrint("[SEASONVIEW] view did appear")
+                await self.reloadThrottledWithInterval(15 * 60)
             }
             .id(settings.season) // makes sure list is recreated when rerendered. To take care of reuse cell issues
             .listStyle(InsetGroupedListStyle())
@@ -230,23 +240,40 @@ struct SeasonView: View {
         }
         .onReceive(settings.$season) { _ in
             Task {
+                debugPrint("[SEASONVIEW] settings.$season")
                 await self.reloadData()
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .onGameNotification)) { _ in
             Task {
+                debugPrint("[SEASONVIEW] onGameNotification")
                 await self.reloadData()
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            debugPrint("[SEASONVIEW] applicationWillEnterForeground")
+            Task {
+                await self.reloadThrottledWithInterval(15 * 60)
             }
         }
     }
     
+    func reloadThrottledWithInterval(_ throttling: TimeInterval) async -> Bool {
+        guard -lastReload.timeIntervalSinceNow > throttling else {
+            debugPrint("[SEASONVIEW] do not update \(throttling) > \(-lastReload.timeIntervalSinceNow)")
+            return true
+        }
+        debugPrint("[SEASONVIEW] do update")
+        await self.reloadData()
+        return false
+    }
+
     func reloadData() async {
-        self.reloading = true
+        self.lastReload = Date.now
         if let gd = await provider?.getGames(season: settings.season) {
             gamesData.set(data: gd)
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-            self.reloading = false
+        } else {
+            self.lastReload = Date(timeIntervalSince1970: 0)
         }
     }
 }
@@ -254,19 +281,19 @@ struct SeasonView: View {
 struct SeasonView_Previews: PreviewProvider {
     static var previews: some View {
         let gamesData = GamesData(data: [
-                                    getLiveGame(t1: "MIF", score1: 1, t2: "TIK", score2: 3),
+                                    getLiveGame(t1: "MIF", score1: 1, t2: "TIK", score2: 3, status: "Intermission"),
                                     getLiveGame(t1: "LHF", score1: 4, t2: "FHC", score2: 2),
                                                        
                                     getPlayedGame(t1: "LHF", s1: 4, t2: "FBK", s2: 1),
-                                    getPlayedGame(t1: "LIF", s1: 3, t2: "TIK", s2: 1),
+                                    getPlayedGame(t1: "SAIK", s1: 3, t2: "TIK", s2: 1),
                 
-                                    getFutureGame(t1: "LHF", t2: "TIK", days: 1),
+                                    getFutureGame(t1: "LHF", t2: "HV71", days: 1),
                                     getFutureGame(t1: "LHF", t2: "TIK", days: 2)])
         let starredTeams = StarredTeams()
         starredTeams.addTeam(teamCode: "LHF")
+        starredTeams.addTeam(teamCode: "TIK")
         
-        return SeasonView(
-                  provider: nil)
+        return SeasonView(provider: nil)
             .environmentObject(starredTeams)
             .environmentObject(gamesData)
             .environmentObject(getTeamsData())
@@ -274,3 +301,5 @@ struct SeasonView_Previews: PreviewProvider {
             .environment(\.locale, .init(identifier: "sv"))
     }
 }
+
+

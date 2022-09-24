@@ -21,7 +21,7 @@ struct StandingsHeader: View {
     var season: String
     var body: some View {
         HStack {
-            Text("Season_param \(season)").listHeader()
+            Text("Season_param \(season)").listHeader(true)
             Spacer()
             Text("GP").points()
                 .frame(width: 34, alignment: .center)

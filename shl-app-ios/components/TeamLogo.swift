@@ -7,29 +7,15 @@
 
 import SwiftUI
 
-enum LogoSize {
-    case mini
-    case small
-    case medium
-    case big
-}
 struct TeamLogo: View {
     var code: String
-    var size = LogoSize.small
+    var size: CGFloat = 30.0
 
     var body: some View {
-        URLImage(url: "https://palsserver.com/shl-server/logo/\(code.lowercased()).png")
-                .frame(width: getSize(), height: getSize(), alignment: .center)
+        URLImage(url: "https://palsserver.com/shl-server/logo/\(code.lowercased()).png?v=0.1.6")
+                .frame(width: size, height: size, alignment: .center)
     }
-    
-    func getSize() -> CGFloat {
-        switch size {
-            case .mini: return 19
-            case .small: return 30
-            case .medium: return 35
-            case .big: return 50
-        }
-    }
+
 }
 
 struct TeamLogo_Previews: PreviewProvider {

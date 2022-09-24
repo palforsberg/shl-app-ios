@@ -44,7 +44,7 @@ struct TeamView: View {
                             .foregroundColor(Color(UIColor.secondaryLabel))
                     Spacer(minLength: 0)
                 }
-                TeamLogo(code: teamCode, size: .big)
+                TeamLogo(code: teamCode, size: 50)
                 Text(_team?.name ?? teamCode)
                     .font(.system(size: 32, design: .rounded))
                     .fontWeight(.semibold)
