@@ -17,10 +17,10 @@ func getPlayedGame(t1: String, s1: Int, t2: String, s2: Int) -> Game {
 }
 
 func getLiveGame() -> Game {
-    return getLiveGame(t1: "LHF", score1: 2, t2: "FHC", score2: 0 )
+    return getLiveGame(t1: "LHF", score1: 2, t2: "FHC", score2: 0, status: "Period2")
 }
 
-func getLiveGame(t1: String, score1: Int, t2: String, score2: Int, status: String = "Period2") -> Game {
+func getLiveGame(t1: String, score1: Int, t2: String, score2: Int, status: String? = "Period2") -> Game {
     return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: score2, home_team_code: t1, home_team_result: score1, start_date_time: Date().addingTimeInterval(TimeInterval(-2_000)), game_type: GameType.season.rawValue, played: false, overtime: false, penalty_shots: false, status: status)
 }
 
@@ -67,6 +67,29 @@ func getPlayersWithZeroScore() -> [String: TeamPlayers] {
 
 func getPlayer(id: Int, g: Int, a: Int, pim: Int) -> Player {
     return Player(player: id, team: "LHF", firstName: "Lars", familyName: "Larsson", toi: "13:37", jersey: 69, g: g, a: a, pim: pim, position: "LD")
+}
+
+func getEventPlayer() -> EventPlayer {
+    return EventPlayer(firstName: "Lars", familyName: "Larsson", jersey: 69)
+}
+
+func getEvent(type: GameEventType, period: Int = 1, team: String = "LHF") -> GameEvent {
+    let info: GameEventInfo
+    switch type {
+    case .goal:
+        info = GameEventInfo(homeTeamId: "LHF", awayTeamId: "FHC", homeResult: 3, awayResult: 0, team: team, player: getEventPlayer(), teamAdvantage: "PP1")
+        break
+    case .periodStart, .periodEnd:
+        info = GameEventInfo(homeTeamId: "LHF", awayTeamId: "FHC", homeResult: 0, awayResult: 0, periodNumber: period)
+        break
+    case .penalty:
+        info = GameEventInfo(homeTeamId: "LHF", awayTeamId: "FHC", homeResult: 0, awayResult: 0, team: team, player: getEventPlayer(), penalty: 2, reason: "Too many players on the ice")
+        break
+    default:
+        info = GameEventInfo(homeTeamId: "LHF", awayTeamId: "FHC", homeResult: 3, awayResult: 0)
+        break
+    }
+    return GameEvent(type: type.rawValue, info: info, timestamp: Date.now, id: type.rawValue + period.formatted(), gametime: "13:37")
 }
 
 func getTeamsData() -> TeamsData {

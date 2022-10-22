@@ -24,20 +24,34 @@
 "Shootout" = "Straffar";
 "Finished" = "Slut";
 
+// EventType
+"GameEnd" = "Match slut";
+"GameStart" = "Match start";
+"PeriodStart %@" = "Period %@ start";
+"PeriodEnd %@" = "Period %@ slut";
+"PenaltiesStart" = "Straffar start";
+"PenaltiesEnd" = "Straffar slut";
+"OvertimeStart" = "Övertid start";
+"OvertimeEnd" = "Övertid slut";
+"Goal" = "Mål";
+"Goal_starred" = "MÅÅL! 🎉";
+"Penalty" = "Utvisning";
+
 // Game stats
 "Regular season game" = "Säsongsspel";
 "Playoff game" = "Slutspel";
 "Kvalmatch nedflyttning" = "Kvalspel";
 "Shots" = "Skott";
 "Penalty Minutes" = "Straff-minuter";
-"Face Offs Won" = "Tekningar Vunna";
+"Face Offs Won" = "Tekningar vunna";
 "Hits" = "Tacklingar";
 "Wins" = "Vinster";
 "Wins OT" = "Vinster ÖT";
-"Match History" = "Alla Matcher";
+"Match History" = "Versus";
 "Goal Diff" = "Mål Diff";
 "Overtime" = "Övertid";
 "Game ended" = "Slut";
+"GamePreview" = "Före matchen";
 
 // Settings
 "Season" = "Säsong";

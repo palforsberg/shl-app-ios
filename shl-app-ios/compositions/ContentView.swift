@@ -10,22 +10,23 @@ import SwiftUI
 
 struct GoalAlert: View {
     
-    @Binding var alert: String?
+    @Binding var alert: GameNofitication?
     
     var body: some View {
-        if alert != nil {
+        if alert != nil && alert?.title != nil {
             VStack {
                 ZStack {
-                    RoundedRectangle(cornerRadius: 20)
+                    Rectangle()
                         .fill(Color(UIColor.systemYellow))
-                        .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 0)
-                        .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 3)
-                    Text("🚨 \(alert!) 🚨")
-                        .font(.system(size: 18, design: .rounded))
-                        .fontWeight(.bold)
-                        .foregroundColor(.black)
-                }.frame(width: .infinity, height: 70, alignment: .top)
-                    .padding(EdgeInsets(top: 0, leading: 30, bottom: 0, trailing: 30))
+                    HStack(spacing: 20) {
+                        Text("🚨 MÅL!")
+                            .font(.system(size: 40, weight: .black, design: .rounded))
+                            .foregroundColor(.black)
+                        TeamLogo(code: alert?.team ?? "", size: 110)
+                            .frame(height: 90)
+                            .clipped()
+                    }
+                }.frame(width: .infinity, height: 90, alignment: .top)
                     .transition(.scale)
                     .gesture(TapGesture().onEnded { _ in
                         withAnimation {
@@ -36,6 +37,49 @@ struct GoalAlert: View {
             }
             .transition(AnyTransition.move(edge: .top).combined(with: .opacity))
             .zIndex(1)
+        }
+    }
+}
+
+struct TitleAlert: View {
+    
+    @Binding var alert: GameNofitication?
+    
+    var body: some View {
+        if let a = alert {
+            VStack {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 0)
+                        .fill(Color(UIColor.systemYellow))
+                    VStack {
+                        Text("\(a.title ?? "")")
+                            .font(.system(size: 18, weight: .black, design: .rounded))
+                            .foregroundColor(.black)
+                        Text("\(a.body ?? "")")
+                            .font(.system(size: 16, weight: .heavy, design: .rounded))
+                            .foregroundColor(.black)
+                    }
+                }.frame(width: .infinity, height: 80, alignment: .top)
+                    .transition(.scale)
+                    .gesture(TapGesture().onEnded { _ in
+                        withAnimation {
+                            self.alert = nil
+                        }
+                    })
+                    Spacer()
+            }
+            .transition(AnyTransition.move(edge: .top).combined(with: .opacity))
+            .zIndex(1)
+        }
+    }
+}
+
+struct GameAlert: View {
+    @Binding var alert: GameNofitication?
+    var body: some View {
+        switch alert?.type {
+        case "Goal": return AnyView(GoalAlert(alert: $alert))
+        default: return AnyView(TitleAlert(alert: $alert))
         }
     }
 }
@@ -55,7 +99,7 @@ struct ContentView: View {
     var userService: UserService?
     
     @State
-    var alert: String? = nil
+    var alert: GameNofitication? = nil
 
     var body: some View {
         ZStack {
@@ -63,7 +107,7 @@ struct ContentView: View {
                 SeasonView(provider: provider).tabItem { Label("Home", systemImage: "house.circle") }
                 StandingsView(provider: provider).tabItem { Label("Standings", systemImage: "list.bullet.circle") }
             }
-            GoalAlert(alert: $alert)
+            GameAlert(alert: $alert)
         }.task {
             if let ts = await provider?.getTeams() {
                 teams.setTeams(teams: ts)
@@ -78,7 +122,7 @@ struct ContentView: View {
         .environmentObject(settings)
         .onReceive(NotificationCenter.default.publisher(for: .onGameNotification)) { data in
             withAnimation {
-                self.alert = (data.object as? GameNofitication)?.title
+                self.alert = data.object as? GameNofitication
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
                 withAnimation {
@@ -123,7 +167,7 @@ struct ContentView_Previews: PreviewProvider {
                 getStanding("TIK", rank: 6),
                 getStanding("MIF", rank: 7),
                 getStanding("SAIK", rank: 8),
-            ]), provider: nil, alert: "MÅÅÅL för Skellefteå")
+            ]), provider: nil, alert: GameNofitication(team: "LHF", game_uuid: "game_uuid_123", title: "MÅÅÅL för Skellefteå!", body: "SAIK 1 - 0 HV71", type: "Goal"))
             .environment(\.locale, .init(identifier: "sv"))
     }
 }

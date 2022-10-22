@@ -24,6 +24,19 @@
 "Shootout" = "Shootout";
 "Finished" = "Finished";
 
+// EventType
+"GameEnd" = "Game ended";
+"GameStart" = "Game started";
+"PeriodStart %@" = "Period %@ start";
+"PeriodEnd %@" = "Period %@ end";
+"PenaltiesStart" = "Penalties started";
+"PenaltiesEnd" = "Penalties end";
+"OvertimeStart" = "Overtime started";
+"OvertimeEnd" = "Overtime end";
+"Goal" = "Goal";
+"Goal_starred" = "GOAL!";
+"Penalty" = "Penalty";
+
 // Game Stats
 "Regular season game" = "Season game";
 "Playoff game" = "Playoff game";
@@ -38,6 +51,7 @@
 "Goal Diff" = "Goal Diff";
 "Overtime" = "Overtime";
 "Game ended" = "Game ended";
+"GamePreview" = "Game Preview";
 
 // Settings
 "Season" = "Season";

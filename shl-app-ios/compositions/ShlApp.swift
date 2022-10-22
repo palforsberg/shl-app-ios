@@ -39,8 +39,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let aps = userInfo["aps"] as? [String: Any]
         let alert = aps?["alert"] as? [String: String]
         let title = alert?["title"]
+        let body = alert?["body"]
         
-        let notif = GameNofitication (team: userInfo["team"] as? String, game_uuid: userInfo["game_uuid"] as? String, title: title)
+        let notif = GameNofitication (team: userInfo["team"] as? String, game_uuid: userInfo["game_uuid"] as? String, title: title, body: body, type: userInfo["type"] as? String)
         NotificationCenter.default.post(name: .onGameNotification, object: notif)
         completionHandler(UIBackgroundFetchResult.noData)
     }
@@ -88,4 +89,6 @@ struct GameNofitication {
     let team: String?
     let game_uuid: String?
     let title: String?
+    let body: String?
+    let type: String?
 }

@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 #if DEBUG
-let baseUrl = "http://192.168.1.136:8080"
+let baseUrl = "http://192.168.141.229:8080"
 #else
 let baseUrl = "https://palsserver.com/shl-api"
 #endif
@@ -50,7 +50,7 @@ class Cache {
     
     func getKey(_ key: String) -> String {
         // to make it possible to change the datamodel between versions
-        return "\(key)_v0.1.6"
+        return "\(key)_v0.1.8"
     }
 }
 
@@ -308,6 +308,10 @@ class StandingsData: ObservableObject {
         self.data = data
         self.objectWillChange.send()
     }
+    
+    func getFor(team: String) -> Standing? {
+        return self.data.first(where: { $0.team_code == team })
+    }
 }
 
 struct Standing: Codable, Identifiable {
@@ -365,6 +369,7 @@ struct GameStats: Codable {
     var gameState: String
     var playersByTeam: [String: TeamPlayers]?
     var status: String?
+    var events: [GameEvent]?
     
     func getTopPlayers() -> [Player] {
         var allPlayers = [Player]()
@@ -432,6 +437,57 @@ struct Player: Codable, Identifiable {
     
     func getScore() -> Int {
         return (g * 6) + (a * 3) + (pim * 1)
+    }
+}
+
+struct EventPlayer: Codable {
+    var firstName: String
+    var familyName: String
+    var jersey: Int
+}
+struct GameEventInfo: Codable {
+    var homeTeamId: String
+    var awayTeamId: String
+    var homeResult: Int
+    var awayResult: Int
+    
+    var team: String?
+    var player: EventPlayer?
+    
+    var isPowerPlay: Bool?
+    var teamAdvantage: String?
+    
+    var periodNumber: Int?
+    
+    var penalty: Int?
+    var reason: String?
+    
+    func getTeamAdvantage() -> String {
+        if self.teamAdvantage == "EQ" {
+            return ""
+        }
+        return self.teamAdvantage ?? ""
+    }
+}
+
+enum GameEventType : String, Codable {
+    case gameStart = "GameStart"
+    case gameEnd = "GameEnd"
+    case goal = "Goal"
+    case penalty = "Penalty"
+    case periodStart = "PeriodStart"
+    case periodEnd = "PeriodEnd"
+}
+
+struct GameEvent: Codable, Identifiable {
+    var type: String
+    var info: GameEventInfo
+    var timestamp: Date
+    var id: String
+    var gametime: String
+    
+    func getEventType() -> GameEventType? {
+        return GameEventType(rawValue: type)
     }
 }
 

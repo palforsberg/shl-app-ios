@@ -281,7 +281,7 @@ struct SeasonView: View {
 struct SeasonView_Previews: PreviewProvider {
     static var previews: some View {
         let gamesData = GamesData(data: [
-                                    getLiveGame(t1: "MIF", score1: 1, t2: "TIK", score2: 3, status: "Intermission"),
+                                    getLiveGame(t1: "MIF", score1: 1, t2: "TIK", score2: 3, status: nil),
                                     getLiveGame(t1: "LHF", score1: 4, t2: "FHC", score2: 2),
                                                        
                                     getPlayedGame(t1: "LHF", s1: 4, t2: "FBK", s2: 1),
