@@ -12,8 +12,8 @@ func getPlayedGame() -> Game {
     return getPlayedGame(t1: "LHF", s1: 2, t2: "FHC", s2: 0)
 }
 
-func getPlayedGame(t1: String, s1: Int, t2: String, s2: Int) -> Game {
-    return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: s2, home_team_code: t1, home_team_result: s1, start_date_time: Date().addingTimeInterval(TimeInterval(-2_000)), game_type: GameType.season.rawValue, played: true, overtime: false, penalty_shots: false, status: "Finished")
+func getPlayedGame(t1: String, s1: Int, t2: String, s2: Int, overtime: Bool = false, date: Date = Date().addingTimeInterval(TimeInterval(-2_000))) -> Game {
+    return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: s2, home_team_code: t1, home_team_result: s1, start_date_time: date, game_type: GameType.season.rawValue, played: true, overtime: overtime, penalty_shots: false, status: "Finished", gametime: "20:00")
 }
 
 func getLiveGame() -> Game {
@@ -21,7 +21,7 @@ func getLiveGame() -> Game {
 }
 
 func getLiveGame(t1: String, score1: Int, t2: String, score2: Int, status: String? = "Period2") -> Game {
-    return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: score2, home_team_code: t1, home_team_result: score1, start_date_time: Date().addingTimeInterval(TimeInterval(-2_000)), game_type: GameType.season.rawValue, played: false, overtime: false, penalty_shots: false, status: status)
+    return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: score2, home_team_code: t1, home_team_result: score1, start_date_time: Date().addingTimeInterval(TimeInterval(-2_000)), game_type: GameType.season.rawValue, played: false, overtime: false, penalty_shots: false, status: status, gametime: "13:37")
 }
 
 func getFutureGame() -> Game {
@@ -35,7 +35,7 @@ func getFutureGame(t1: String, t2: String) -> Game {
 func getFutureGame(t1: String, t2: String, days: Int) -> Game {
     let futDate = Calendar.current.date(byAdding: DateComponents(day: days), to: Date()) ?? Date()
     return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: 0, home_team_code: t1, home_team_result: 0, start_date_time: futDate,
-                game_type: GameType.season.rawValue, played: false, overtime: false, penalty_shots: false, status: "Coming")
+                game_type: GameType.season.rawValue, played: false, overtime: false, penalty_shots: false, status: "Coming", gametime: nil)
 }
 
 func getStanding(_ teamCode: String, rank: Int) -> Standing {
@@ -69,6 +69,10 @@ func getPlayer(id: Int, g: Int, a: Int, pim: Int) -> Player {
     return Player(player: id, team: "LHF", firstName: "Lars", familyName: "Larsson", toi: "13:37", jersey: 69, g: g, a: a, pim: pim, position: "LD")
 }
 
+func getPlayerStats(id: Int, g: Int, a: Int, pim: Int) -> PlayerStats {
+    return PlayerStats(player: id, team: "LHF", firstName: "Lars", familyName: "Larsson", position: "LD", jersey: 69, gp: 24, toi: "13:37", g: g, a: a, pim: pim)
+}
+
 func getEventPlayer() -> EventPlayer {
     return EventPlayer(firstName: "Lars", familyName: "Larsson", jersey: 69)
 }
@@ -83,7 +87,7 @@ func getEvent(type: GameEventType, period: Int = 1, team: String = "LHF") -> Gam
         info = GameEventInfo(homeTeamId: "LHF", awayTeamId: "FHC", homeResult: 0, awayResult: 0, periodNumber: period)
         break
     case .penalty:
-        info = GameEventInfo(homeTeamId: "LHF", awayTeamId: "FHC", homeResult: 0, awayResult: 0, team: team, player: getEventPlayer(), penalty: 2, reason: "Too many players on the ice")
+        info = GameEventInfo(homeTeamId: "LHF", awayTeamId: "FHC", homeResult: 0, awayResult: 0, team: team, player: getEventPlayer(), penaltyLong: "2 min + GM", reason: "Too many players on the ice")
         break
     default:
         info = GameEventInfo(homeTeamId: "LHF", awayTeamId: "FHC", homeResult: 3, awayResult: 0)
@@ -112,4 +116,25 @@ func getTeamsData() -> TeamsData {
         Team( code: "HV71", name: "HV71", shortname: "HV71"),
     ])
     return teamsData
+}
+
+func getPlayoffs() -> Playoffs {
+    Playoffs(
+                demotion: PlayoffEntry(team1: "HV71", team2: "MIF", score1: 2, score2: 2),
+                eight: [
+                    PlayoffEntry(team1: "LHF", team2: "OHK", score1: 2, score2: 1),
+                    PlayoffEntry(team1: "RBK", team2: "LIF", score1: 2, score2: 1),
+                ],
+                quarter: [
+                    PlayoffEntry(team1: "LHF", team2: "OHK", score1: 2, score2: 1),
+                    PlayoffEntry(team1: "TIK", team2: "SAIK", score1: 2, score2: 1),
+                    PlayoffEntry(team1: "HV71", team2: "FBK", score1: 2, score2: 1),
+                    PlayoffEntry(team1: "FHC", team2: "RBK", score1: 2, score2: 1)
+                ],
+                semi: [
+                    PlayoffEntry(team1: "LHF", team2: "SAIK", score1: 2, score2: 1),
+                    PlayoffEntry(team1: "HV71", team2: "TBD", score1: 0, score2: 0)
+                ],
+                final: PlayoffEntry(team1: "FHC", team2: "RBK", score1: 2, score2: 1)
+            )
 }

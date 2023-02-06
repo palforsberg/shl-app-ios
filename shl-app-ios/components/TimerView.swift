@@ -7,13 +7,20 @@
 
 import SwiftUI
 
-
+extension AnyTransition{
+    public static func flipText() -> AnyTransition {
+        .asymmetric(insertion: .offset(y: -15).combined(with: .opacity), removal: .offset(y: 15).combined(with: .opacity))
+    }
+}
 struct TimeLabel : View {
     let time: Int?
     let label: String
     var body: some View {
-        Text("\(time ?? 0)").font(.system(size: 20, design: .rounded)).fontWeight(.semibold)
+        Text("\(time ?? 0)")
+            .font(.system(size: 20, design: .rounded)).fontWeight(.bold)
             .monospacedDigit()
+            .id("\(time ?? 0)\(label)")
+            .transition(.flipText())
         Text(label).font(.system(size: 16, design: .rounded)).fontWeight(.medium)
             .padding(.trailing, 8).padding(.top, 3)
     }
@@ -55,7 +62,9 @@ struct TimerView : View {
         }
         
         self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) {_ in
-            self.nowDate = Date()
+            withAnimation {
+                self.nowDate = Date()
+            }
             if (referenceDate < self.nowDate) {
                 stopTimer()
             }

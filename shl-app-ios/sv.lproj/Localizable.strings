@@ -16,12 +16,14 @@
 
 // Game Status
 "Coming" = "Kommande";
-"Period1" = "Period 1";
-"Period2" = "Period 2";
-"Period3" = "Period 3";
+"Period1" = "P1";
+"Period2" = "P2";
+"Period3" = "P3";
 "Intermission" = "Paus";
 "Overtime" = "Övertid";
 "Shootout" = "Straffar";
+"overtime" = "övertid";
+"shootout" = "straffar";
 "Finished" = "Slut";
 
 // EventType
@@ -52,6 +54,30 @@
 "Overtime" = "Övertid";
 "Game ended" = "Slut";
 "GamePreview" = "Före matchen";
+
+// Standings
+"Final" = "Final";
+"Semifinal" = "Semifinal";
+"Quarterfinal" = "Kvartsfinal";
+"Eightfinal" = "Åttondelsfinal";
+"Demotion" = "Nedflyttning";
+
+// Team
+"Players" = "Spelare";
+"SHOW ALL" = "VISA ALLA";
+"SHOW LESS" = "VISA FÄRRE";
+
+"Saves/Shot" = "Räddningar / Skott";
+"Saves" = "Räddningar";
+"Shots Against" = "Skott Mot";
+"Goals Against" = "Mål Mot";
+"Penalty Time" = "Utvisningstid";
+"Played Games" = "Spelade Matcher";
+
+"Goals/Shot" = "Mål / Skott";
+"+/-" = "+/-";
+"Time On Ice" = "Istid";
+"Time/Game" = "Istid / Match";
 
 // Settings
 "Season" = "Säsong";

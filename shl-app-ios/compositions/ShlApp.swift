@@ -12,7 +12,7 @@ struct ShlApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     init() {
-        UINavigationBar.appearance().largeTitleTextAttributes = [.font: UIFont.rounded(ofSize: 35, weight: .bold)]
+        UINavigationBar.appearance().largeTitleTextAttributes = [.font: UIFont.rounded(ofSize: 35, weight: .heavy)]
     }
 
     var body: some Scene {
@@ -85,7 +85,7 @@ extension NSNotification.Name {
     static let onGameNotification = Notification.Name("onGameNotification")
 }
 
-struct GameNofitication {
+struct GameNofitication: Equatable {
     let team: String?
     let game_uuid: String?
     let title: String?

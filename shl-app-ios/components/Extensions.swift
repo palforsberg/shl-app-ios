@@ -73,10 +73,12 @@ extension Date {
         dateformat.locale = Locale.current
          let dateDelta = Date.daysBetween(from: Date(), to: self)
      
-         if (dateDelta < 1) {
+         if (dateDelta < -1) {
+             dateformat.dateFormat = "dd/MM"
+         } else if (dateDelta < 1) {
              dateformat.doesRelativeDateFormatting = true
              dateformat.dateStyle = .short
-         } else if (dateDelta < 7) {
+         } else if (abs(dateDelta) < 7) {
              dateformat.dateFormat = "E"
          } else {
              dateformat.dateFormat = "dd/MM"
@@ -98,3 +100,20 @@ extension Date {
     }
 }
 
+extension Collection {
+    /// Returns the element at the specified index if it is within bounds, otherwise nil.
+    subscript (safe index: Index) -> Element? {
+        return indices.contains(index) ? self[index] : nil
+    }
+}
+
+extension UIColor {
+    static var active = UIColor.systemGray4
+}
+
+struct ActiveButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        return configuration.label
+            .background(configuration.isPressed ? Color(UIColor.active) : .clear)
+    }
+}

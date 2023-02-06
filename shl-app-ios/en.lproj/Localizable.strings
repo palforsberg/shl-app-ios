@@ -16,12 +16,14 @@
 
 // Game Status
 "Coming" = "Coming";
-"Period1" = "Period 1";
-"Period2" = "Period 2";
-"Period3" = "Period 3";
+"Period1" = "P1";
+"Period2" = "P2";
+"Period3" = "P3";
 "Intermission" = "Paused";
 "Overtime" = "Overtime";
 "Shootout" = "Shootout";
+"overtime" = "overtime";
+"shootout" = "shootout";
 "Finished" = "Finished";
 
 // EventType
@@ -52,6 +54,30 @@
 "Overtime" = "Overtime";
 "Game ended" = "Game ended";
 "GamePreview" = "Game Preview";
+
+// Standings
+"Final" = "Final";
+"Semifinal" = "Semifinal";
+"Quarterfinal" = "Quarterfinal";
+"Eightfinal" = "Eightfinal";
+"Demotion" = "Demotion";
+
+// Team
+"SHOW ALL" = "SHOW ALL";
+"SHOW LESS" = "SHOW LESS";
+"Players" = "Players";
+
+"Saves/Shot" = "Saves / Shot";
+"Saves" = "Saves";
+"Shots Against" = "Shots Against";
+"Goals Against" = "Goals Against";
+"Penalty Time" = "Penalty Time";
+"Played Games" = "Played Games";
+
+"Goals/Shot" = "Goals / Shot";
+"+/-" = "+/-";
+"Time On Ice" = "Time on Ice";
+"Time/Game" = "Time / Game";
 
 // Settings
 "Season" = "Season";

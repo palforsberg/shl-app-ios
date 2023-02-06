@@ -16,17 +16,20 @@ let baseUrl = "https://palsserver.com/shl-api"
 let gamesUrl = { (season: Int) -> String in return "\(baseUrl)/games/\(season)" }
 let standingsUrl = { (season: Int) -> String in return "\(baseUrl)/standings/\(season)" }
 let teamsUrl = "\(baseUrl)/teams?season=\(Settings.currentSeason)"
+let playoffUrl = "\(baseUrl)/playoffs/\(Settings.currentSeason)"
 let userUrl = "\(baseUrl)/user"
 let gameStatsUrl = { (game: Game) -> String in
     return "\(baseUrl)/game/\(game.game_uuid)/\(game.game_id)"
 }
+let playersUrl = { (code: String) -> String in
+    "\(baseUrl)/players/\(code)"
+}
 
-
-let jsonDecoder = getJsonDecoder()
 
 class Cache {
     var storage = UserDefaults.standard
     var encoder = JSONEncoder()
+    var decoder = JSONDecoder()
     
     func store<T : Codable>(key: String, data: T) {
         if let json = try? encoder.encode(data) {
@@ -39,9 +42,9 @@ class Cache {
         if let archived = storage.object(forKey: getKey(key)) as? Data {
             print("[CACHE] GET cached \(type) from \(getKey(key))")
             do {
-                return try jsonDecoder.decode(type.self, from: archived)
+                return try decoder.decode(type.self, from: archived)
             } catch {
-                print("[DATA] failed to decode cache \(error.localizedDescription)")
+                print("[DATA] failed to decode cache \(error)")
                 return nil
             }
         }
@@ -50,12 +53,13 @@ class Cache {
     
     func getKey(_ key: String) -> String {
         // to make it possible to change the datamodel between versions
-        return "\(key)_v0.1.8"
+        return "\(key)_v0.2.0"
     }
 }
 
 class DataProvider {
     
+    private let apiJsonDecoder = getJsonDecoder()
     private let cache = Cache()
 
     init() {
@@ -96,6 +100,14 @@ class DataProvider {
         return await getData(url: teamsUrl, type: [Team].self)
     }
     
+    func getPlayoffs() async -> Playoffs? {
+        return await getData(url: playoffUrl, type: Playoffs.self)
+    }
+    
+    func getPlayers(for code: String) async -> [PlayerStats]? {
+        return await getData(url: playersUrl(code), type: [PlayerStats].self)
+    }
+    
     func addUser(request: AddUser) async {
         await postData(url: userUrl, data: request)
     }
@@ -110,7 +122,7 @@ class DataProvider {
         
         do {
             let (data, _) = try await URLSession.shared.data(for: request)
-            let parsed = try jsonDecoder.decode(type, from: data)
+            let parsed = try apiJsonDecoder.decode(type, from: data)
             self.cache.store(key: urlString, data: parsed)
             return parsed
         } catch let error {
@@ -231,6 +243,32 @@ enum GameStatus: String, Codable {
     case shootout = "Shootout"
     case finished = "Finished"
     case intermission = "Intermission"
+    
+    func isGameTimeApplicable() -> Bool {
+        switch self {
+        case .period1,
+                .period2,
+                .period3,
+                .overtime:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    func isLive() -> Bool {
+        switch self {
+        case .period1,
+                .period2,
+                .period3,
+                .overtime,
+                .shootout,
+                .intermission:
+            return true
+        default:
+            return false
+        }
+    }
 }
 struct Game: Codable, Identifiable, Equatable  {
     var id: String {
@@ -248,6 +286,7 @@ struct Game: Codable, Identifiable, Equatable  {
     let overtime: Bool
     let penalty_shots: Bool
     let status: String?
+    let gametime: String?
     
     func hasTeam(_ teamCode: String) -> Bool {
         return away_team_code == teamCode || home_team_code == teamCode
@@ -267,21 +306,17 @@ struct Game: Codable, Identifiable, Equatable  {
         }
         return !homeWon()
     }
-    
-    func didFinishedInOt() -> Bool {
-        return self.overtime || self.penalty_shots
-    }
-    
+
     func isPlayed() -> Bool {
-        return played
+        return getStatus() == .finished
     }
     
     func isLive() -> Bool {
-        return start_date_time < Date() && played == false
+        return getStatus()?.isLive() ?? false
     }
     
     func isFuture() -> Bool {
-        return start_date_time > Date()
+        return getStatus() == nil || getStatus() == .coming
     }
     
     func getGameType() -> GameType? {
@@ -291,10 +326,18 @@ struct Game: Codable, Identifiable, Equatable  {
     func getStatus() -> GameStatus? {
         return self.status != nil ? GameStatus.init(rawValue: self.status!) : nil
     }
+
+    func isPlayoff() -> Bool {
+        self.game_type == "Playoff game"
+    }
+    
+    func isDemotion() -> Bool {
+        self.game_type == "Kvalmatch nedflyttning"
+    }
 }
 
 class StandingsData: ObservableObject {
-    private var data: [Standing]
+    public var data: [Standing]
     
     init(data: [Standing]) {
         self.data = data
@@ -370,6 +413,7 @@ struct GameStats: Codable {
     var playersByTeam: [String: TeamPlayers]?
     var status: String?
     var events: [GameEvent]?
+    var report: GameReport?
     
     func getTopPlayers() -> [Player] {
         var allPlayers = [Player]()
@@ -440,6 +484,105 @@ struct Player: Codable, Identifiable {
     }
 }
 
+
+struct PlusMinus: Codable {
+    var d: Int
+}
+
+struct PlayerStats: Codable, Identifiable {
+    var id: String {
+        return "\(player)\(firstName)\(familyName)"
+    }
+    var player: Int
+    var team: String
+    var firstName: String
+    var familyName: String
+    var position: String
+    var jersey: Int
+    var gp: Int?
+    var rank: Int?
+
+    var toi: String?
+    var g: Int?
+    var a: Int?
+    var sog: Int?
+    var pim: Int?
+    var toiSeconds: Int?
+    var pop: Int?
+    var nep: Int?
+    var pops: [PlusMinus]?
+    
+    // GK stats
+    var tot_svs: Int?
+    var tot_ga: Int?
+    var tot_soga: Int?
+    
+    func hasPlayed() -> Bool {
+        if self.position == "GK" {
+            return (self.tot_soga ?? 0) > 0
+        }
+        return (self.toiSeconds ?? 0) > 0
+    }
+    
+    func getScore() -> Int {
+        if self.position == "GK" {
+            return getGkScore()
+        }
+        return getPoints()
+    }
+    
+    func getPoints() -> Int {
+        (g ?? 0) + (a ?? 0)
+    }
+
+    func getImpactScore() -> Int {
+        (pop ?? 0) - (nep ?? 0)
+    }
+    
+    func getGkScore() -> Int {
+        return tot_svs ?? 0
+    }
+    
+    func getSavesPercentage() -> Float {
+        return ((Float)(tot_svs ?? 0) / (Float)(tot_soga ?? 1)) * 100
+    }
+    
+    func getGoalsPerShotPercentage() -> Float {
+        return ((Float)(g ?? 0) / (Float)(sog ?? 1)) * 100
+    }
+    
+    func getToiFormatted() -> String {
+        PlayerStats.formatSeconds(toiSeconds ?? 0)
+    }
+    
+    func getToiPerGame() -> Int {
+        (toiSeconds ?? 0) / (gp ?? 1)
+    }
+    
+    func getToiPerGameFormatted() -> String {
+        PlayerStats.formatSeconds(getToiPerGame())
+    }
+    
+    func getPlusMinusEntries() -> [PlusMinusEntry] {
+        var total = 0
+        return self.pops?
+            .enumerated()
+            .map({ i, e in
+                total += e.d
+                return PlusMinusEntry(i: i, d: total)
+            })
+        ?? []
+    }
+    
+    static func formatSeconds(_ seconds: Int) -> String {
+        let (h, m, s) = (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
+        if h > 0 {
+            return String(format: "%02d:%02d:%02d", h, m, s)
+        }
+        return String(format: "%02d:%02d", m, s)
+    }
+}
+
 struct EventPlayer: Codable {
     var firstName: String
     var familyName: String
@@ -460,6 +603,7 @@ struct GameEventInfo: Codable {
     var periodNumber: Int?
     
     var penalty: Int?
+    var penaltyLong: String?
     var reason: String?
     
     func getTeamAdvantage() -> String {
@@ -491,6 +635,13 @@ struct GameEvent: Codable, Identifiable {
     }
 }
 
+struct GameReport: Codable {
+    var gametime: String
+    var timePeriod: Int
+    var period: Int
+    var gameState: String
+}
+
 struct AddUser: Codable, Equatable {
     var id: String
     var apn_token: String?
@@ -499,6 +650,33 @@ struct AddUser: Codable, Equatable {
     var app_version: String?
 }
 
+
+struct PlayoffEntry: Codable, Identifiable {
+    var id: String {
+        return "\(team1)_\(team2)"
+    }
+    var team1: String
+    var team2: String
+    var score1: UInt8
+    var score2: UInt8
+}
+
+struct Playoffs: Codable {
+    var demotion: PlayoffEntry?
+    var eight: [PlayoffEntry]?
+    var quarter: [PlayoffEntry]?
+    var semi: [PlayoffEntry]?
+    var final: PlayoffEntry?
+}
+
+class PlayoffData: ObservableObject {
+    var data: Playoffs?
+    
+    func setData(_ data: Playoffs?) {
+        self.data = data
+        self.objectWillChange.send()
+    }
+}
 
 func getJsonDecoder() -> JSONDecoder {
     let jsonDecoder = JSONDecoder()

@@ -25,6 +25,8 @@ struct URLImage: View {
                         .resizable()
         } else {
             placeholder
+                .foregroundColor(Color(uiColor: .secondaryLabel))
+            
         }
     }
     
