@@ -11,7 +11,7 @@
 "Points" = "Poäng";
 "Rank" = "Ranking";
 "Games Played" = "Antal Matcher";
-"Points/Game" = "Poäng/Match";
+"Points/Game" = "Poäng / Match";
 "Starts In" = "Börjar om";
 
 // Game Status
@@ -68,9 +68,10 @@
 "SHOW LESS" = "VISA FÄRRE";
 
 "Saves/Shot" = "Räddningar / Skott";
+"Saves %" = "Räddningar %";
 "Saves" = "Räddningar";
 "Shots Against" = "Skott Mot";
-"Goals Against" = "Mål Mot";
+"Goals Against" = "Insläppta Mål";
 "Penalty Time" = "Utvisningstid";
 "Played Games" = "Spelade Matcher";
 

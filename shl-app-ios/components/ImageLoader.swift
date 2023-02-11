@@ -30,7 +30,7 @@ class ImageLoader: ObservableObject {
             self.downloadedImage = cachedImage
             return
         }
-        
+        debugPrint("[IMAGELOADER] Download image \(url)")
         URLSession.shared.dataTask(with: imageURL) { data, response, error in
             guard let data = data, error == nil else {
                 self.downloadedImage = nil

@@ -12,8 +12,23 @@ struct TeamLogo: View {
     var size: CGFloat = 30.0
 
     var body: some View {
-        URLImage(url: "https://palsserver.com/shl-server/logo/\(code.lowercased()).png?v=0.2.0")
-            .frame(width: size, height: size, alignment: .center)
+        if let teamImage = UIImage(named: self.getImageName()) {
+            Image(uiImage: teamImage)
+                .resizable()
+                .scaledToFit()
+                .frame(width: size, height: size, alignment: .center)
+            
+        } else {
+            Image(systemName: "photo")
+                .foregroundColor(Color(uiColor: .secondaryLabel))
+        }
+    }
+    
+    func getImageName() -> String {
+        if size > 128 {
+            return "\(code.lowercased())-big.png"
+        }
+        return "\(code.lowercased()).png"
     }
 
 }
@@ -24,7 +39,7 @@ struct PlayerImage: View {
 
     var body: some View {
         URLImage(
-            url: "https://palsserver.com/shl-server/player/\(player).jpg?v=0.2.0",
+            url: "https://palsserver.com/shl-server/player/\(player).jpg?v=0.2.1",
             placeholder: Image(systemName: "person.fill"))
             .frame(width: size, height: size * 1.2, alignment: .center)
             .cornerRadius(size / 6)

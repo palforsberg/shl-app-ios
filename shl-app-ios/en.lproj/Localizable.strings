@@ -11,7 +11,7 @@
 "Points" = "Points";
 "Rank" = "Rank";
 "Games Played" = "Games Played";
-"Points/Game" = "Points/Game";
+"Points/Game" = "Points / Game";
 "Starts In" = "Starts In";
 
 // Game Status
@@ -69,6 +69,7 @@
 
 "Saves/Shot" = "Saves / Shot";
 "Saves" = "Saves";
+"Saves %" = "Saves %";
 "Shots Against" = "Shots Against";
 "Goals Against" = "Goals Against";
 "Penalty Time" = "Penalty Time";

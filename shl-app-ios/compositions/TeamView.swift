@@ -93,7 +93,7 @@ struct PlayerEntry: View {
         .padding(EdgeInsets(top: 20, leading: 30, bottom: 20, trailing: 30))
     }
 }
-
+/*
 struct PlusMinusEntry: Identifiable  {
     var id: Int {
         get {
@@ -105,7 +105,7 @@ struct PlusMinusEntry: Identifiable  {
     var d: Int
 }
 
-/*
+
 @available(iOS 16.0, *)
 struct PlayerPlusMinusChart: View {
     @State var selectedPlusMins: PlusMinusEntry?
@@ -169,14 +169,33 @@ struct PlayerPlusMinusChart: View {
     }
 }
  */
+
+struct VStat: View {
+    var stat: String
+    var nr: String
+    var statSize: CGFloat = 24
+    var body: some View {
+        VStack(spacing: 3) {
+            Text(LocalizedStringKey(stat))
+                .font(.system(size: 16, weight: .bold, design: .rounded))
+                .scaledToFit()
+                .minimumScaleFactor(0.6)
+            Text(nr)
+                .font(.system(size: statSize, weight: .heavy, design: .rounded))
+                .monospacedDigit()
+                .scaledToFit()
+                .minimumScaleFactor(0.6)
+        }
+    }
+}
 struct PlayerStatsSheet: View {
     @EnvironmentObject var settings: Settings
     
     var player: PlayerStats
     var body: some View {
         ScrollView([]) {
-            LazyVStack {
-                Spacer(minLength: 30)
+            VStack {
+                Spacer(minLength: 20)
                 HStack(alignment: .center, spacing: 20) {
                     PlayerImage(player: player.player, size: 90)
                     VStack(alignment: .leading) {
@@ -194,40 +213,75 @@ struct PlayerStatsSheet: View {
                 .padding(.bottom, 20)
                 if player.position == "GK" {
                     GroupedView {
-                        VStack {
-                            StatsRowSingle(left: "Saves/Shot", right: String(format: "%.0f%%", player.getSavesPercentage()))
-                            StatsRowSingle(left: "Saves", right: "\(player.tot_svs ?? 0)")
-                            StatsRowSingle(left: "Shots Against", right: "\(player.tot_soga ?? 0)")
-                            StatsRowSingle(left: "Goals Against", right: "\(player.tot_ga ?? 0)")
-                            StatsRowSingle(left: "Played Games", right: "\(player.gp ?? 0)")
-                            StatsRowSingle(left: "Penalty Time", right: String(format: "%02d:00", player.pim ?? 0))
-                        }.padding(EdgeInsets(top: 14, leading: 24, bottom: 14, trailing: 24))
-                    }.fixedSize(horizontal: false, vertical: true)
-                } else {
-                    GroupedView {
-                        VStack {
-                            StatsRowSingle(left: "Points", right: "\(player.getPoints())")
-                            StatsRowSingle(left: "Goal", right: "\(player.g ?? 0)")
-                            StatsRowSingle(left: "Assist", right: "\(player.a ?? 0)")
-                            StatsRowSingle(left: "Shots", right: "\(player.sog ?? 0)")
-                            StatsRowSingle(left: "Goals/Shot", right: String(format: "%.0f%%", player.getGoalsPerShotPercentage()))
-                        }.padding(EdgeInsets(top: 14, leading: 24, bottom: 14, trailing: 24))
+                        HStack {
+                            Spacer()
+                            VStat(stat: "Saves %", nr: String(format: "%.0f%%", player.getSavesPercentage()))
+                            Spacer()
+                            VStat(stat: "Goals Against", nr: "\(player.tot_ga ?? 0)")
+                            Spacer()
+                            VStat(stat: "Shots Against", nr: "\(player.tot_soga ?? 0)")
+                            Spacer()
+                        }.padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
                     }.fixedSize(horizontal: false, vertical: true)
                         .padding(.bottom, 10)
-                    /*if #available(iOS 16.0, *), false == true {
-                        PlayerPlusMinusChart(data: player.getPlusMinusEntries())
-                            .frame(height: 120)
-                            .padding(EdgeInsets(top: 10, leading: 30, bottom: 20, trailing: 30))
-                    }*/
                     GroupedView {
-                        VStack {
-                            StatsRowSingle(left: "Played Games", right: "\(player.gp ?? 0)")
-                            StatsRowSingle(left: "Time On Ice", right: player.getToiFormatted())
-                            StatsRowSingle(left: "Time/Game", right: player.getToiPerGameFormatted())
-                            StatsRowSingle(left: "Penalty Time", right: String(format: "%02d:00", player.pim ?? 0))
-                            
-                        }.padding(EdgeInsets(top: 14, leading: 24, bottom: 14, trailing: 24))
+                        HStack {
+                            Spacer()
+                            VStat(stat: "Home", nr: "\(player.gp ?? 0)")
+                            Spacer()
+                            VStat(stat: "Saves", nr: "\(player.tot_svs ?? 0)")
+                            Spacer()
+                        }.padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
                     }.fixedSize(horizontal: false, vertical: true)
+                        .padding(.bottom, 10)
+                } else {
+                    GroupedView {
+                        HStack {
+                            Spacer()
+                            VStat(stat: "Points", nr: "\(player.getPoints())", statSize: 26)
+                            Spacer()
+                            VStat(stat: "Goal", nr: "\(player.g ?? 0)", statSize: 26)
+                            Spacer()
+                            VStat(stat: "Assist", nr: "\(player.a ?? 0)", statSize: 26)
+                            Spacer()
+                        }.padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
+                    }.fixedSize(horizontal: false, vertical: true)
+                        .padding(.bottom, 10)
+                    
+                    GroupedView {
+                        HStack {
+                            Spacer()
+                            VStat(stat: "Home", nr: "\(player.gp ?? 0)")
+                            Spacer()
+                            VStat(stat: "Points/Game", nr: String(format: "%.2f", player.getPointsPerGame()))
+                            Spacer()
+                            VStat(stat: "Time/Game", nr: player.getToiPerGameFormatted())
+                            Spacer()
+                        }.padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
+                    }.fixedSize(horizontal: false, vertical: true)
+                        .padding(.bottom, 10)
+                    
+                    GroupedView {
+                        HStack {
+                            Spacer()
+                            VStat(stat: "Shots", nr: "\(player.sog ?? 0)")
+                            Spacer()
+                            VStat(stat: "Goals/Shot", nr: String(format: "%.0f%%", player.getGoalsPerShotPercentage()))
+                            Spacer()
+                        }.padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
+                    }.fixedSize(horizontal: false, vertical: true)
+                        .padding(.bottom, 10)
+                    
+                    GroupedView {
+                        HStack {
+                            Spacer()
+                            VStat(stat: "Time On Ice", nr: player.getToiFormatted())
+                            Spacer()
+                            VStat(stat: "Penalty Time", nr: String(format: "%02d:00", player.pim ?? 0))
+                            Spacer()
+                        }.padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
+                    }.fixedSize(horizontal: false, vertical: true)
+                        .padding(.bottom, 10)
                 }
                 Spacer(minLength: 30)
             }
@@ -254,13 +308,14 @@ struct TeamView: View {
     @State var allPlayers: [PlayerStats]?
     @State var showingAllPlayers = false
     @State var selectedPlayer: PlayerStats?
+    @State var showingAllPlayedGames = false
     
     var body: some View {
         let _team = self.teams.getTeam(teamCode)
         let starred = starredTeams.isStarred(teamCode: teamCode)
         let liveGames = games.getLiveGames(teamCodes: [teamCode])
         let futureGames = games.getFutureGames(teamCodes: [teamCode])
-        let playedGames = games.getPlayedGames(teamCodes: [teamCode])
+        let playedGames = games.getPlayedGames(teamCodes: [teamCode]).prefix(showingAllPlayedGames ? 1000 : 5)
         ScrollView {
             VStack(alignment: .center, spacing: 0) {
                 VStack(spacing: 10) {
@@ -304,19 +359,19 @@ struct TeamView: View {
                             .padding(.bottom, 6)
                         Group {
                             HStack(spacing: 20) {
-                                if let p = players[0] {
+                                if let p = players[safe: 0] {
                                     TopPlayerEntry(player: p, action: { self.selectedPlayer = p })
                                 }
-                                if let p = players[1] {
+                                if let p = players[safe: 1] {
                                     TopPlayerEntry(player: p, action: { self.selectedPlayer = p })
                                 }
                             }
                             Spacer(minLength: 20)
                             HStack(spacing: 20) {
-                                if let p = players[2] {
+                                if let p = players[safe: 2] {
                                     TopPlayerEntry(player: p, action: { self.selectedPlayer = p })
                                 }
-                                if let p = players[3] {
+                                if let p = players[safe: 3] {
                                     TopPlayerEntry(player: p, action: { self.selectedPlayer = p })
                                 }
                             }
@@ -324,7 +379,7 @@ struct TeamView: View {
                     }
                 }
                 if let allPlayers = self.allPlayers {
-                    Spacer(minLength: 30)
+                    Spacer(minLength: 25)
                     HStack {
                         Button(self.showingAllPlayers ? "SHOW LESS" : "SHOW ALL") {
                             withAnimation {
@@ -350,44 +405,44 @@ struct TeamView: View {
                             }.buttonStyle(ActiveButtonStyle())
                         }
                     }
-                    Spacer(minLength: 10)
+                    Spacer(minLength: 20)
                 }
-                Group {
-                    if (!liveGames.isEmpty) {
-                        Group {
-                            GroupedView(title: "Live") {
-                                ForEach(liveGames) { (item) in
-                                    LiveGame(game: item)
-                                        .padding(EdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10))
-                                }
-                            }
-                            Spacer()
+                if (!liveGames.isEmpty) {
+                    GroupedView(title: "Live") {
+                        ForEach(liveGames) { (item) in
+                            LiveGame(game: item)
+                                .padding(EdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10))
                         }
                     }
                     Spacer(minLength: 30)
-                    if (!futureGames.isEmpty) {
-                        Group {
-                            GroupedView(title: "Coming") {
-                                
-                                ForEach(futureGames) { (item) in
-                                    ComingGame(game: item)
-                                        .padding(EdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10))
-                                }
-                            }
-                            Spacer()
+                }
+                if (!futureGames.isEmpty) {
+                    GroupedView(title: "Coming") {
+                        ForEach(futureGames) { (item) in
+                            ComingGame(game: item)
+                                .padding(EdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10))
                         }
                     }
                     Spacer(minLength: 30)
-                    if (!playedGames.isEmpty) {
-                        Group {
-                            GroupedView(title: "Played_param \(settings.getFormattedPrevSeason())") {
-                                ForEach(playedGames) { (item) in
-                                    PlayedGame(game: item)
-                                        .padding(EdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10))
-                                }
-                            }
+                }
+                if !playedGames.isEmpty {
+                    GroupedView(title: "Played_param \(settings.getFormattedPrevSeason())") {
+                        ForEach(playedGames) { (item) in
+                            PlayedGame(game: item)
+                                .padding(EdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10))
                         }
                     }
+                    Spacer(minLength: 20)
+                    HStack {
+                        Button(self.showingAllPlayedGames ? "SHOW LESS" : "SHOW ALL") {
+                            withAnimation {
+                                self.showingAllPlayedGames.toggle()
+                            }
+                        }
+                        .font(.system(size: 16, weight: .bold, design: .rounded))
+                        .tint(Color(uiColor: .secondaryLabel))
+                    }
+                    Spacer(minLength: 40)
                 }
             }
             .background(Color(UIColor.systemGroupedBackground))
@@ -410,8 +465,7 @@ struct TeamView: View {
     
     func reloadPlayers() async {
         if let players = await self.provider?.getPlayers(for: self.teamCode) {
-            
-            
+
             let gks = Array(players
                 .filter({p in p.hasPlayed()})
                 .filter({ p in p.position == "GK" })

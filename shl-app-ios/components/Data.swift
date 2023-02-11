@@ -53,7 +53,7 @@ class Cache {
     
     func getKey(_ key: String) -> String {
         // to make it possible to change the datamodel between versions
-        return "\(key)_v0.2.0"
+        return "\(key)_v0.2.1"
     }
 }
 
@@ -191,18 +191,18 @@ class GamesData: ObservableObject {
     }
 
     func getLiveGames(teamCodes: [String]) -> [Game] {
-        return Array(getGames()
-                        .filter({ $0.isLive() })
-                        .filter(getTeamFilter(teamCodes: teamCodes)))
+        return getGames()
+            .filter({ $0.isLive() })
+            .filter(getTeamFilter(teamCodes: teamCodes))
     }
 
     func getPlayedGames(teamCodes: [String]) -> [Game] {
-        return Array(getGames()
+        return getGames()
             .sorted { (a, b) -> Bool in
                 return a.start_date_time > b.start_date_time
             }
             .filter({ $0.isPlayed() })
-            .filter(getTeamFilter(teamCodes: teamCodes)))
+            .filter(getTeamFilter(teamCodes: teamCodes))
     }
     
     func getFutureGames(teamCodes: [String]) -> [Game] {
@@ -518,10 +518,7 @@ struct PlayerStats: Codable, Identifiable {
     var tot_soga: Int?
     
     func hasPlayed() -> Bool {
-        if self.position == "GK" {
-            return (self.tot_soga ?? 0) > 0
-        }
-        return (self.toiSeconds ?? 0) > 0
+        (self.gp ?? 0) > 0
     }
     
     func getScore() -> Int {
@@ -548,7 +545,11 @@ struct PlayerStats: Codable, Identifiable {
     }
     
     func getGoalsPerShotPercentage() -> Float {
-        return ((Float)(g ?? 0) / (Float)(sog ?? 1)) * 100
+        return (Float(g ?? 0) / Float(max(sog ?? 1, 1))) * 100
+    }
+    
+    func getPointsPerGame() -> Float {
+        Float(getPoints()) / Float(gp ?? 0)
     }
     
     func getToiFormatted() -> String {
@@ -563,6 +564,7 @@ struct PlayerStats: Codable, Identifiable {
         PlayerStats.formatSeconds(getToiPerGame())
     }
     
+    /*
     func getPlusMinusEntries() -> [PlusMinusEntry] {
         var total = 0
         return self.pops?
@@ -573,6 +575,7 @@ struct PlayerStats: Codable, Identifiable {
             })
         ?? []
     }
+     */
     
     static func formatSeconds(_ seconds: Int) -> String {
         let (h, m, s) = (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)

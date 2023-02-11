@@ -24,8 +24,10 @@ struct StandingsHeader: View {
             Spacer()
             Text("GP").points()
                 .frame(width: 34, alignment: .center)
+                .foregroundColor(Color(uiColor: .secondaryLabel))
             Text("P").points()
                 .frame(width: 34, alignment: .center)
+                .foregroundColor(Color(uiColor: .secondaryLabel))
             Spacer(minLength: 17)
         }
     }
@@ -103,7 +105,7 @@ struct PlayoffView: View {
                 HStack {
                     PlayoffEntryView(entry: final, mini: false)
                 }
-                Spacer(minLength: 20)
+                Spacer(minLength: 10)
             }
             if let semis = playoff.semi {
                 Text("Semifinal").listHeader()
@@ -112,7 +114,7 @@ struct PlayoffView: View {
                         PlayoffEntryView(entry: semi, mini: false)
                     }
                 }
-                Spacer(minLength: 20)
+                Spacer(minLength: 10)
             }
             if let quarters = playoff.quarter {
                 Text("Quarterfinal").listHeader()
@@ -121,7 +123,7 @@ struct PlayoffView: View {
                         PlayoffEntryView(entry: quart, mini: true)
                     }
                 }
-                Spacer(minLength: 20)
+                Spacer(minLength: 10)
             }
             if let eight = playoff.eight {
                 Text("Eightfinal").listHeader()
@@ -167,7 +169,7 @@ struct StandingsView: View {
                     Spacer(minLength: 20)
                 }
                 StandingsHeader(season: settings.getFormattedSeason())
-                    .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10))
+                    .padding(EdgeInsets(top: 0, leading: 15, bottom: -2, trailing: 10))
                 GroupedView {
                     ForEach(standings.get(), id: \.team_code) { item in
                         NavigationLink(destination: TeamView(teamCode: item.team_code, standing: item)) {
@@ -184,7 +186,7 @@ struct StandingsView: View {
                                     PointsLabel(val: "\(item.points)")
                                         .frame(width: 34, alignment: .center)
                                     
-                                }.padding(EdgeInsets(top: 20, leading: 10, bottom: item.team_code != standings.get().last?.team_code ? 15 : 25, trailing: 10))
+                                }.padding(EdgeInsets(top: 20, leading: 10, bottom: item.team_code != standings.get().last?.team_code ? 15 : 25, trailing: 16))
                                 if item.team_code != standings.get().last?.team_code {
                                     Divider()
                                 }
