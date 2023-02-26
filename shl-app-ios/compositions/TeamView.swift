@@ -61,6 +61,7 @@ struct TopPlayerEntry: View {
         .buttonStyle(ActiveButtonStyle())
     }
 }
+
 struct PlayerEntry: View {
     var player: PlayerStats
 
@@ -349,6 +350,13 @@ struct TeamView: View {
                             StatsRowSingle(left: "Games Played", right: "\(standing.gp)")
                             StatsRowSingle(left: "Points/Game", right: standing.getPointsPerGame())
                             StatsRowSingle(left: "Goal Diff", right: "\(standing.diff)")
+                            HStack() {
+                                Text(LocalizedStringKey("Form"))
+                                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                Spacer()
+                                FormGraph(teamCode: teamCode)
+                            }.padding(EdgeInsets(top: 3, leading: 0, bottom: 3, trailing: 0))
                         }.padding(EdgeInsets(top: 16, leading: 24, bottom: 16, trailing: 24))
                     }
                     Spacer(minLength: 30)
@@ -360,19 +368,19 @@ struct TeamView: View {
                         Group {
                             HStack(spacing: 20) {
                                 if let p = players[safe: 0] {
-                                    TopPlayerEntry(player: p, action: { self.selectedPlayer = p })
+                                    TopPlayerEntry(player: p, action: { self.select(player: p) })
                                 }
                                 if let p = players[safe: 1] {
-                                    TopPlayerEntry(player: p, action: { self.selectedPlayer = p })
+                                    TopPlayerEntry(player: p, action: { self.select(player: p) })
                                 }
                             }
                             Spacer(minLength: 20)
                             HStack(spacing: 20) {
                                 if let p = players[safe: 2] {
-                                    TopPlayerEntry(player: p, action: { self.selectedPlayer = p })
+                                    TopPlayerEntry(player: p, action: { self.select(player: p) })
                                 }
                                 if let p = players[safe: 3] {
-                                    TopPlayerEntry(player: p, action: { self.selectedPlayer = p })
+                                    TopPlayerEntry(player: p, action: { self.select(player: p) })
                                 }
                             }
                         }.padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 15))
@@ -394,7 +402,7 @@ struct TeamView: View {
                     if self.showingAllPlayers {
                         Spacer(minLength: 10)
                         ForEach(allPlayers, id: \.player) { p in
-                            Button(action: { self.selectedPlayer = p }) {
+                            Button(action: { self.select(player: p) }) {
                                 VStack(spacing: 0) {
                                         PlayerEntry(player: p)
                                     if p.player != allPlayers.last?.player {
@@ -463,6 +471,15 @@ struct TeamView: View {
         }
     }
     
+    func select(player: PlayerStats) {
+        guard self.selectedPlayer == nil else {
+            // guard against race condition of closing and opening sheet real fast, causing selectedPlayer to be overwritten incorrectly
+            print("Selected Player not nil \(self.selectedPlayer?.firstName ?? "")")
+            return
+        }
+        self.selectedPlayer = player
+    }
+    
     func reloadPlayers() async {
         if let players = await self.provider?.getPlayers(for: self.teamCode) {
 
@@ -519,7 +536,21 @@ struct TeamView_Previews: PreviewProvider {
                 .environmentObject(starred)
                 .environmentObject(GamesData(data: [getLiveGame(t1: "LHF", score1: 13, t2: "FHC", score2: 2),
                                                     getLiveGame(t1: "LHF", score1: 13, t2: "FHC", score2: 2),
-                                                    getPlayedGame(), getPlayedGame(),
+                                                    getPlayedGame(),
+                                                    getPlayedGame(t1: "LHF", s1: 2, t2: "TIK", s2: 3, overtime: false),
+                                                    getPlayedGame(t1: "LHF", s1: 3, t2: "TIK", s2: 2, overtime: true),
+                                                    getPlayedGame(t1: "LHF", s1: 2, t2: "TIK", s2: 3, overtime: true),
+                                                    getPlayedGame(t1: "LHF", s1: 2, t2: "TIK", s2: 3, overtime: false),
+                                                    getPlayedGame(),
+                                                    getPlayedGame(),
+                                                    getPlayedGame(),
+                                                    getPlayedGame(t1: "LHF", s1: 2, t2: "TIK", s2: 3, overtime: false),
+                                                    getPlayedGame(t1: "LHF", s1: 3, t2: "TIK", s2: 2, overtime: true),
+                                                    getPlayedGame(t1: "LHF", s1: 2, t2: "TIK", s2: 3, overtime: true),
+                                                    getPlayedGame(t1: "LHF", s1: 2, t2: "TIK", s2: 3, overtime: false),
+                                                    getPlayedGame(),
+                                                    getPlayedGame(),
+                                                    getPlayedGame(t1: "LHF", s1: 2, t2: "TIK", s2: 4, overtime: true),
                                                     getFutureGame(), getFutureGame()]))
                 .environmentObject(Settings())
                 .environment(\.locale, .init(identifier: "sv"))

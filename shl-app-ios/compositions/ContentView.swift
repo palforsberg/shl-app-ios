@@ -25,6 +25,17 @@ struct ContentView: View {
     
     @State
     var alert: GameNofitication? = nil
+    
+    init() {
+        if let games = provider?.getCachedGames(season: settings.season) {
+            self.gameData.set(data: games)
+        }
+        if let standing = provider?.getCachedStandings(season: settings.season) {
+            self.standings.set(data: standing)
+        }
+        
+        debugPrint("[ContentView] Init")
+    }
 
     var body: some View {
         ZStack {
@@ -68,29 +79,31 @@ struct ContentView_Previews: PreviewProvider {
         starredTeams.addTeam(teamCode: "FHC")
         starredTeams.addTeam(teamCode: "TIK")
         
-        return ContentView(
-            teams: teams,
-            gameData: GamesData(data: [
-                getLiveGame(t1: "MIF", score1: 1, t2: "TIK", score2: 1, status: "Period3"),
-                getLiveGame(t1: "FBK", score1: 4, t2: "FHC", score2: 2),
+        var contentView = ContentView()
+        contentView.teams = teams
+        contentView.gameData = GamesData(data: [
+            getLiveGame(t1: "MIF", score1: 1, t2: "TIK", score2: 1, status: "Period3"),
+            getLiveGame(t1: "FBK", score1: 4, t2: "FHC", score2: 2),
 
-                getFutureGame(t1: "RBK", t2: "TIK"),
-                getFutureGame(t1: "TIK", t2: "VLH"),
-                getFutureGame(t1: "BIF", t2: "LHF"),
+            getFutureGame(t1: "RBK", t2: "TIK"),
+            getFutureGame(t1: "TIK", t2: "VLH"),
+            getFutureGame(t1: "BIF", t2: "LHF"),
 
-                getPlayedGame(t1: "LHF", s1: 4, t2: "FBK", s2: 1),
-                getPlayedGame(t1: "LIF", s1: 3, t2: "TIK", s2: 1),
-            ]),
-            standings: StandingsData(data: [
-                getStanding("LHF", rank: 1),
-                getStanding("FBK", rank: 2),
-                getStanding("RBK", rank: 3),
-                getStanding("IKO", rank: 4),
-                getStanding("FHC", rank: 5),
-                getStanding("TIK", rank: 6),
-                getStanding("MIF", rank: 7),
-                getStanding("SAIK", rank: 8),
-            ]), provider: nil, alert: GameNofitication(team: "LHF", game_uuid: "game_uuid_123", title: "MÅÅÅL för Skellefteå!", body: "SAIK 1 - 0 HV71", type: "Goal"))
+            getPlayedGame(t1: "LHF", s1: 4, t2: "FBK", s2: 1),
+            getPlayedGame(t1: "LIF", s1: 3, t2: "TIK", s2: 1),
+        ])
+        contentView.standings = StandingsData(data: [
+            getStanding("LHF", rank: 1),
+            getStanding("FBK", rank: 2),
+            getStanding("RBK", rank: 3),
+            getStanding("IKO", rank: 4),
+            getStanding("FHC", rank: 5),
+            getStanding("TIK", rank: 6),
+            getStanding("MIF", rank: 7),
+            getStanding("SAIK", rank: 8),
+        ])
+        contentView.alert = GameNofitication(team: "LHF", game_uuid: "game_uuid_123", title: "MÅÅÅL för Skellefteå!", body: "SAIK 1 - 0 HV71", type: "Goal")
+        return contentView
             .environment(\.locale, .init(identifier: "sv"))
     }
 }

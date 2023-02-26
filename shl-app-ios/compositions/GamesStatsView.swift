@@ -36,8 +36,7 @@ struct PenaltyEventRow: View {
             }
             
         }.padding(EdgeInsets(top: 7, leading: 0, bottom: 7, trailing: 0))
-            .foregroundColor(Color(uiColor: .secondaryLabel))
-            
+            .foregroundColor(Color(uiColor: .secondaryLabel))    
     }
 }
 
@@ -350,6 +349,18 @@ struct GamesStatsView: View {
                                 StatsRow(left: "#\(homeRank.rank)", center: "Rank", right: "#\(awayRank.rank)")
                                 StatsRow(left: "\(homeRank.diff)", center: "Goal Diff", right: "\(awayRank.diff)")
                                 StatsRow(left: "\(homeRank.getPointsPerGame())", center: "Points/Game", right: "\(awayRank.getPointsPerGame())")
+                                HStack(alignment: .bottom) {
+                                    FormGraph(teamCode: game.home_team_code)
+                                    Spacer()
+                                    Text(LocalizedStringKey("Form"))
+                                        .font(.system(size: 18, design: .rounded))
+                                        .fontWeight(.bold)
+                                        .frame(maxWidth: .infinity, alignment: .center)
+                                        .scaledToFit()
+                                        .minimumScaleFactor(0.8)
+                                    Spacer()
+                                    FormGraph(teamCode: game.away_team_code)
+                                }.padding(EdgeInsets(top: 3, leading: 0, bottom: 3, trailing: 0))
                             }.padding(EdgeInsets(top: 16, leading: 30, bottom: 16, trailing: 30))
                         }
                         Spacer(minLength: 30)
@@ -364,7 +375,7 @@ struct GamesStatsView: View {
                            gameStats?.report?.gametime != nil {
                             Text("•")
                         }
-                        if ["Ongoing", "OverTime"].contains(gameStats?.report?.gameState),
+                        if gameStats?.getStatus()?.isGameTimeApplicable() ?? false,
                             let gt = gameStats?.report?.gametime {
                             Text(gt)
                         }
@@ -372,7 +383,16 @@ struct GamesStatsView: View {
                         .padding(.top, -20)
                     Spacer(minLength: 20)
                 }
-
+                /*if #available(iOS 16.1, *),
+                   // gameStats?.getStatus()?.isLive() ?? false,
+                   ActivityAuthorizationInfo().areActivitiesEnabled
+                {
+                    if self.isLiveActivityActive(for: game) {
+                        Button("End Live Activity") { self.endLiveActivity(for: game) }
+                    } else {
+                        Button("Start Live Activity") { self.startLiveActivity(for: game) }
+                    }
+                }*/
                 if let period = gameStats?.recaps.gameRecap {
                     PeriodStatsView(title: "Match Detail", stats: period)
                     Spacer(minLength: 25)
@@ -450,6 +470,58 @@ struct GamesStatsView: View {
         }
     }
     
+    /*
+    @available(iOS 16.1, *)
+    func startLiveActivity(for game: Game) {
+        Activity<ShlWidgetAttributes>.activities.forEach { a in
+            Task {
+                await a.end(using: a.contentState, dismissalPolicy: .immediate)
+                print("Ended Live Activity \(a.attributes.homeTeam) \(a.attributes.awayTeam)")
+            }
+        }
+
+        do {
+            let attributes = ShlWidgetAttributes(homeTeam: game.home_team_code, awayTeam: game.away_team_code, gameUuid: game.game_uuid)
+            let state = ShlWidgetAttributes.ContentState(homeScore: game.home_team_result, awayScore: game.away_team_result, gametime: game.gametime, status: game.status)
+            
+            let result = try Activity.request(attributes: attributes, contentState: state, pushType: .token)
+            print("Start Live Activity \(result.pushToken?.map {String(format: "%02x", $0)}.joined() ?? "nil")")
+            Task {
+                 for await data in result.pushTokenUpdates {
+                     let myToken = data.map {String(format: "%02x", $0)}.joined()
+                     print("Updated Live Activity Token \(result.attributes.homeTeam) \(result.attributes.awayTeam) \(myToken)")
+                 }
+            }
+            Task {
+                for await a in result.activityStateUpdates {
+                    if  a == .ended || a == .dismissed {
+                        print("Live Activity was Ended \(result.attributes.homeTeam) \(result.attributes.awayTeam)")
+                    }
+                }
+            }
+            
+        } catch (let error) {
+            print("Error requesting Live Activity \(error.localizedDescription).")
+        }
+    }
+    
+    @available(iOS 16.1, *)
+    func endLiveActivity(for game: Game) {
+        let activity = Activity<ShlWidgetAttributes>.activities.first(where: {a in a.attributes.gameUuid == game.game_uuid })
+        if let a = activity {
+            Task {
+                await a.end(using: a.contentState, dismissalPolicy: .immediate)
+                print("Manually Ended Live Activity \(a.attributes.homeTeam) \(a.attributes.awayTeam)")
+            }
+        }
+    }
+    
+    @available(iOS 16.1, *)
+    func isLiveActivityActive(for game: Game) -> Bool {
+        Activity<ShlWidgetAttributes>.activities.first(where: {a in a.attributes.gameUuid == game.game_uuid }) != nil
+    }
+    
+    */
     static func handleEvents(_ events: [GameEvent]?) -> [GameEvent] {
         guard events != nil else {
             return []

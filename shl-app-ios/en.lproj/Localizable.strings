@@ -101,3 +101,8 @@
 "Unlocked Premium" = "You have unlocked premium features for the season 2022/2023, thanks for your support!";
 "Unlock Premium %@" = "Unlock premium features for the season 2022/2023 for %@";
 "Thanks" = "Thanks!";
+
+
+// PROMO
+"WIDGETPROMO.HEADER" = "Widgets are here!";
+"WIDGETPROMO.BODY" = "Follow your team on both lock- and homescreen";

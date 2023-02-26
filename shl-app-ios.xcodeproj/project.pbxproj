@@ -7,6 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		231C055D299A529B00BEB846 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C055C299A529B00BEB846 /* Models.swift */; };
+		231C055E299A52A800BEB846 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C055C299A529B00BEB846 /* Models.swift */; };
+		231C0564299B9F3100BEB846 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C0563299B9F3100BEB846 /* Cache.swift */; };
+		231C0565299B9F3E00BEB846 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C0563299B9F3100BEB846 /* Cache.swift */; };
+		231C0566299BA60000BEB846 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ED326B454B800C9B6ED /* Extensions.swift */; };
+		231C0569299CEBC700BEB846 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F6B126C0FB2B006DE5F0 /* Settings.swift */; };
+		231C056A299CEBE900BEB846 /* DataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF8B325A8831100E50ADE /* DataProvider.swift */; };
+		231C056C299E3DB900BEB846 /* FormGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C056B299E3DB900BEB846 /* FormGraph.swift */; };
+		231C056D299E3DB900BEB846 /* FormGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C056B299E3DB900BEB846 /* FormGraph.swift */; };
+		231C056E299E3F4900BEB846 /* Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ED126B3FE6D00C9B6ED /* Preview.swift */; };
+		231C057029A207C900BEB846 /* SelectTeamIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 231C056F29A207C900BEB846 /* SelectTeamIntent.intentdefinition */; };
+		231C057129A207C900BEB846 /* SelectTeamIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 231C056F29A207C900BEB846 /* SelectTeamIntent.intentdefinition */; };
 		2339F66B26B6862A006DE5F0 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F66A26B6862A006DE5F0 /* TimerView.swift */; };
 		2339F66E26B857E7006DE5F0 /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F66D26B857E7006DE5F0 /* Debouncer.swift */; };
 		2339F6B226C0FB2B006DE5F0 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F6B126C0FB2B006DE5F0 /* Settings.swift */; };
@@ -66,7 +78,10 @@
 		23537ED226B3FE6D00C9B6ED /* Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ED126B3FE6D00C9B6ED /* Preview.swift */; };
 		23537ED426B454B800C9B6ED /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ED326B454B800C9B6ED /* Extensions.swift */; };
 		23537ED626B57B9C00C9B6ED /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ED526B57B9C00C9B6ED /* SettingsView.swift */; };
+		235B07C229991F0600FD865E /* lhf-mono.png in Resources */ = {isa = PBXBuildFile; fileRef = 235B07C129991F0600FD865E /* lhf-mono.png */; };
+		235B07C329991F0F00FD865E /* lhf-mono.png in Resources */ = {isa = PBXBuildFile; fileRef = 235B07C129991F0600FD865E /* lhf-mono.png */; };
 		235CB13C2889650000A898D7 /* PullToRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235CB13B2889650000A898D7 /* PullToRefresh.swift */; };
+		2397EDDF29A62BD30014410E /* TeamWidget.png in Resources */ = {isa = PBXBuildFile; fileRef = 2397EDDE29A62BD30014410E /* TeamWidget.png */; };
 		23A373C1299115D100FEA997 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A373C0299115D100FEA997 /* NotificationService.swift */; };
 		23A373C5299115D100FEA997 /* shl-app-ios-notification-service.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 23A373BE299115D100FEA997 /* shl-app-ios-notification-service.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		23A3761E2993B0CC00FEA997 /* mif.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A376022993B0CB00FEA997 /* mif.png */; };
@@ -111,6 +126,28 @@
 		23A376452993B0D000FEA997 /* saik-big.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A376192993B0CC00FEA997 /* saik-big.png */; };
 		23A376462993B0D000FEA997 /* tik-big.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A376032993B0CB00FEA997 /* tik-big.png */; };
 		23A376472993B0D000FEA997 /* vlh-big.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A376162993B0CC00FEA997 /* vlh-big.png */; };
+		23A3764D2997AEAE00FEA997 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1AFF8D525A898AD00E50ADE /* WidgetKit.framework */; };
+		23A3764E2997AEAE00FEA997 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1AFF8D725A898AD00E50ADE /* SwiftUI.framework */; };
+		23A376512997AEAE00FEA997 /* ShlWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A376502997AEAE00FEA997 /* ShlWidgetBundle.swift */; };
+		23A376532997AEAE00FEA997 /* ShlWidgetLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A376522997AEAE00FEA997 /* ShlWidgetLiveActivity.swift */; };
+		23A376552997AEAE00FEA997 /* ShlWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A376542997AEAE00FEA997 /* ShlWidget.swift */; };
+		23A376582997AEB000FEA997 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23A376572997AEB000FEA997 /* Assets.xcassets */; };
+		23A3765E2997AEB000FEA997 /* shl-app-ios-widgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 23A3764C2997AEAE00FEA997 /* shl-app-ios-widgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		23A376632997B58C00FEA997 /* bif.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A3760F2993B0CC00FEA997 /* bif.png */; };
+		23A376642997B58C00FEA997 /* fbk.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A376082993B0CC00FEA997 /* fbk.png */; };
+		23A376652997B58C00FEA997 /* fhc.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A376042993B0CB00FEA997 /* fhc.png */; };
+		23A376662997B58C00FEA997 /* hv71.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A376152993B0CC00FEA997 /* hv71.png */; };
+		23A376672997B58C00FEA997 /* iko.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A376172993B0CC00FEA997 /* iko.png */; };
+		23A376682997B58C00FEA997 /* lhc.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A3760A2993B0CC00FEA997 /* lhc.png */; };
+		23A376692997B58C00FEA997 /* lhf.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A376062993B0CC00FEA997 /* lhf.png */; };
+		23A3766A2997B58C00FEA997 /* lif.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A376072993B0CC00FEA997 /* lif.png */; };
+		23A3766B2997B58C00FEA997 /* mif.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A376022993B0CB00FEA997 /* mif.png */; };
+		23A3766C2997B58C00FEA997 /* ohk.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A3760B2993B0CC00FEA997 /* ohk.png */; };
+		23A3766D2997B58C00FEA997 /* rbk.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A3761C2993B0CC00FEA997 /* rbk.png */; };
+		23A3766E2997B58C00FEA997 /* saik.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A376182993B0CC00FEA997 /* saik.png */; };
+		23A3766F2997B58C00FEA997 /* tik.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A376092993B0CC00FEA997 /* tik.png */; };
+		23A376702997B58C00FEA997 /* vlh.png in Resources */ = {isa = PBXBuildFile; fileRef = 23A376122993B0CC00FEA997 /* vlh.png */; };
+		23A376712997CC6000FEA997 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D1AFF8C725A88CF700E50ADE /* Localizable.strings */; };
 		23E405372705DCEA00C516F6 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E405352705DCEA00C516F6 /* ImageLoader.swift */; };
 		23E405382705DCEA00C516F6 /* URLImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E405362705DCEA00C516F6 /* URLImage.swift */; };
 		D1AAF86225AB10BF008D3D62 /* TeamLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AAF86125AB10BF008D3D62 /* TeamLogo.swift */; };
@@ -122,7 +159,7 @@
 		D1AFF87025A84FCD00E50ADE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D1AFF86F25A84FCD00E50ADE /* Preview Assets.xcassets */; };
 		D1AFF89725A8537B00E50ADE /* SeasonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF89625A8537B00E50ADE /* SeasonView.swift */; };
 		D1AFF8A125A8550500E50ADE /* StandingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF8A025A8550500E50ADE /* StandingsView.swift */; };
-		D1AFF8B425A8831100E50ADE /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF8B325A8831100E50ADE /* Data.swift */; };
+		D1AFF8B425A8831100E50ADE /* DataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AFF8B325A8831100E50ADE /* DataProvider.swift */; };
 		D1AFF8C525A88CF700E50ADE /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D1AFF8C725A88CF700E50ADE /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
@@ -134,6 +171,13 @@
 			remoteGlobalIDString = 23A373BD299115D100FEA997;
 			remoteInfo = "shl-app-ios-notification-service";
 		};
+		23A3765C2997AEB000FEA997 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D1AFF85D25A84FCB00E50ADE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 23A3764B2997AEAE00FEA997;
+			remoteInfo = "shl-app-ios-widgetExtension";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -143,6 +187,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				23A3765E2997AEB000FEA997 /* shl-app-ios-widgetExtension.appex in Embed App Extensions */,
 				23A373C5299115D100FEA997 /* shl-app-ios-notification-service.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
@@ -151,6 +196,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		231C055C299A529B00BEB846 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		231C055F299B98BA00BEB846 /* shl-app-ios-notification-service.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "shl-app-ios-notification-service.entitlements"; sourceTree = "<group>"; };
+		231C0560299B98CD00BEB846 /* shl-app-ios-widgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "shl-app-ios-widgetExtension.entitlements"; sourceTree = "<group>"; };
+		231C0563299B9F3100BEB846 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
+		231C056B299E3DB900BEB846 /* FormGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormGraph.swift; sourceTree = "<group>"; };
+		231C056F29A207C900BEB846 /* SelectTeamIntent.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = SelectTeamIntent.intentdefinition; sourceTree = "<group>"; };
 		2339F66A26B6862A006DE5F0 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
 		2339F66C26B844E6006DE5F0 /* shl-app-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "shl-app-ios.entitlements"; sourceTree = "<group>"; };
 		2339F66D26B857E7006DE5F0 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
@@ -211,7 +262,9 @@
 		23537ED126B3FE6D00C9B6ED /* Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preview.swift; sourceTree = "<group>"; };
 		23537ED326B454B800C9B6ED /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		23537ED526B57B9C00C9B6ED /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		235B07C129991F0600FD865E /* lhf-mono.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lhf-mono.png"; sourceTree = "<group>"; };
 		235CB13B2889650000A898D7 /* PullToRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullToRefresh.swift; sourceTree = "<group>"; };
+		2397EDDE29A62BD30014410E /* TeamWidget.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TeamWidget.png; sourceTree = "<group>"; };
 		23A373BE299115D100FEA997 /* shl-app-ios-notification-service.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "shl-app-ios-notification-service.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23A373C0299115D100FEA997 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		23A373C2299115D100FEA997 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -243,6 +296,12 @@
 		23A3761B2993B0CC00FEA997 /* lif-big.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lif-big.png"; sourceTree = "<group>"; };
 		23A3761C2993B0CC00FEA997 /* rbk.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rbk.png; sourceTree = "<group>"; };
 		23A3761D2993B0CC00FEA997 /* fhc-big.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fhc-big.png"; sourceTree = "<group>"; };
+		23A3764C2997AEAE00FEA997 /* shl-app-ios-widgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "shl-app-ios-widgetExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		23A376502997AEAE00FEA997 /* ShlWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShlWidgetBundle.swift; sourceTree = "<group>"; };
+		23A376522997AEAE00FEA997 /* ShlWidgetLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShlWidgetLiveActivity.swift; sourceTree = "<group>"; };
+		23A376542997AEAE00FEA997 /* ShlWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShlWidget.swift; sourceTree = "<group>"; };
+		23A376572997AEB000FEA997 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		23A376592997AEB000FEA997 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23E405352705DCEA00C516F6 /* ImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
 		23E405362705DCEA00C516F6 /* URLImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLImage.swift; sourceTree = "<group>"; };
 		D1AAF86125AB10BF008D3D62 /* TeamLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamLogo.swift; sourceTree = "<group>"; };
@@ -256,7 +315,7 @@
 		D1AFF87125A84FCD00E50ADE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D1AFF89625A8537B00E50ADE /* SeasonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonView.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		D1AFF8A025A8550500E50ADE /* StandingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandingsView.swift; sourceTree = "<group>"; };
-		D1AFF8B325A8831100E50ADE /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
+		D1AFF8B325A8831100E50ADE /* DataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataProvider.swift; sourceTree = "<group>"; };
 		D1AFF8C625A88CF700E50ADE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D1AFF8CB25A88D7600E50ADE /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D1AFF8D525A898AD00E50ADE /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -268,6 +327,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		23A376492997AEAE00FEA997 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				23A3764E2997AEAE00FEA997 /* SwiftUI.framework in Frameworks */,
+				23A3764D2997AEAE00FEA997 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,6 +406,7 @@
 		23A373BF299115D100FEA997 /* shl-app-ios-notification-service */ = {
 			isa = PBXGroup;
 			children = (
+				231C055F299B98BA00BEB846 /* shl-app-ios-notification-service.entitlements */,
 				23A373C0299115D100FEA997 /* NotificationService.swift */,
 				23A373C2299115D100FEA997 /* Info.plist */,
 			);
@@ -347,6 +416,8 @@
 		23A373CA2991183700FEA997 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				2397EDDE29A62BD30014410E /* TeamWidget.png */,
+				235B07C129991F0600FD865E /* lhf-mono.png */,
 				23A3760D2993B0CC00FEA997 /* bif-big.png */,
 				23A3760F2993B0CC00FEA997 /* bif.png */,
 				23A376102993B0CC00FEA997 /* fbk-big.png */,
@@ -379,11 +450,26 @@
 			path = Images;
 			sourceTree = "<group>";
 		};
+		23A3764F2997AEAE00FEA997 /* shl-app-ios-widget */ = {
+			isa = PBXGroup;
+			children = (
+				23A376502997AEAE00FEA997 /* ShlWidgetBundle.swift */,
+				23A376522997AEAE00FEA997 /* ShlWidgetLiveActivity.swift */,
+				23A376542997AEAE00FEA997 /* ShlWidget.swift */,
+				231C056F29A207C900BEB846 /* SelectTeamIntent.intentdefinition */,
+				23A376572997AEB000FEA997 /* Assets.xcassets */,
+				23A376592997AEB000FEA997 /* Info.plist */,
+			);
+			path = "shl-app-ios-widget";
+			sourceTree = "<group>";
+		};
 		D1AFF85C25A84FCB00E50ADE = {
 			isa = PBXGroup;
 			children = (
+				231C0560299B98CD00BEB846 /* shl-app-ios-widgetExtension.entitlements */,
 				D1AFF86725A84FCB00E50ADE /* shl-app-ios */,
 				23A373BF299115D100FEA997 /* shl-app-ios-notification-service */,
+				23A3764F2997AEAE00FEA997 /* shl-app-ios-widget */,
 				D1AFF8D425A898AD00E50ADE /* Frameworks */,
 				D1AFF86625A84FCB00E50ADE /* Products */,
 			);
@@ -394,6 +480,7 @@
 			children = (
 				D1AFF86525A84FCB00E50ADE /* shl-app-ios.app */,
 				23A373BE299115D100FEA997 /* shl-app-ios-notification-service.appex */,
+				23A3764C2997AEAE00FEA997 /* shl-app-ios-widgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -442,7 +529,9 @@
 		D1AFF8A925A85C1100E50ADE /* components */ = {
 			isa = PBXGroup;
 			children = (
-				D1AFF8B325A8831100E50ADE /* Data.swift */,
+				D1AFF8B325A8831100E50ADE /* DataProvider.swift */,
+				231C0563299B9F3100BEB846 /* Cache.swift */,
+				231C055C299A529B00BEB846 /* Models.swift */,
 				D1AAF86125AB10BF008D3D62 /* TeamLogo.swift */,
 				D1AFC2A825B07F5E00490FCE /* StarredTeams.swift */,
 				234AF3C528E7626900FE3AEC /* Effect.swift */,
@@ -455,6 +544,7 @@
 				2339F6B326C15075006DE5F0 /* UserService.swift */,
 				2339F75F26CA3B10006DE5F0 /* Purchases.swift */,
 				235CB13B2889650000A898D7 /* PullToRefresh.swift */,
+				231C056B299E3DB900BEB846 /* FormGraph.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -489,6 +579,23 @@
 			productReference = 23A373BE299115D100FEA997 /* shl-app-ios-notification-service.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		23A3764B2997AEAE00FEA997 /* shl-app-ios-widgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 23A3765F2997AEB000FEA997 /* Build configuration list for PBXNativeTarget "shl-app-ios-widgetExtension" */;
+			buildPhases = (
+				23A376482997AEAE00FEA997 /* Sources */,
+				23A376492997AEAE00FEA997 /* Frameworks */,
+				23A3764A2997AEAE00FEA997 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "shl-app-ios-widgetExtension";
+			productName = "shl-app-ios-widgetExtension";
+			productReference = 23A3764C2997AEAE00FEA997 /* shl-app-ios-widgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		D1AFF86425A84FCB00E50ADE /* shl-app-ios */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D1AFF88A25A84FCE00E50ADE /* Build configuration list for PBXNativeTarget "shl-app-ios" */;
@@ -502,6 +609,7 @@
 			);
 			dependencies = (
 				23A373C4299115D100FEA997 /* PBXTargetDependency */,
+				23A3765D2997AEB000FEA997 /* PBXTargetDependency */,
 			);
 			name = "shl-app-ios";
 			productName = HockeyPal;
@@ -518,6 +626,9 @@
 				LastUpgradeCheck = 1230;
 				TargetAttributes = {
 					23A373BD299115D100FEA997 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+					23A3764B2997AEAE00FEA997 = {
 						CreatedOnToolsVersion = 14.2;
 					};
 					D1AFF86425A84FCB00E50ADE = {
@@ -541,6 +652,7 @@
 			targets = (
 				D1AFF86425A84FCB00E50ADE /* shl-app-ios */,
 				23A373BD299115D100FEA997 /* shl-app-ios-notification-service */,
+				23A3764B2997AEAE00FEA997 /* shl-app-ios-widgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -567,6 +679,30 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		23A3764A2997AEAE00FEA997 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				235B07C329991F0F00FD865E /* lhf-mono.png in Resources */,
+				23A376712997CC6000FEA997 /* Localizable.strings in Resources */,
+				23A376632997B58C00FEA997 /* bif.png in Resources */,
+				23A376642997B58C00FEA997 /* fbk.png in Resources */,
+				23A376652997B58C00FEA997 /* fhc.png in Resources */,
+				23A376662997B58C00FEA997 /* hv71.png in Resources */,
+				23A376672997B58C00FEA997 /* iko.png in Resources */,
+				23A376682997B58C00FEA997 /* lhc.png in Resources */,
+				23A376692997B58C00FEA997 /* lhf.png in Resources */,
+				23A3766A2997B58C00FEA997 /* lif.png in Resources */,
+				23A3766B2997B58C00FEA997 /* mif.png in Resources */,
+				23A3766C2997B58C00FEA997 /* ohk.png in Resources */,
+				23A3766D2997B58C00FEA997 /* rbk.png in Resources */,
+				23A3766E2997B58C00FEA997 /* saik.png in Resources */,
+				23A3766F2997B58C00FEA997 /* tik.png in Resources */,
+				23A376702997B58C00FEA997 /* vlh.png in Resources */,
+				23A376582997AEB000FEA997 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D1AFF86325A84FCB00E50ADE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -581,6 +717,7 @@
 				2339F7A926CCF8D8006DE5F0 /* puck-icon-ice@3x.png in Resources */,
 				23A376392993B0CC00FEA997 /* fhc-big.png in Resources */,
 				23A376362993B0CC00FEA997 /* hv71-big.png in Resources */,
+				235B07C229991F0600FD865E /* lhf-mono.png in Resources */,
 				2339F7F826CCFF6E006DE5F0 /* lif-icon@3x.png in Resources */,
 				2339F7ED26CCFF6E006DE5F0 /* hv71-icon@2x.png in Resources */,
 				23A376222993B0CC00FEA997 /* lhf.png in Resources */,
@@ -630,6 +767,7 @@
 				23A376282993B0CC00FEA997 /* lhc-big.png in Resources */,
 				23A3761E2993B0CC00FEA997 /* mif.png in Resources */,
 				23A376312993B0CC00FEA997 /* hv71.png in Resources */,
+				2397EDDF29A62BD30014410E /* TeamWidget.png in Resources */,
 				2339F7E526CCFF6E006DE5F0 /* dif-icon@2x.png in Resources */,
 				23A376252993B0CC00FEA997 /* tik.png in Resources */,
 				2339F81226CD2538006DE5F0 /* launch-puck-light-2@1x.png in Resources */,
@@ -663,12 +801,31 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		23A376482997AEAE00FEA997 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				231C056D299E3DB900BEB846 /* FormGraph.swift in Sources */,
+				231C056E299E3F4900BEB846 /* Preview.swift in Sources */,
+				23A376532997AEAE00FEA997 /* ShlWidgetLiveActivity.swift in Sources */,
+				231C0569299CEBC700BEB846 /* Settings.swift in Sources */,
+				231C057129A207C900BEB846 /* SelectTeamIntent.intentdefinition in Sources */,
+				23A376512997AEAE00FEA997 /* ShlWidgetBundle.swift in Sources */,
+				23A376552997AEAE00FEA997 /* ShlWidget.swift in Sources */,
+				231C0565299B9F3E00BEB846 /* Cache.swift in Sources */,
+				231C055E299A52A800BEB846 /* Models.swift in Sources */,
+				231C056A299CEBE900BEB846 /* DataProvider.swift in Sources */,
+				231C0566299BA60000BEB846 /* Extensions.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D1AFF86125A84FCB00E50ADE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				D1AFF8A125A8550500E50ADE /* StandingsView.swift in Sources */,
-				D1AFF8B425A8831100E50ADE /* Data.swift in Sources */,
+				D1AFF8B425A8831100E50ADE /* DataProvider.swift in Sources */,
+				231C057029A207C900BEB846 /* SelectTeamIntent.intentdefinition in Sources */,
 				2339F6B426C15075006DE5F0 /* UserService.swift in Sources */,
 				23537ED226B3FE6D00C9B6ED /* Preview.swift in Sources */,
 				D1AFF86B25A84FCB00E50ADE /* ContentView.swift in Sources */,
@@ -680,12 +837,15 @@
 				23537ED426B454B800C9B6ED /* Extensions.swift in Sources */,
 				D1AFC2A425B07E8100490FCE /* TeamView.swift in Sources */,
 				D1AFC2A925B07F5E00490FCE /* StarredTeams.swift in Sources */,
+				231C055D299A529B00BEB846 /* Models.swift in Sources */,
 				23537ED026B1D30200C9B6ED /* GamesStatsView.swift in Sources */,
 				235CB13C2889650000A898D7 /* PullToRefresh.swift in Sources */,
 				D1AAF86225AB10BF008D3D62 /* TeamLogo.swift in Sources */,
 				234AF3C628E7626900FE3AEC /* Effect.swift in Sources */,
 				23E405372705DCEA00C516F6 /* ImageLoader.swift in Sources */,
+				231C056C299E3DB900BEB846 /* FormGraph.swift in Sources */,
 				2339F66E26B857E7006DE5F0 /* Debouncer.swift in Sources */,
+				231C0564299B9F3100BEB846 /* Cache.swift in Sources */,
 				2339F76026CA3B10006DE5F0 /* Purchases.swift in Sources */,
 				2339F6B226C0FB2B006DE5F0 /* Settings.swift in Sources */,
 				23E405382705DCEA00C516F6 /* URLImage.swift in Sources */,
@@ -699,6 +859,11 @@
 			isa = PBXTargetDependency;
 			target = 23A373BD299115D100FEA997 /* shl-app-ios-notification-service */;
 			targetProxy = 23A373C3299115D100FEA997 /* PBXContainerItemProxy */;
+		};
+		23A3765D2997AEB000FEA997 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 23A3764B2997AEAE00FEA997 /* shl-app-ios-widgetExtension */;
+			targetProxy = 23A3765C2997AEB000FEA997 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -790,7 +955,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2.1;
+				MARKETING_VERSION = 0.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -806,6 +971,7 @@
 			buildSettings = {
 				BUNDLE_ID_SUFFIX = .debug;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = "shl-app-ios-notification-service/shl-app-ios-notification-service.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3LK2DRBJ29;
@@ -819,7 +985,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.2.1;
+				MARKETING_VERSION = 0.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -834,6 +1000,7 @@
 			buildSettings = {
 				BUNDLE_ID_SUFFIX = "";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = "shl-app-ios-notification-service/shl-app-ios-notification-service.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3LK2DRBJ29;
@@ -847,7 +1014,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.2.1;
+				MARKETING_VERSION = 0.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -862,6 +1029,7 @@
 			buildSettings = {
 				BUNDLE_ID_SUFFIX = .beta;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = "shl-app-ios-notification-service/shl-app-ios-notification-service.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3LK2DRBJ29;
@@ -875,13 +1043,106 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.2.1;
+				MARKETING_VERSION = 0.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Beta;
+		};
+		23A376602997AEB000FEA997 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				BUNDLE_ID_SUFFIX = .debug;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = "shl-app-ios-widgetExtension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3LK2DRBJ29;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "shl-app-ios-widget/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "shl-app-ios-widget";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.2.2;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		23A376612997AEB000FEA997 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				BUNDLE_ID_SUFFIX = "";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = "shl-app-ios-widgetExtension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3LK2DRBJ29;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "shl-app-ios-widget/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "shl-app-ios-widget";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.2.2;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		23A376622997AEB000FEA997 /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				BUNDLE_ID_SUFFIX = .beta;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = "shl-app-ios-widgetExtension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 3LK2DRBJ29;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "shl-app-ios-widget/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "shl-app-ios-widget";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.2.2;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Beta;
 		};
@@ -1022,7 +1283,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2.1;
+				MARKETING_VERSION = 0.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1052,7 +1313,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2.1;
+				MARKETING_VERSION = 0.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1072,6 +1333,16 @@
 				23A373C6299115D100FEA997 /* Debug */,
 				23A373C7299115D100FEA997 /* Release */,
 				23A373C8299115D100FEA997 /* Beta */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		23A3765F2997AEB000FEA997 /* Build configuration list for PBXNativeTarget "shl-app-ios-widgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				23A376602997AEB000FEA997 /* Debug */,
+				23A376612997AEB000FEA997 /* Release */,
+				23A376622997AEB000FEA997 /* Beta */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

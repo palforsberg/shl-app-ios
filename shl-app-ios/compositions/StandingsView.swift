@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 
 
 extension Text {
@@ -157,8 +158,6 @@ struct StandingsView: View {
 
     var provider: DataProvider?
     
-    @State var reloading = false
-    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -220,21 +219,19 @@ struct StandingsView: View {
     }
     
     func reloadData() async {
-        self.reloading = true
-            
-        if let result = await provider?.getStandings(season: settings.season) {
-            withAnimation {
-                self.standings.set(data: result)
+        if let result = await provider?.getStandings(season: settings.season, maxAge: 10) {
+            if let standings = result.entries {
+                withAnimation {
+                    self.standings.set(data: standings)
+                }
+                if result.type == .api {
+                   WidgetCenter.shared.reloadAllTimelines()
+                   debugPrint("[STANDINGS] reload widgets")
+                }
             }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-                self.reloading = false
-            }
-        } else {
-            self.reloading = true
         }
         
-        if let result = await provider?.getPlayoffs() {
+        if let result = await provider?.getThrottledPlayoffs().entries {
             self.playoffs.setData(result)
         }
     }

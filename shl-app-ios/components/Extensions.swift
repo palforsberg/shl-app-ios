@@ -117,3 +117,15 @@ struct ActiveButtonStyle: ButtonStyle {
             .background(configuration.isPressed ? Color(UIColor.active) : .clear)
     }
 }
+
+extension ForEach where Data.Element: Hashable, ID == Data.Element, Content: View {
+    init(values: Data, content: @escaping (Data.Element) -> Content) {
+        self.init(values, id: \.self, content: content)
+    }
+}
+
+extension UserDefaults {
+    static var shared: UserDefaults {
+        return UserDefaults(suiteName: "group.palforsberg.shl-app-ios")!
+    }
+}

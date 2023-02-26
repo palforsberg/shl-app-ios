@@ -100,3 +100,7 @@
 "Unlocked Premium" = "Du har låst upp premium features för säsongen 2022/2023, tack för ditt stöd!";
 "Unlock Premium %@" = "Lås upp premium features för säsongen 2022/2023 för %@";
 "Thanks" = "Tack ❤️🏒";
+
+// PROMO
+"WIDGETPROMO.HEADER" = "Widgets är här!";
+"WIDGETPROMO.BODY" = "Följ ditt lag på både lås- och hemskärmen";

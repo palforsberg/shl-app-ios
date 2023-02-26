@@ -11,19 +11,25 @@ import Foundation
 class StarredTeams: ObservableObject {
     @Published var starredTeams: [String] {
         didSet {
-            StarredTeams.storage.setValue(starredTeams, forKey: "starredTeams")
-            StarredTeams.storage.synchronize()
+            UserDefaults.standard.setValue(starredTeams, forKey: "starredTeams")
+            UserDefaults.shared.setValue(starredTeams, forKey: "starredTeams")
+            debugPrint("[STARREDTEAMS] write to disk")
         }
     }
     
-    private static var storage = UserDefaults.standard
-    
     init() {
         self.starredTeams = StarredTeams.readFromDisk()
+        debugPrint("[STARREDTEAMS] write to shared")
+        UserDefaults.shared.setValue(self.starredTeams, forKey: "starredTeams")
     }
 
     func isStarred(teamCode: String) -> Bool {
         return starredTeams.contains(teamCode)
+    }
+    
+    func isStarred(teamCodes: [String]) -> Bool {
+        debugPrint("test \(teamCodes) \(teamCodes.first { isStarred(teamCode: $0) } != nil)")
+        return teamCodes.first { isStarred(teamCode: $0) } != nil
     }
 
     func addTeam(teamCode: String) {
@@ -48,6 +54,6 @@ class StarredTeams: ObservableObject {
     }
     
     static func readFromDisk() -> [String] {
-        return storage.array(forKey: "starredTeams") as? [String] ?? []
+        return UserDefaults.standard.array(forKey: "starredTeams") as? [String] ?? []
     }
 }

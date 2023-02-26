@@ -164,14 +164,14 @@ struct RoundedRectangleButtonStyle: ButtonStyle {
 
 struct Puck: View {
     @Environment(\.colorScheme) var colorScheme
-    let geo: GeometryProxy
-    init(_ geo: GeometryProxy) {
-        self.geo = geo
-    }
+    
+    var geo: GeometryProxy
+    var scale = CGFloat(0.1)
+    
     var body: some View {
         Image(uiImage: UIImage(named: colorScheme == .light ? "launch-puck-2" : "launch-puck-light-2") ?? UIImage())
             .resizable()
-            .scaleEffect(0.1)
+            .scaleEffect(scale)
             .scaledToFit()
     }
     
@@ -207,11 +207,11 @@ struct SupporterView: View {
         ZStack {
             Group {
                 GeometryReader { geo in
-                    Puck(geo).pos(0.25, 0.11).animation(.easeOut(duration: 0.2))
-                    Puck(geo).pos(0.65, 0.08).animation(.easeOut(duration: 0.3))
-                    Puck(geo).pos(0.2, 0.64).animation(.easeOut(duration: 0.4))
-                    Puck(geo).pos(0.7, 0.6).animation(.easeOut(duration: 0.5))
-                    Puck(geo).pos(0.75, 0.85).animation(.easeOut(duration: 0.6))
+                    Puck(geo: geo).pos(0.25, 0.11).animation(.easeOut(duration: 0.2))
+                    Puck(geo: geo).pos(0.65, 0.08).animation(.easeOut(duration: 0.3))
+                    Puck(geo: geo).pos(0.2, 0.64).animation(.easeOut(duration: 0.4))
+                    Puck(geo: geo).pos(0.7, 0.6).animation(.easeOut(duration: 0.5))
+                    Puck(geo: geo).pos(0.75, 0.85).animation(.easeOut(duration: 0.6))
                 }
             }
             VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 0) {

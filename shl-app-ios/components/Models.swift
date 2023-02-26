@@ -1,232 +1,35 @@
 //
-//  Data.swift
-//  HockeyPal
+//  WidgetModels.swift
+//  shl-app-ios
 //
-//  Created by Pål Forsberg on 2021-01-08.
+//  Created by Pål on 2023-02-13.
 //
 
 import Foundation
-import SwiftUI
-
-#if DEBUG
-let baseUrl = "http://192.168.141.229:8080"
-#else
-let baseUrl = "https://palsserver.com/shl-api"
-#endif
-let gamesUrl = { (season: Int) -> String in return "\(baseUrl)/games/\(season)" }
-let standingsUrl = { (season: Int) -> String in return "\(baseUrl)/standings/\(season)" }
-let teamsUrl = "\(baseUrl)/teams?season=\(Settings.currentSeason)"
-let playoffUrl = "\(baseUrl)/playoffs/\(Settings.currentSeason)"
-let userUrl = "\(baseUrl)/user"
-let gameStatsUrl = { (game: Game) -> String in
-    return "\(baseUrl)/game/\(game.game_uuid)/\(game.game_id)"
-}
-let playersUrl = { (code: String) -> String in
-    "\(baseUrl)/players/\(code)"
-}
+import ActivityKit
 
 
-class Cache {
-    var storage = UserDefaults.standard
-    var encoder = JSONEncoder()
-    var decoder = JSONDecoder()
-    
-    func store<T : Codable>(key: String, data: T) {
-        if let json = try? encoder.encode(data) {
-            storage.set(json, forKey: getKey(key))
-            storage.synchronize()
-        }
-    }
-    
-    func retrieve<T: Codable>(key: String, type: T.Type) -> T? {
-        if let archived = storage.object(forKey: getKey(key)) as? Data {
-            print("[CACHE] GET cached \(type) from \(getKey(key))")
-            do {
-                return try decoder.decode(type.self, from: archived)
-            } catch {
-                print("[DATA] failed to decode cache \(error)")
+struct ShlWidgetAttributes: ActivityAttributes {    
+    public struct ContentState: Codable, Hashable {
+        // Dynamic stateful properties about your activity go here!
+        var homeScore: Int
+        var awayScore: Int
+        
+        var gametime: String?
+        var status: String?
+        
+        func getStatus() -> GameStatus? {
+            guard let s = status else {
                 return nil
             }
-        }
-        return nil
-    }
-    
-    func getKey(_ key: String) -> String {
-        // to make it possible to change the datamodel between versions
-        return "\(key)_v0.2.1"
-    }
-}
-
-class DataProvider {
-    
-    private let apiJsonDecoder = getJsonDecoder()
-    private let cache = Cache()
-
-    init() {
-    }
-
-    func getGames(season: Int) async -> [Game]? {
-        let url = gamesUrl(season)
-        if season != Settings.currentSeason {
-            if let cached = cache.retrieve(key: url, type: [Game].self) {
-                return cached
-            }
-        }
-        return await getData(url: url, type: [Game].self)
-    }
-    
-    func getCachedGames() -> [Game] {
-        return cache.retrieve(key: gamesUrl(Settings.currentSeason), type: [Game].self) ?? []
-    }
-
-    func getStandings(season: Int) async -> [Standing]? {
-        let url = standingsUrl(season)
-        if season != Settings.currentSeason {
-            if let cached = cache.retrieve(key: url, type: [Standing].self) {
-                return cached
-            }
-        }
-        return await getData(url: standingsUrl(season), type: [Standing].self)
-    }
-    
-    func getGameStats(game: Game) async -> GameStats? {
-        return await getData(url: gameStatsUrl(game), type: GameStats.self)
-    }
-    
-    func getTeams() async -> [Team]? {
-        if let cached = cache.retrieve(key: teamsUrl, type: [Team].self) {
-            return cached
-        }
-        return await getData(url: teamsUrl, type: [Team].self)
-    }
-    
-    func getPlayoffs() async -> Playoffs? {
-        return await getData(url: playoffUrl, type: Playoffs.self)
-    }
-    
-    func getPlayers(for code: String) async -> [PlayerStats]? {
-        return await getData(url: playersUrl(code), type: [PlayerStats].self)
-    }
-    
-    func addUser(request: AddUser) async {
-        await postData(url: userUrl, data: request)
-    }
-
-    func getData<T : Codable>(url urlString: String, type: T.Type) async -> T? {
-        guard let url = URL(string: urlString) else {
-            print("[DATA] Your API end point is Invalid")
-            return nil
-        }
-        let request = URLRequest(url: url)
-        print("[DATA] GET \(type) from \(url)")
-        
-        do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-            let parsed = try apiJsonDecoder.decode(type, from: data)
-            self.cache.store(key: urlString, data: parsed)
-            return parsed
-        } catch let error {
-            print("[DATA] Failed to retrieve data \(error)")
-            return self.cache.retrieve(key: urlString, type: type)
-        }
-    }
-    
-    func postData<T : Codable & Equatable>(url urlString: String, data: T) async {
-        
-        guard isNewRequest(data, key: urlString) else {
-            print("[DATA] Idempotent \(type(of: data)) Request")
-            return
-        }
-        guard let url = URL(string: urlString) else {
-            print("[DATA] Your API end point is Invalid")
-            return
-        }
-        print("[DATA] POST \(data) to \(url)")
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.httpBody = try! JSONEncoder().encode(data)
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        do {
-            let (_, response) = try await URLSession.shared.data(for: request)
-            guard let response = response as? HTTPURLResponse else {
-                print("[DATA] error", response)
-                return
-            }
-            guard response.statusCode == 200 else {
-                print("[DATA] statusCode should be 200, but is \(response.statusCode)")
-                return
-            }
-            self.cache.store(key: urlString, data: data)
-        } catch {
-            print("[DATA] error", error)
-        }
-    }
-    
-    func isNewRequest<T: Codable & Equatable>(_ req: T, key: String) -> Bool {
-        guard let lastRequest = cache.retrieve(key: key, type: T.self) else {
-            return true
-        }
-        return lastRequest != req
-    }
-}
-
-class GamesData: ObservableObject {
-    private var data: [Game]
-    
-    init(data: [Game]) {
-        self.data = data
-    }
-    
-    func set(data: [Game]) {
-        self.data = data
-        self.objectWillChange.send()
-    }
-    
-    func getGames() -> [Game] {
-        return data.sorted { (a, b) -> Bool in
-            return a.start_date_time < b.start_date_time
+            return GameStatus(rawValue: s)
         }
     }
 
-    func getLiveGames(teamCodes: [String]) -> [Game] {
-        return getGames()
-            .filter({ $0.isLive() })
-            .filter(getTeamFilter(teamCodes: teamCodes))
-    }
-
-    func getPlayedGames(teamCodes: [String]) -> [Game] {
-        return getGames()
-            .sorted { (a, b) -> Bool in
-                return a.start_date_time > b.start_date_time
-            }
-            .filter({ $0.isPlayed() })
-            .filter(getTeamFilter(teamCodes: teamCodes))
-    }
-    
-    func getFutureGames(teamCodes: [String]) -> [Game] {
-        return Array(getGames()
-                        .filter({ $0.isFuture() })
-                        .filter(getTeamFilter(teamCodes: teamCodes))
-                        .prefix(5))
-    }
-    
-    func getTeamFilter(teamCodes: [String]) -> (Game) -> Bool {
-        if (teamCodes.isEmpty) {
-            return { game in return true }
-        }
-        
-        return { game in teamCodes.contains { (e) -> Bool in
-            return game.hasTeam(e)
-        }}
-    }
-    
-    func getGamesBetween(team1: String, team2: String) -> [Game] {
-        return getPlayedGames(teamCodes: []).filter { g in
-            return g.hasTeam(team1) && g.hasTeam(team2)
-        }
-    }
+    // Fixed non-changing properties about your activity go here!
+    var homeTeam: String
+    var awayTeam: String
+    var gameUuid: String
 }
 
 enum GameType: String, Codable {
@@ -268,6 +71,84 @@ enum GameStatus: String, Codable {
         default:
             return false
         }
+    }
+}
+
+class GamesData: ObservableObject {
+    private var data: [Game]
+    
+    init(data: [Game]) {
+        self.data = data
+    }
+    
+    func set(data: [Game]) {
+        self.data = data
+        self.objectWillChange.send()
+    }
+    
+    func getGames() -> [Game] {
+        return data.sorted { (a, b) in a.start_date_time < b.start_date_time }
+    }
+
+    func getLiveGames(teamCodes: [String], starred: [String] = []) -> [Game] {
+        return getGames()
+            .filter({ $0.isLive() })
+            .filter(getTeamFilter(teamCodes: teamCodes))
+            .sorted { a, b in
+                if starred.contains(a.home_team_code) || starred.contains(a.away_team_code) {
+                    return true
+                }
+                return false
+            }
+    }
+
+    func getPlayedGames(teamCodes: [String]) -> [Game] {
+        return getGames()
+            .sorted { (a, b) -> Bool in
+                return a.start_date_time > b.start_date_time
+            }
+            .filter({ $0.isPlayed() })
+            .filter(getTeamFilter(teamCodes: teamCodes))
+    }
+    
+    func getFutureGames(teamCodes: [String], starred: [String] = []) -> [Game] {
+        return Array(data
+                        .filter({ $0.isFuture() })
+                        .filter(getTeamFilter(teamCodes: teamCodes))
+                        .sorted { a, b in
+                            if starred.contains(a.home_team_code) || starred.contains(a.away_team_code) {
+                                return true
+                            }
+                            if a.start_date_time < b.start_date_time {
+                                return true
+                            }
+                            return false
+                        }
+                        .prefix(5))
+    }
+    
+    func getTeamFilter(teamCodes: [String]) -> (Game) -> Bool {
+        if teamCodes.isEmpty {
+            return { game in return true }
+        }
+        
+        return { game in teamCodes.contains { game.hasTeam($0) } }
+    }
+    
+    func getGamesBetween(team1: String, team2: String) -> [Game] {
+        return getPlayedGames(teamCodes: []).filter { g in
+            return g.hasTeam(team1) && g.hasTeam(team2)
+        }
+    }
+    
+    func getPoints(for teamCode: String, numberOfGames: Int = 5) -> [Int] {
+        return Array(self.data
+            .filter { $0.hasTeam(teamCode) }
+            .filter { $0.isPlayed() }
+            .sorted { $0.start_date_time > $1.start_date_time }
+            .map { $0.getPoints(for: teamCode) }
+            .prefix(numberOfGames))
+        .reversed()
     }
 }
 struct Game: Codable, Identifiable, Equatable  {
@@ -334,7 +215,21 @@ struct Game: Codable, Identifiable, Equatable  {
     func isDemotion() -> Bool {
         self.game_type == "Kvalmatch nedflyttning"
     }
+    
+    func getPoints(for team: String) -> Int {
+        guard isPlayed(),
+              (team == home_team_code || team == away_team_code)
+        else {
+            return 0
+        }
+        
+        if overtime || penalty_shots {
+            return didWin(team) ? 2 : 1
+        }
+        return didWin(team) ? 3 : 0
+    }
 }
+
 
 class StandingsData: ObservableObject {
     public var data: [Standing]
@@ -678,31 +573,5 @@ class PlayoffData: ObservableObject {
     func setData(_ data: Playoffs?) {
         self.data = data
         self.objectWillChange.send()
-    }
-}
-
-func getJsonDecoder() -> JSONDecoder {
-    let jsonDecoder = JSONDecoder()
-    let isoDateFormatter = ISO8601DateFormatter()
-    jsonDecoder.dateDecodingStrategy = JSONDecoder.DateDecodingStrategy.custom({ (decoder) -> Date in
-        let container = try decoder.singleValueContainer()
-        var dateStr = try container.decode(String.self)
-        if dateStr.contains(".") {
-            dateStr = dateStr.replacingOccurrences(of: "\\.\\d+", with: "", options: .regularExpression)
-        }
-        return isoDateFormatter.date(from: dateStr)!
-    })
-    return jsonDecoder
-}
-
-struct RuntimeError: Error {
-    let message: String
-
-    init(_ message: String) {
-        self.message = message
-    }
-
-    public var localizedDescription: String {
-        return message
     }
 }

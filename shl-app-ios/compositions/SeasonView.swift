@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 
 
 struct GameScore: View {
@@ -62,46 +63,6 @@ struct TeamAvatar: View {
         return UIScreen.isMini ? 80.0 : 115.0
     }
 }
-
-struct LiveGame2: View {
-    var game: Game
-    var body: some View {
-        HStack {
-            VStack {
-                TeamLogo(code: game.home_team_code)
-                Text("Luleå")
-                    .font(.system(size: 14, design: .rounded))
-                    .fontWeight(.medium)
-                    .starred(false)
-                    .scaledToFit()
-                    .padding(EdgeInsets(top: -2, leading: 0, bottom: 0, trailing: 0))
-                    .minimumScaleFactor(0.8)
-                    
-            }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 50)
-            Spacer()
-            Text("\(game.home_team_result)")
-                .font(.system(size: 30))
-                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-            Text("-")
-            Text("\(game.away_team_result)")
-                .font(.system(size: 30))
-                .fontWeight(.bold)
-            Spacer()
-            VStack {
-                TeamLogo(code: game.away_team_code)
-                Text("Frölunda")
-                    .font(.system(size: 14, design: .rounded))
-                    .fontWeight(.medium)
-                    .starred(false)
-                    .scaledToFit()
-                    .padding(EdgeInsets(top: -2, leading: 0, bottom: 0, trailing: 0    ))
-                    .minimumScaleFactor(0.6)
-                    
-            }.frame(width: 100, height: 50)
-        }.padding(EdgeInsets(top: 10, leading: -10, bottom: 10, trailing: -10))
-    }
-}
-
 
 struct LiveGame: View {
     var game: Game
@@ -184,24 +145,69 @@ struct PlayedGame: View {
     }
 }
 
+
+struct WidgetPromo: View {
+    @AppStorage("widget.promo.2023.removed.7")
+    var removed = false
+    
+    var body: some View {
+        if !removed {
+            Section {
+                ZStack {
+                    Group {
+                        GeometryReader { geo in
+                            Puck(geo: geo, scale: 0.15).pos(0.9, 0.2)
+                            Puck(geo: geo, scale: 0.15).pos(0.85, 0.6)
+                            Puck(geo: geo, scale: 0.15).pos(0.95, 0.8)
+                        }
+                    }
+                    HStack(spacing: 15) {
+                        Image(uiImage: UIImage(named: "TeamWidget")!)
+                            .resizable()
+                            .scaledToFit()
+                            .rotation3DEffect(.degrees(10), axis: (x: 0.0, y: 1.0, z: 0.0))
+                            .frame(width: 80)
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("Pucken Widgets!")
+                                .font(.system(size: 18, weight: .heavy, design: .rounded))
+                            Text("WIDGETPROMO.BODY")
+                                .font(.system(size: 14, weight: .heavy, design: .rounded))
+                        }
+                        Spacer()
+                        Button(action: {
+                            print("Remove WidgetPromo")
+                            withAnimation {
+                                removed = true
+                            }
+                        }, label: {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 18, weight: .heavy))
+                        }).foregroundColor(Color(uiColor: .label))
+                    }
+                    .padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                }
+            }.transition(.scale)
+        }
+    }
+}
+
+
 struct SeasonView: View {
     @EnvironmentObject var starredTeams: StarredTeams
     @EnvironmentObject var gamesData: GamesData
     @EnvironmentObject var settings: Settings
     
-    @State var lastReload = Date(timeIntervalSince1970: 0)
-    @State var currentlyReloading = false
-    
     var provider: DataProvider?
     
     var body: some View {
         let teamCodes = settings.onlyStarred ? starredTeams.starredTeams : []
-        let liveGames = gamesData.getLiveGames(teamCodes: teamCodes)
-        let futureGames = gamesData.getFutureGames(teamCodes: teamCodes)
+        let liveGames = gamesData.getLiveGames(teamCodes: teamCodes, starred: starredTeams.starredTeams)
+        let futureGames = gamesData.getFutureGames(teamCodes: teamCodes, starred: starredTeams.starredTeams)
         let playedGames = gamesData.getPlayedGames(teamCodes: teamCodes)
 
         NavigationView {
             List {
+                WidgetPromo()
                 if (!liveGames.isEmpty) {
                     Section(header: Text("Live").listHeader()) {
                         ForEach(liveGames) { (item) in
@@ -236,17 +242,7 @@ struct SeasonView: View {
                 }
             }
             .refreshable {
-                let tenSeconds: Double = 10
-                let throttled = await self.reloadThrottledWithInterval(tenSeconds)
-                if throttled {
-                    do {
-                        try await Task.sleep(nanoseconds: 500 * 1_000_000)
-                    } catch {}
-                }
-            }
-            .task { // runs before view appears
-                debugPrint("[SEASONVIEW] view did appear")
-                let _ = await self.reloadThrottledWithInterval(15 * 60)
+                await self.reloadData(5)
             }
             .id(settings.season) // makes sure list is recreated when rerendered. To take care of reuse cell issues
             .listStyle(InsetGroupedListStyle())
@@ -258,47 +254,35 @@ struct SeasonView: View {
         .onReceive(settings.$season) { _ in
             Task {
                 debugPrint("[SEASONVIEW] settings.$season")
-                let _ = await self.reloadThrottledWithInterval(1)
+                let _ = await self.reloadData(1)
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .onGameNotification)) { _ in
             Task {
                 debugPrint("[SEASONVIEW] onGameNotification")
-                await self.reloadData()
+                await self.reloadData(0)
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             debugPrint("[SEASONVIEW] applicationWillEnterForeground")
             Task {
-                await self.reloadThrottledWithInterval(15 * 60)
+                await self.reloadData(15 * 60)
             }
         }
     }
-    
-    func reloadThrottledWithInterval(_ throttling: TimeInterval) async -> Bool {
-        if self.gamesData.getLiveGames(teamCodes: []).count == 0 &&
-              -lastReload.timeIntervalSinceNow < throttling {
-            debugPrint("[SEASONVIEW] do not update \(throttling) > \(-lastReload.timeIntervalSinceNow)")
-            return true
-        }
-        await self.reloadData()
-        return false
-    }
 
-    func reloadData() async {
-        guard self.currentlyReloading == false else {
-            debugPrint("[SEASONVIEW] do not update, currently reloading")
-            return
+    func reloadData(_ throttling: TimeInterval) async {
+        let maxAge = self.gamesData.getLiveGames(teamCodes: []).count > 0 ? 2 : throttling
+        
+        if let gd = await provider?.getGames(season: settings.season, fetchType: .throttled, maxAge: maxAge) {
+            if let games = gd.entries {
+                gamesData.set(data: games)
+            }
+            if gd.type == .api {
+               WidgetCenter.shared.reloadAllTimelines()
+               debugPrint("[SEASON] reload widgets")
+            }
         }
-        debugPrint("[SEASONVIEW] do update")
-        self.currentlyReloading = true
-        if let gd = await provider?.getGames(season: settings.season) {
-            gamesData.set(data: gd)
-            self.lastReload = Date.now
-        } else {
-            self.lastReload = Date(timeIntervalSince1970: 0)
-        }
-        self.currentlyReloading = false
     }
 }
 
