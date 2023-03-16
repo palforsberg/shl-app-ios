@@ -53,6 +53,7 @@ struct ContentView: View {
             }
             userService = UserService(provider: provider, settings: settings, starredTeams: starredTeams)
             Purchases.shared = Purchases(settings: settings)
+            LiveActivity.shared = LiveActivity(provider: self.provider!, settings: self.settings)
         }
         .environmentObject(starredTeams)
         .environmentObject(standings)

@@ -11,7 +11,7 @@ import SwiftUI
 
 struct WidgetTeamLogo: View {
     var code: String
-    var size: CGFloat = 50.0
+    var size: CGFloat = 40.0
 
     var body: some View {
         if let teamImage = UIImage(named: self.getImageName()) {
@@ -45,30 +45,29 @@ struct WidgetTeamAvatar: View {
     }
 }
 
-
-@available(iOS 16.1, *)
 @available(iOSApplicationExtension 16.1, *)
-struct FullGameInfo: View {
+struct LiveActivityReportView: View {
     var context: ActivityViewContext<ShlWidgetAttributes>
     
     var body: some View {
         HStack(alignment: .top, spacing: 40) {
-            Spacer()
             WidgetTeamAvatar(code: context.attributes.homeTeam)
             VStack(spacing: 3) {
                 HStack(spacing: 10) {
-                    Text("\(context.state.homeScore)")
+                    Text("\(context.state.report.homeScore)")
                     Text("-").font(.system(size: 22, weight: .black, design: .rounded))
-                    Text("\(context.state.awayScore)")
+                    Text("\(context.state.report.awayScore)")
                 }
-                .font(.system(size: 40, weight: .heavy, design: .rounded))
+                .font(.system(size: 34, weight: .heavy, design: .rounded))
                 
                 HStack(spacing: 3) {
                     if !self.isStale() {
-                        if let s = context.state.status {
+                        if context.state.getStatus() == .coming {
+                            Text("\(context.attributes.startDateTime.getFormattedDate()) \(context.attributes.startDateTime.getFormattedTime())")
+                        } else if let s = context.state.report.status {
                             Text(LocalizedStringKey(s))
                         }
-                        if let s = context.state.gametime, context.state.getStatus()?.isGameTimeApplicable() ?? false {
+                        if let s = context.state.report.gametime, context.state.getStatus()?.isGameTimeApplicable() ?? false {
                             Text("•")
                             Text(s)
                         }
@@ -77,7 +76,6 @@ struct FullGameInfo: View {
                 .font(.system(size: 16, weight: .bold, design: .rounded))
             }
             WidgetTeamAvatar(code: context.attributes.awayTeam)
-            Spacer()
         }
         .font(.system(size: 14, weight: .heavy, design: .rounded))
     }
@@ -90,33 +88,99 @@ struct FullGameInfo: View {
     }
 }
 
-@available(iOS 16.1, *)
+@available(iOSApplicationExtension 16.1, *)
+struct LiveActivityEventView: View {
+    var event: LiveActivityEvent
+    
+    var body: some View {
+        VStack(alignment: .center, spacing: 10) {
+            HStack {
+                Spacer()
+                if let t = event.teamCode {
+                    WidgetTeamLogo(code: t, size: 25)
+                }
+                VStack(alignment: .leading) {
+                    Text(event.title)
+                    if let b = event.body {
+                        Text(b)
+                            .font(.system(size: 14, weight: .semibold, design: .rounded))
+                    }
+                }
+                Spacer()
+            }
+            .padding(.top, 10).padding(.bottom, 12)
+
+        }
+        .font(.system(size: 14, weight: .bold, design: .rounded))
+        .background(Color(uiColor: .systemBackground).opacity(0.2))
+    }
+}
+
+@available(iOSApplicationExtension 16.1, *)
 struct ShlWidgetLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: ShlWidgetAttributes.self) { context in
             // Lock screen/banner UI goes here
-            FullGameInfo(context: context)
-                .padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
+            LiveActivityReportView(context: context)
+                .padding(EdgeInsets(top: 20, leading: 0, bottom: context.state.event == nil ? 20 : 10, trailing: 0))
+            if let e = context.state.event {
+                LiveActivityEventView(event: e)
+            }
         } dynamicIsland: { context in
             DynamicIsland {
                 // Expanded UI goes here.  Compose the expanded UI through
                 // various regions, like leading/trailing/center/bottom
-                /*DynamicIslandExpandedRegion(.leading) {
+                DynamicIslandExpandedRegion(.leading) {
+                    HStack(spacing: 10) {
+                        WidgetTeamLogo(code: context.attributes.homeTeam, size: 38)
+                        Text("\(context.state.report.homeScore)")
+                            .font(.system(size: 26, weight: .heavy, design: .rounded))
+                    }
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                }*/
+                    HStack(spacing: 10) {
+                        Text("\(context.state.report.awayScore)")
+                            .font(.system(size: 26, weight: .heavy, design: .rounded))
+                        WidgetTeamLogo(code: context.attributes.awayTeam, size: 38)
+                    }
+                }
+                DynamicIslandExpandedRegion(.center) {
+                    VStack(alignment: .center) {
+                        HStack {
+                            if let s = context.state.report.status {
+                                Text(LocalizedStringKey(s))
+                            }
+                            if let s = context.state.report.gametime, context.state.getStatus()?.isGameTimeApplicable() ?? false {
+                                Text("•")
+                                Text(s)
+                            }
+                        }
+                    }.font(.system(size: 16, weight: .bold, design: .rounded))
+                }
                 DynamicIslandExpandedRegion(.bottom) {
-                    FullGameInfo(context: context)
+                    if let e = context.state.event {
+                        HStack {
+                            if let t = e.teamCode {
+                                WidgetTeamLogo(code: t, size: 25)
+                            }
+                            VStack(alignment: .leading) {
+                                Text(e.title)
+                                if let b = e.body {
+                                    Text(b).font(.system(size: 14, weight: .semibold, design: .rounded))
+                                }
+                            }
+                        }.font(.system(size: 16, weight: .bold, design: .rounded))
+                    }
                 }
             } compactLeading: {
                 HStack {
                     WidgetTeamLogo(code: context.attributes.homeTeam, size: 28)
-                    Text("\(context.state.homeScore)")
+                    Text("\(context.state.report.homeScore)")
                         .font(.system(size: 20, weight: .heavy, design: .rounded))
                 }
             } compactTrailing: {
                 HStack {
-                    Text("\(context.state.awayScore)")
+                    Text("\(context.state.report.awayScore)")
                         .font(.system(size: 20, weight: .heavy, design: .rounded))
                     WidgetTeamLogo(code: context.attributes.awayTeam, size: 28)
                 }
@@ -131,8 +195,10 @@ struct ShlWidgetLiveActivity: Widget {
 
 @available(iOS 16.2, *)
 struct ShlWidgetLiveActivity_Previews: PreviewProvider {
-    static let attributes = ShlWidgetAttributes(homeTeam: "LHF", awayTeam: "FHC", gameUuid: "game_uuid_123")
-    static let contentState = ShlWidgetAttributes.ContentState(homeScore: 2, awayScore: 0, gametime: "12:23", status: "Coming")
+    static let attributes = ShlWidgetAttributes(homeTeam: "LHF", awayTeam: "FHC", gameUuid: "game_uuid_123", startDateTime: Date())
+    static let report = LiveActivityReport(homeScore: 2, awayScore: 0, status: "Period1", gametime: "12:23")
+    static let event = LiveActivityEvent(title: "MÅÅL! 🎉", body: nil, teamCode: "LHF")
+    static let contentState = ShlWidgetAttributes.ContentState(report: report, event: event)
 
     static var previews: some View {
         attributes

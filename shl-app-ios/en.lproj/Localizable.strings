@@ -54,6 +54,8 @@
 "Overtime" = "Overtime";
 "Game ended" = "Game ended";
 "GamePreview" = "Game Preview";
+"Start Live" = "Start Live";
+"End Live" = "End Live";
 
 // Standings
 "Final" = "Final";

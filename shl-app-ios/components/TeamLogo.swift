@@ -39,7 +39,7 @@ struct PlayerImage: View {
 
     var body: some View {
         URLImage(
-            url: "https://palsserver.com/shl-server/player/\(player).jpg?v=0.2.2",
+            url: "https://palsserver.com/shl-server/player/\(player).jpg?v=0.3.0",
             placeholder: Image(systemName: "person.fill"))
             .frame(width: size, height: size * 1.2, alignment: .center)
             .cornerRadius(size / 6)

@@ -18,6 +18,8 @@ let standingsUrl = { (season: Int) -> String in return "\(baseUrl)/standings/\(s
 let teamsUrl = "\(baseUrl)/teams?season=\(Settings.currentSeason)"
 let playoffUrl = "\(baseUrl)/playoffs/\(Settings.currentSeason)"
 let userUrl = "\(baseUrl)/user"
+let liveActivityStartUrl = "\(baseUrl)/live-activity/start"
+let liveActivityEndUrl = "\(baseUrl)/live-activity/end"
 let gameStatsUrl = { (game: Game) -> String in
     return "\(baseUrl)/game/\(game.game_uuid)/\(game.game_id)"
 }
@@ -77,8 +79,8 @@ class DataProvider {
         return await getData(url: teamsUrl, type: [Team].self)
     }
     
-    func getThrottledPlayoffs() async -> (entries: Playoffs?, type: GetType) {
-        return await getThrottledData(url: playoffUrl, type: Playoffs.self, maxAge: 10)
+    func getPlayoffs(maxAge: TimeInterval) async -> (entries: Playoffs?, type: GetType) {
+        return await getThrottledData(url: playoffUrl, type: Playoffs.self, maxAge: maxAge)
     }
     
     func getPlayers(for code: String) async -> [PlayerStats]? {
@@ -89,6 +91,13 @@ class DataProvider {
         await postData(url: userUrl, data: request)
     }
     
+    func startLiveActivity(_ request: StartLiveActivity) async {
+        await postData(url: liveActivityStartUrl, data: request)
+    }
+    
+    func endLiveActivity(_ request: EndLiveActivity) async {
+        await postData(url: liveActivityEndUrl, data: request, idempotencyCheck: false)
+    }
     
     /**
      maxAge; maxage of the stored data  in seconds before fetching new
@@ -104,7 +113,6 @@ class DataProvider {
         } else {
             debugPrint("[DATA] do update \(url) \(seconds) vs \(-lastFetch.timeIntervalSinceNow)")
             let response = await getData(url: url, type: type)
-            
             Cache.store(key: dateKey, data: Date.now)
             
             return (response, .api)
@@ -130,9 +138,9 @@ class DataProvider {
         }
     }
     
-    func postData<T : Codable & Equatable>(url urlString: String, data: T) async {
+    func postData<T : Codable & Equatable>(url urlString: String, data: T, idempotencyCheck: Bool = true) async {
         
-        guard isNewRequest(data, key: urlString) else {
+        guard isNewRequest(data, key: urlString) || !idempotencyCheck else {
             print("[DATA] Idempotent \(type(of: data)) Request")
             return
         }

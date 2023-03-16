@@ -28,8 +28,10 @@ struct Provider: IntentTimelineProvider {
         let teamCode = getTeamCode(configuration)
 
         Task {
-            let games =     await provider.getGames(season: Settings.currentSeason, maxAge: 60)
-            let standings = await provider.getStandings(season: Settings.currentSeason, maxAge: 60)
+            async let async_games = provider.getGames(season: Settings.currentSeason, maxAge: 60)
+            async let async_standings = provider.getStandings(season: Settings.currentSeason, maxAge: 60)
+            let (games, standings) = await (async_games, async_standings)
+            
             print("[WIDGET] fetched games \(String(describing: games))")
             var entry = getEntry(teamCode, games.entries, standings.entries)
             entry.fetched = games.type == .api ? .timeline_api : .timeline_cache

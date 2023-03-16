@@ -69,8 +69,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
-        let token = tokenParts.joined()
+        let token = deviceToken.token()
         print("[APP] Device Token: \(token)")
         AppDelegate.settings.apnToken = token
     }

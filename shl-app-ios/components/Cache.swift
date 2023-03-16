@@ -37,6 +37,6 @@ class Cache {
     
     static func getKey(_ key: String) -> String {
         // to make it possible to change the datamodel between versions
-        return "\(key)_v0.2.2"
+        return "\(key)_v0.3.0"
     }
 }

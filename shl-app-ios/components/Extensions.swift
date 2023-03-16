@@ -129,3 +129,9 @@ extension UserDefaults {
         return UserDefaults(suiteName: "group.palforsberg.shl-app-ios")!
     }
 }
+
+extension Data {
+    func token() -> String {
+        self.map { String(format: "%02.2hhx", $0) }.joined()
+    }
+}

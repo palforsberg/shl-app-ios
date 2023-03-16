@@ -21,7 +21,7 @@ func getLiveGame() -> Game {
 }
 
 func getLiveGame(t1: String, score1: Int, t2: String, score2: Int, status: String? = "Period2") -> Game {
-    return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: score2, home_team_code: t1, home_team_result: score1, start_date_time: Date().addingTimeInterval(TimeInterval(-2_000)), game_type: GameType.season.rawValue, played: false, overtime: false, penalty_shots: false, status: status, gametime: "13:37")
+    return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: score2, home_team_code: t1, home_team_result: score1, start_date_time: Date().addingTimeInterval(TimeInterval(-50)), game_type: GameType.season.rawValue, played: false, overtime: false, penalty_shots: false, status: status, gametime: "13:37")
 }
 
 func getFutureGame() -> Game {
@@ -122,14 +122,14 @@ func getPlayoffs() -> Playoffs {
     Playoffs(
                 demotion: PlayoffEntry(team1: "HV71", team2: "MIF", score1: 2, score2: 2),
                 eight: [
-                    PlayoffEntry(team1: "LHF", team2: "OHK", score1: 2, score2: 1),
-                    PlayoffEntry(team1: "RBK", team2: "LIF", score1: 2, score2: 1),
+                    PlayoffEntry(team1: "LHF", team2: "OHK", score1: 2, score2: 1, eliminated: "OHK"),
+                    PlayoffEntry(team1: "RBK", team2: "LIF", score1: 2, score2: 1, eliminated: "LIF"),
                 ],
                 quarter: [
                     PlayoffEntry(team1: "LHF", team2: "OHK", score1: 2, score2: 1),
-                    PlayoffEntry(team1: "TIK", team2: "SAIK", score1: 2, score2: 1),
+                    PlayoffEntry(team1: "TIK", team2: "SAIK", score1: 2, score2: 1, eliminated: "SAIK"),
                     PlayoffEntry(team1: "HV71", team2: "FBK", score1: 2, score2: 1),
-                    PlayoffEntry(team1: "FHC", team2: "RBK", score1: 2, score2: 1)
+                    PlayoffEntry(team1: "FHC", team2: "RBK", score1: 2, score2: 4, eliminated: "FHC")
                 ],
                 semi: [
                     PlayoffEntry(team1: "LHF", team2: "SAIK", score1: 2, score2: 1),

@@ -81,6 +81,7 @@
 		235B07C229991F0600FD865E /* lhf-mono.png in Resources */ = {isa = PBXBuildFile; fileRef = 235B07C129991F0600FD865E /* lhf-mono.png */; };
 		235B07C329991F0F00FD865E /* lhf-mono.png in Resources */ = {isa = PBXBuildFile; fileRef = 235B07C129991F0600FD865E /* lhf-mono.png */; };
 		235CB13C2889650000A898D7 /* PullToRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235CB13B2889650000A898D7 /* PullToRefresh.swift */; };
+		23743B0829B4C0DF00BE0AA6 /* LiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23743B0729B4C0DF00BE0AA6 /* LiveActivity.swift */; };
 		2397EDDF29A62BD30014410E /* TeamWidget.png in Resources */ = {isa = PBXBuildFile; fileRef = 2397EDDE29A62BD30014410E /* TeamWidget.png */; };
 		23A373C1299115D100FEA997 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A373C0299115D100FEA997 /* NotificationService.swift */; };
 		23A373C5299115D100FEA997 /* shl-app-ios-notification-service.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 23A373BE299115D100FEA997 /* shl-app-ios-notification-service.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -264,6 +265,7 @@
 		23537ED526B57B9C00C9B6ED /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		235B07C129991F0600FD865E /* lhf-mono.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lhf-mono.png"; sourceTree = "<group>"; };
 		235CB13B2889650000A898D7 /* PullToRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullToRefresh.swift; sourceTree = "<group>"; };
+		23743B0729B4C0DF00BE0AA6 /* LiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivity.swift; sourceTree = "<group>"; };
 		2397EDDE29A62BD30014410E /* TeamWidget.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TeamWidget.png; sourceTree = "<group>"; };
 		23A373BE299115D100FEA997 /* shl-app-ios-notification-service.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "shl-app-ios-notification-service.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23A373C0299115D100FEA997 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -545,6 +547,7 @@
 				2339F75F26CA3B10006DE5F0 /* Purchases.swift */,
 				235CB13B2889650000A898D7 /* PullToRefresh.swift */,
 				231C056B299E3DB900BEB846 /* FormGraph.swift */,
+				23743B0729B4C0DF00BE0AA6 /* LiveActivity.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -836,6 +839,7 @@
 				234AF3C8290521E100FE3AEC /* GameAlert.swift in Sources */,
 				23537ED426B454B800C9B6ED /* Extensions.swift in Sources */,
 				D1AFC2A425B07E8100490FCE /* TeamView.swift in Sources */,
+				23743B0829B4C0DF00BE0AA6 /* LiveActivity.swift in Sources */,
 				D1AFC2A925B07F5E00490FCE /* StarredTeams.swift in Sources */,
 				231C055D299A529B00BEB846 /* Models.swift in Sources */,
 				23537ED026B1D30200C9B6ED /* GamesStatsView.swift in Sources */,
@@ -955,7 +959,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2.2;
+				MARKETING_VERSION = 0.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -985,7 +989,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.2.2;
+				MARKETING_VERSION = 0.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1014,7 +1018,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.2.2;
+				MARKETING_VERSION = 0.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1043,7 +1047,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.2.2;
+				MARKETING_VERSION = 0.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1068,13 +1072,14 @@
 				INFOPLIST_FILE = "shl-app-ios-widget/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "shl-app-ios-widget";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.2.2;
+				MARKETING_VERSION = 0.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1099,13 +1104,14 @@
 				INFOPLIST_FILE = "shl-app-ios-widget/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "shl-app-ios-widget";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.2.2;
+				MARKETING_VERSION = 0.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1130,13 +1136,14 @@
 				INFOPLIST_FILE = "shl-app-ios-widget/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "shl-app-ios-widget";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.2.2;
+				MARKETING_VERSION = 0.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1283,7 +1290,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2.2;
+				MARKETING_VERSION = 0.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1313,7 +1320,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2.2;
+				MARKETING_VERSION = 0.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

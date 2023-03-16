@@ -54,6 +54,8 @@
 "Overtime" = "Övertid";
 "Game ended" = "Slut";
 "GamePreview" = "Före matchen";
+"Start Live" = "Starta Live";
+"End Live" = "Avsluta Live";
 
 // Standings
 "Final" = "Final";

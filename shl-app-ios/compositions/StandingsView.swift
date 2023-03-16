@@ -76,7 +76,7 @@ struct PlayoffEntryView: View {
                         .frame(width: 45, alignment: .leading)
                 }
                 Text("\(entry.score1)").monospacedDigit()
-            }.opacity(entry.team1 == "TBD" ? 0.4 : 1.0)
+            }.opacity(entry.team1 == "TBD" || entry.team1 == entry.eliminated ? 0.4 : 1.0)
             HStack {
                 TeamLogo(code: "\(entry.team2)", size: UIScreen.isMini ? 20 : 30)
                 if !mini {
@@ -87,7 +87,7 @@ struct PlayoffEntryView: View {
                         .frame(width: 45, alignment: .leading)
                 }
                 Text("\(entry.score2)").monospacedDigit()
-            }.opacity(entry.team2 == "TBD" ? 0.4 : 1.0)
+            }.opacity(entry.team2 == "TBD" || entry.team2 == entry.eliminated ? 0.4 : 1.0)
         }.font(.system(size: 18, weight: .heavy, design: .rounded))
             .padding(EdgeInsets(top: 15, leading: 15, bottom: 15, trailing: 15))
             .background(Color(uiColor: UIColor.secondarySystemGroupedBackground))
@@ -133,7 +133,13 @@ struct PlayoffView: View {
                         PlayoffEntryView(entry: eigh, mini: false)
                     }
                 }
-                Spacer(minLength: 30)
+                Spacer(minLength: 10)
+            }
+            
+            if let entry = playoff.demotion {
+                Text("Demotion").listHeader()
+                PlayoffEntryView(entry: entry, mini: false)
+                Spacer(minLength: 10)
             }
         }
     }
@@ -169,7 +175,7 @@ struct StandingsView: View {
                 }
                 StandingsHeader(season: settings.getFormattedSeason())
                     .padding(EdgeInsets(top: 0, leading: 15, bottom: -2, trailing: 10))
-                GroupedView {
+                GroupedView(cornerRadius: 15) {
                     ForEach(standings.get(), id: \.team_code) { item in
                         NavigationLink(destination: TeamView(teamCode: item.team_code, standing: item)) {
                             VStack {
@@ -195,12 +201,6 @@ struct StandingsView: View {
                         .buttonStyle(ActiveButtonStyle())
                     }
                 }
-                if let entry = self.playoffs.data?.demotion {
-                    Spacer(minLength: 40)
-                    Text("Demotion").listHeader()
-                    PlayoffEntryView(entry: entry, mini: false)
-                    Spacer(minLength: 40)
-                }
             }
             .refreshable {
                 await self.reloadData()
@@ -219,19 +219,22 @@ struct StandingsView: View {
     }
     
     func reloadData() async {
-        if let result = await provider?.getStandings(season: settings.season, maxAge: 10) {
-            if let standings = result.entries {
-                withAnimation {
-                    self.standings.set(data: standings)
-                }
-                if result.type == .api {
-                   WidgetCenter.shared.reloadAllTimelines()
-                   debugPrint("[STANDINGS] reload widgets")
-                }
+        async let standings = provider?.getStandings(season: settings.season, maxAge: 10)
+        async let playoffs = provider?.getPlayoffs(maxAge: 10)
+        
+        let (result_standings, result_playoffs) = await (standings, playoffs)
+        
+        if let standings = result_standings?.entries {
+            withAnimation {
+                self.standings.set(data: standings)
             }
         }
+        if result_standings?.type == .api {
+            WidgetCenter.shared.reloadAllTimelines()
+            debugPrint("[STANDINGS] reload widgets")
+        }
         
-        if let result = await provider?.getThrottledPlayoffs().entries {
+        if let result = result_playoffs?.entries {
             self.playoffs.setData(result)
         }
     }

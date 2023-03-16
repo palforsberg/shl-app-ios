@@ -10,8 +10,6 @@ import Combine
 
 class UserService {
     
-    static var cache = Cache()
-    
     var provider: DataProvider?
     var debouncer: Debouncer
     var cancellables: [AnyCancellable] = []
@@ -24,7 +22,7 @@ class UserService {
             Task {
                 await provider?.addUser(request: request)
             }
-        }, seconds: 2)
+        }, seconds: 1)
         
         // when any of the parameters change, send to debouncer which updates the server
         cancellables = [

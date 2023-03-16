@@ -343,7 +343,7 @@ struct TeamView: View {
                 }
                 Spacer(minLength: 30)
                 Group {
-                    GroupedView(title: "Season_param \(settings.getFormattedPrevSeason())" ) {
+                    GroupedView(title: "Season_param \(settings.getFormattedPrevSeason())") {
                         VStack {
                             StatsRowSingle(left: "Rank", right: "#\(standing.rank)")
                             StatsRowSingle(left: "Points", right: "\(standing.points)")
@@ -416,7 +416,7 @@ struct TeamView: View {
                     Spacer(minLength: 20)
                 }
                 if (!liveGames.isEmpty) {
-                    GroupedView(title: "Live") {
+                    GroupedView(title: "Live", cornerRadius: 15 ) {
                         ForEach(liveGames) { (item) in
                             LiveGame(game: item)
                                 .padding(EdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10))
@@ -425,16 +425,16 @@ struct TeamView: View {
                     Spacer(minLength: 30)
                 }
                 if (!futureGames.isEmpty) {
-                    GroupedView(title: "Coming") {
+                    GroupedView(title: "Coming", cornerRadius: 15 ) {
                         ForEach(futureGames) { (item) in
                             ComingGame(game: item)
-                                .padding(EdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10))
+                                .padding(EdgeInsets(top: 15, leading: 10, bottom: 25, trailing: 10))
                         }
                     }
                     Spacer(minLength: 30)
                 }
                 if !playedGames.isEmpty {
-                    GroupedView(title: "Played_param \(settings.getFormattedPrevSeason())") {
+                    GroupedView(title: "Played_param \(settings.getFormattedPrevSeason())", cornerRadius: 15 ) {
                         ForEach(playedGames) { (item) in
                             PlayedGame(game: item)
                                 .padding(EdgeInsets(top: 15, leading: 10, bottom: 15, trailing: 10))

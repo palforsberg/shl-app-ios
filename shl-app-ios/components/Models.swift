@@ -9,20 +9,34 @@ import Foundation
 import ActivityKit
 
 
+struct LiveActivityReport: Codable, Hashable {
+    var homeScore: Int
+    var awayScore: Int
+    var status: String?
+    var gametime: String?
+}
+
+struct LiveActivityEvent: Codable, Hashable {
+    var title: String
+    var body: String?
+    var teamCode: String?
+}
+
 struct ShlWidgetAttributes: ActivityAttributes {    
     public struct ContentState: Codable, Hashable {
         // Dynamic stateful properties about your activity go here!
-        var homeScore: Int
-        var awayScore: Int
-        
-        var gametime: String?
-        var status: String?
+        var report: LiveActivityReport
+        var event: LiveActivityEvent?
         
         func getStatus() -> GameStatus? {
-            guard let s = status else {
-                return nil
+            if let e = self.report.status {
+                return GameStatus(rawValue: e)
             }
-            return GameStatus(rawValue: s)
+            return nil
+        }
+        
+        static func from(_ game: Game) -> ContentState {
+            ContentState(report: LiveActivityReport(homeScore: game.home_team_result, awayScore: game.away_team_result, status: game.status, gametime: game.gametime))
         }
     }
 
@@ -30,6 +44,11 @@ struct ShlWidgetAttributes: ActivityAttributes {
     var homeTeam: String
     var awayTeam: String
     var gameUuid: String
+    var startDateTime: Date
+    
+    static func from(_ game: Game) -> ShlWidgetAttributes {
+        ShlWidgetAttributes(homeTeam: game.home_team_code, awayTeam: game.away_team_code, gameUuid: game.game_uuid, startDateTime: game.start_date_time)
+    }
 }
 
 enum GameType: String, Codable {
@@ -95,7 +114,7 @@ class GamesData: ObservableObject {
             .filter({ $0.isLive() })
             .filter(getTeamFilter(teamCodes: teamCodes))
             .sorted { a, b in
-                if starred.contains(a.home_team_code) || starred.contains(a.away_team_code) {
+                if a.includesTeams(starred) {
                     return true
                 }
                 return false
@@ -116,8 +135,10 @@ class GamesData: ObservableObject {
                         .filter({ $0.isFuture() })
                         .filter(getTeamFilter(teamCodes: teamCodes))
                         .sorted { a, b in
-                            if starred.contains(a.home_team_code) || starred.contains(a.away_team_code) {
-                                return true
+                            if a.start_date_time == b.start_date_time {
+                                if a.includesTeams(starred) {
+                                    return true
+                                }
                             }
                             if a.start_date_time < b.start_date_time {
                                 return true
@@ -214,6 +235,10 @@ struct Game: Codable, Identifiable, Equatable  {
     
     func isDemotion() -> Bool {
         self.game_type == "Kvalmatch nedflyttning"
+    }
+    
+    func includesTeams(_ teams: [String]) -> Bool {
+        teams.contains(self.home_team_code) || teams.contains(self.away_team_code)
     }
     
     func getPoints(for team: String) -> Int {
@@ -548,6 +573,16 @@ struct AddUser: Codable, Equatable {
     var app_version: String?
 }
 
+struct StartLiveActivity: Codable, Equatable {
+    var user_id: String
+    var token: String
+    var game_uuid: String
+}
+
+struct EndLiveActivity: Codable, Equatable {
+    var user_id: String
+    var game_uuid: String
+}
 
 struct PlayoffEntry: Codable, Identifiable {
     var id: String {
@@ -557,6 +592,7 @@ struct PlayoffEntry: Codable, Identifiable {
     var team2: String
     var score1: UInt8
     var score2: UInt8
+    var eliminated: String?
 }
 
 struct Playoffs: Codable {
