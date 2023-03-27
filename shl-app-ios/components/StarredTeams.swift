@@ -22,16 +22,15 @@ class StarredTeams: ObservableObject {
         debugPrint("[STARREDTEAMS] write to shared")
         UserDefaults.shared.setValue(self.starredTeams, forKey: "starredTeams")
     }
-
+    
     func isStarred(teamCode: String) -> Bool {
         return starredTeams.contains(teamCode)
     }
     
     func isStarred(teamCodes: [String]) -> Bool {
-        debugPrint("test \(teamCodes) \(teamCodes.first { isStarred(teamCode: $0) } != nil)")
         return teamCodes.first { isStarred(teamCode: $0) } != nil
     }
-
+    
     func addTeam(teamCode: String) {
         guard !isStarred(teamCode: teamCode) else {
             return
@@ -39,6 +38,14 @@ class StarredTeams: ObservableObject {
         
         starredTeams.append(teamCode)
         didChangeTeams()
+    }
+    
+    func toggleTeam(_ teamCode: String) {
+        if isStarred(teamCode: teamCode) {
+            self.removeTeam(teamCode: teamCode)
+        } else {
+            self.addTeam(teamCode: teamCode)
+        }
     }
 
     func removeTeam(teamCode: String) {

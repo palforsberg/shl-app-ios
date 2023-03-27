@@ -83,6 +83,10 @@ class DataProvider {
         return await getThrottledData(url: playoffUrl, type: Playoffs.self, maxAge: maxAge)
     }
     
+    func getCachedPlayoffs() -> Playoffs? {
+        return Cache.retrieve(key: playoffUrl, type: Playoffs.self)
+    }
+    
     func getPlayers(for code: String) async -> [PlayerStats]? {
         return await getThrottledData(url: playersUrl(code), type: [PlayerStats].self, maxAge: 10).entries
     }

@@ -107,14 +107,14 @@ struct PeriodEventRow: View {
         case .periodStart:
             if event.info.periodNumber == 99 {
                 return LocalizedStringKey("PenaltiesStart")
-            } else if event.info.periodNumber == 4 {
+            } else if (event.info.periodNumber ?? 0) >= 4 {
                 return LocalizedStringKey("OvertimeStart")
             }
             return LocalizedStringKey("PeriodStart \(periodNumber)")
         case .periodEnd:
             if event.info.periodNumber == 99 {
                 return LocalizedStringKey("PenaltiesEnd")
-            } else if event.info.periodNumber == 4 {
+            } else if (event.info.periodNumber ?? 0) >= 4 {
                 return LocalizedStringKey("OvertimeEnd")
             }
             return LocalizedStringKey("PeriodEnd \(periodNumber)")
@@ -139,7 +139,7 @@ struct GameEventRow: View {
 struct GroupedView<Content: View>: View {
     var title: LocalizedStringKey?
     var cornerRadius = CGFloat(25)
-    var content: () -> Content
+    @ViewBuilder var content: () -> Content
     
     var body: some View {
         VStack(spacing: 0) {
@@ -153,7 +153,7 @@ struct GroupedView<Content: View>: View {
                 VStack(spacing: 0) {
                     content()
                 }
-                .cornerRadius(cornerRadius)
+                // .cornerRadius(cornerRadius)
                 .clipped()
             }
         }.padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 15))

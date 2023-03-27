@@ -63,6 +63,7 @@
 "Quarterfinal" = "Kvartsfinal";
 "Eightfinal" = "Åttondelsfinal";
 "Demotion" = "Nedflyttning";
+"Best of %lld • First to %lld" = "Bäst av %lld • Först till %lld";
 
 // Team
 "Players" = "Spelare";
@@ -83,6 +84,7 @@
 "Time/Game" = "Istid / Match";
 
 // Settings
+"Your Teams" = "Dina Lag";
 "Season" = "Säsong";
 "Settings" = "Inställningar";
 "App Icon" = "App Ikon";
@@ -90,6 +92,7 @@
 "Supporter" = "Supporter";
 "Game Filter" = "Match Filter";
 "All" = "Alla";
+"TEAM_BODY"="Välj dina lag att följa under säsongen";
 "NOTIF_BODY"="Få notifikationer när dina favorit lag börjar spela eller gör mål.";
 "SUPPORTER_BODY"="Bli supporter och få tillgång till olika ikoner, redan spelade säsonger o match filter.";
 

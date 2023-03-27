@@ -33,6 +33,9 @@ struct ContentView: View {
         if let standing = provider?.getCachedStandings(season: settings.season) {
             self.standings.set(data: standing)
         }
+        if let playoffs = provider?.getCachedPlayoffs() {
+            self.playoffs.set(data: playoffs)
+        }
         
         debugPrint("[ContentView] Init")
     }
@@ -55,6 +58,7 @@ struct ContentView: View {
             Purchases.shared = Purchases(settings: settings)
             LiveActivity.shared = LiveActivity(provider: self.provider!, settings: self.settings)
         }
+        .navigationViewStyle(.stack) // To fix Views being popped when updating @EnvironmentObject
         .environmentObject(starredTeams)
         .environmentObject(standings)
         .environmentObject(teams)

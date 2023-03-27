@@ -247,6 +247,15 @@ struct SeasonView: View {
             .id(settings.season) // makes sure list is recreated when rerendered. To take care of reuse cell issues
             .listStyle(InsetGroupedListStyle())
             .navigationBarTitle(Text("Matches"))
+            /*.navigationBarItems(leading: Menu {
+                Text("Match filter")
+                Button { settings.onlyStarred = false }
+                    label: { Label("Alla matcher", systemImage: settings.onlyStarred ? "" : "checkmark") }
+                Button { settings.onlyStarred = true }
+                    label: { Label("Favorit lag", systemImage: settings.onlyStarred ? "checkmark" : "star.fill") }
+            } label: {
+                Label("Option", systemImage: "ellipsis.circle")
+            })*/
             .navigationBarItems(trailing: NavigationLink(destination: SettingsView()) {
                 Image(systemName: "gearshape.circle").frame(width: 44, height: 44, alignment: .trailing)
             })

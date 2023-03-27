@@ -46,7 +46,7 @@ class LiveActivity {
         }
         if game.isFuture() {
             let diffComponents = Calendar.current.dateComponents([.hour], from: Date(), to: game.start_date_time)
-            return abs(diffComponents.hour ?? 0) < 8
+            return abs(diffComponents.hour ?? 0) < 4
         }
         return false
     }

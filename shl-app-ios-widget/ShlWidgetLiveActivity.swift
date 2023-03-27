@@ -61,16 +61,14 @@ struct LiveActivityReportView: View {
                 .font(.system(size: 34, weight: .heavy, design: .rounded))
                 
                 HStack(spacing: 3) {
-                    if !self.isStale() {
-                        if context.state.getStatus() == .coming {
-                            Text("\(context.attributes.startDateTime.getFormattedDate()) \(context.attributes.startDateTime.getFormattedTime())")
-                        } else if let s = context.state.report.status {
-                            Text(LocalizedStringKey(s))
-                        }
-                        if let s = context.state.report.gametime, context.state.getStatus()?.isGameTimeApplicable() ?? false {
-                            Text("•")
-                            Text(s)
-                        }
+                    if context.state.getStatus() == .coming {
+                        Text("\(context.attributes.startDateTime.getFormattedDate()) \(context.attributes.startDateTime.getFormattedTime())")
+                    } else if let s = context.state.report.status {
+                        Text(LocalizedStringKey(s))
+                    }
+                    if let s = context.state.report.gametime, context.state.getStatus()?.isGameTimeApplicable() ?? false {
+                        Text("•")
+                        Text(s)
                     }
                 }
                 .font(.system(size: 16, weight: .bold, design: .rounded))
@@ -78,13 +76,6 @@ struct LiveActivityReportView: View {
             WidgetTeamAvatar(code: context.attributes.awayTeam)
         }
         .font(.system(size: 14, weight: .heavy, design: .rounded))
-    }
-    
-    func isStale() ->  Bool {
-        if #available(iOS 16.2, *) {
-            return context.isStale
-        }
-        return false
     }
 }
 

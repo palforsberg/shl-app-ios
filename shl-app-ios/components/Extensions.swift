@@ -34,10 +34,10 @@ extension Text {
             .padding(.leading, 0)
     }
     
-    func starred(_ starred: Bool) -> some View {
+    func starred(_ starred: Bool, height: CGFloat = 3) -> some View {
         return self.overlay(
             RoundedRectangle(cornerRadius: 2)
-                .frame(height: 3).frame(maxWidth: starred ? .infinity : 0).offset(y: 1)
+                .frame(height: height).frame(maxWidth: starred ? .infinity : 0).offset(y: 1)
                 .foregroundColor(Color(UIColor.systemYellow).opacity(starred ? 1 : 0)), alignment: .bottom)
             .animation(.easeInOut(duration: 0.2), value: starred)
     }
@@ -133,5 +133,11 @@ extension UserDefaults {
 extension Data {
     func token() -> String {
         self.map { String(format: "%02.2hhx", $0) }.joined()
+    }
+}
+
+extension Text {
+    func rounded(size: CGFloat, weight: Font.Weight = .semibold) -> Text {
+        self.font(.system(size: size, weight: weight, design: .rounded))
     }
 }

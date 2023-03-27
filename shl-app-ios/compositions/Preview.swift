@@ -16,6 +16,11 @@ func getPlayedGame(t1: String, s1: Int, t2: String, s2: Int, overtime: Bool = fa
     return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: s2, home_team_code: t1, home_team_result: s1, start_date_time: date, game_type: GameType.season.rawValue, played: true, overtime: overtime, penalty_shots: false, status: "Finished", gametime: "20:00")
 }
 
+
+func getPlayoffGame(t1: String, s1: Int, t2: String, s2: Int, status: String = "Finished") -> Game {
+    return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: s2, home_team_code: t1, home_team_result: s1, start_date_time: Date(), game_type: GameType.playoff.rawValue, played: true, overtime: false, penalty_shots: false, status: status, gametime: "20:00")
+}
+
 func getLiveGame() -> Game {
     return getLiveGame(t1: "LHF", score1: 2, t2: "FHC", score2: 0, status: "Period2")
 }

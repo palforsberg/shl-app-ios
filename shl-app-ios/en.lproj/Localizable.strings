@@ -63,6 +63,7 @@
 "Quarterfinal" = "Quarterfinal";
 "Eightfinal" = "Eightfinal";
 "Demotion" = "Demotion";
+"Best of %lld • First to %lld" = "Best of %lld • First to %lld";
 
 // Team
 "SHOW ALL" = "SHOW ALL";
@@ -83,6 +84,7 @@
 "Time/Game" = "Time / Game";
 
 // Settings
+"Your Teams" = "Your Teams";
 "Season" = "Season";
 "Settings" = "Settings";
 "App Icon" = "App Icon";
@@ -90,6 +92,7 @@
 "Supporter" = "Supporter";
 "Game Filter" = "Game Filter";
 "All" = "All";
+"TEAM_BODY"="Select your teams to follow during the season";
 "NOTIF_BODY"="Get nofitications when your favourite teams starts a game or scores.";
 "SUPPORTER_BODY"="Become a supporter and get access to more icons, previous seasons and game filters.";
 

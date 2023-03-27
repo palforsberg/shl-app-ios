@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2308A23929C47410004EC1F0 /* TeamSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2308A23829C47410004EC1F0 /* TeamSelectView.swift */; };
+		2308A23B29C47DD7004EC1F0 /* IconSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2308A23A29C47DD7004EC1F0 /* IconSelectView.swift */; };
 		231C055D299A529B00BEB846 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C055C299A529B00BEB846 /* Models.swift */; };
 		231C055E299A52A800BEB846 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C055C299A529B00BEB846 /* Models.swift */; };
 		231C0564299B9F3100BEB846 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231C0563299B9F3100BEB846 /* Cache.swift */; };
@@ -72,6 +74,7 @@
 		2339F81226CD2538006DE5F0 /* launch-puck-light-2@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F80F26CD2538006DE5F0 /* launch-puck-light-2@1x.png */; };
 		2339F81326CD2538006DE5F0 /* launch-puck-light-2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F81026CD2538006DE5F0 /* launch-puck-light-2@2x.png */; };
 		2339F81426CD2538006DE5F0 /* launch-puck-light-2@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2339F81126CD2538006DE5F0 /* launch-puck-light-2@3x.png */; };
+		2344E36629C5C9430069F4F5 /* TeamStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2344E36529C5C9430069F4F5 /* TeamStatsView.swift */; };
 		234AF3C628E7626900FE3AEC /* Effect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234AF3C528E7626900FE3AEC /* Effect.swift */; };
 		234AF3C8290521E100FE3AEC /* GameAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 234AF3C7290521E100FE3AEC /* GameAlert.swift */; };
 		23537ED026B1D30200C9B6ED /* GamesStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ECF26B1D30200C9B6ED /* GamesStatsView.swift */; };
@@ -197,6 +200,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2308A23829C47410004EC1F0 /* TeamSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamSelectView.swift; sourceTree = "<group>"; };
+		2308A23A29C47DD7004EC1F0 /* IconSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconSelectView.swift; sourceTree = "<group>"; };
 		231C055C299A529B00BEB846 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		231C055F299B98BA00BEB846 /* shl-app-ios-notification-service.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "shl-app-ios-notification-service.entitlements"; sourceTree = "<group>"; };
 		231C0560299B98CD00BEB846 /* shl-app-ios-widgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "shl-app-ios-widgetExtension.entitlements"; sourceTree = "<group>"; };
@@ -257,6 +262,7 @@
 		2339F80F26CD2538006DE5F0 /* launch-puck-light-2@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "launch-puck-light-2@1x.png"; sourceTree = "<group>"; };
 		2339F81026CD2538006DE5F0 /* launch-puck-light-2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "launch-puck-light-2@2x.png"; sourceTree = "<group>"; };
 		2339F81126CD2538006DE5F0 /* launch-puck-light-2@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "launch-puck-light-2@3x.png"; sourceTree = "<group>"; };
+		2344E36529C5C9430069F4F5 /* TeamStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamStatsView.swift; sourceTree = "<group>"; };
 		234AF3C528E7626900FE3AEC /* Effect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Effect.swift; sourceTree = "<group>"; };
 		234AF3C7290521E100FE3AEC /* GameAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameAlert.swift; sourceTree = "<group>"; };
 		23537ECF26B1D30200C9B6ED /* GamesStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesStatsView.swift; sourceTree = "<group>"; };
@@ -520,8 +526,11 @@
 				D1AFF89625A8537B00E50ADE /* SeasonView.swift */,
 				D1AFF8A025A8550500E50ADE /* StandingsView.swift */,
 				D1AFC2A325B07E8100490FCE /* TeamView.swift */,
+				2344E36529C5C9430069F4F5 /* TeamStatsView.swift */,
 				23537ECF26B1D30200C9B6ED /* GamesStatsView.swift */,
 				23537ED526B57B9C00C9B6ED /* SettingsView.swift */,
+				2308A23A29C47DD7004EC1F0 /* IconSelectView.swift */,
+				2308A23829C47410004EC1F0 /* TeamSelectView.swift */,
 				23537ED126B3FE6D00C9B6ED /* Preview.swift */,
 				2339F6B526C25CDE006DE5F0 /* Launch Screen.storyboard */,
 			);
@@ -846,11 +855,14 @@
 				235CB13C2889650000A898D7 /* PullToRefresh.swift in Sources */,
 				D1AAF86225AB10BF008D3D62 /* TeamLogo.swift in Sources */,
 				234AF3C628E7626900FE3AEC /* Effect.swift in Sources */,
+				2308A23B29C47DD7004EC1F0 /* IconSelectView.swift in Sources */,
+				2344E36629C5C9430069F4F5 /* TeamStatsView.swift in Sources */,
 				23E405372705DCEA00C516F6 /* ImageLoader.swift in Sources */,
 				231C056C299E3DB900BEB846 /* FormGraph.swift in Sources */,
 				2339F66E26B857E7006DE5F0 /* Debouncer.swift in Sources */,
 				231C0564299B9F3100BEB846 /* Cache.swift in Sources */,
 				2339F76026CA3B10006DE5F0 /* Purchases.swift in Sources */,
+				2308A23929C47410004EC1F0 /* TeamSelectView.swift in Sources */,
 				2339F6B226C0FB2B006DE5F0 /* Settings.swift in Sources */,
 				23E405382705DCEA00C516F6 /* URLImage.swift in Sources */,
 			);

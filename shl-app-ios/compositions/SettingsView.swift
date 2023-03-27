@@ -8,11 +8,6 @@
 import SwiftUI
 import StoreKit
 
-struct Icon {
-    let name: String
-    let code: String?
-}
-
 struct IconLabel: View {
     var text: String
     var color: Color
@@ -28,58 +23,6 @@ struct IconLabel: View {
                     .padding(.top, 10).padding(.bottom, 10)
             }
         }
-    }
-}
-struct AppIconView: View {
-
-    static var icons = [Icon(name: "Puck", code: nil),
-                        Icon(name: "Puck Is", code: "puck-icon-ice"),
-                        Icon(name: "Puck Inverterad", code: "puck-icon-inverted"),
-                        Icon(name: "Puck Natt", code: "puck-icon-night"),
-                        Icon(name: "Puck Sträckad", code: "puck-line"),
-                        Icon(name: "Brynäs", code: "bif-icon"),
-                        Icon(name: "Färjestad", code: "fbk-icon"),
-                        Icon(name: "Frölunda", code: "fhc-icon"),
-                        Icon(name: "HV71", code: "hv71-icon"),
-                        Icon(name: "Oskarshamn", code: "iko-icon"),
-                        Icon(name: "Lindköpings", code: "lhc-icon"),
-                        Icon(name: "Luleå", code: "lhf-icon"),
-                        Icon(name: "Leksands", code: "lif-icon"),
-                        Icon(name: "Malmö", code: "mif-icon"),
-                        Icon(name: "Örebro", code: "ohk-icon"),
-                        Icon(name: "Rögle", code: "rbk-icon"),
-                        Icon(name: "Skellefteå", code: "saik-icon"),
-                        Icon(name: "Timrå", code: "tik-icon"),
-                        Icon(name: "Växjö", code: "vlh-icon"),
-    ]
-
-    @State var currentIndex: Int = AppIconView.getCurrentIndex()
-    
-    var body: some View {
-        Picker(selection: $currentIndex, label: IconLabel(text: "App Icon", color: .green, systemName: "app")) {
-                    ForEach(0..<AppIconView.icons.count, id: \.self) { e in
-                        HStack {
-                            Image(uiImage: UIImage(named: AppIconView.icons[e].code ?? "puck-icon")?.withSize(targetSize: CGSize(width: 30, height: 30)) ?? UIImage())
-                                .resizable()
-                                .frame(width: 30, height: 30, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                                .clipShape(RoundedRectangle(cornerRadius: 5))
-                            Text(AppIconView.icons[e].name)
-                                .font(.system(size: 16, design: .rounded))
-                                .fontWeight(.medium)
-                                .padding(.leading, 5)
-                        }.tag(e)
-                    }
-        }.onChange(of: currentIndex) { value in
-            if value != AppIconView.getCurrentIndex() {
-                UIApplication.shared.setAlternateIconName(AppIconView.icons[value].code){ error in
-                    print(error?.localizedDescription ?? "[SETTINGS] Changed app icon successfully")
-                }
-            }
-        }
-    }
-    
-    static func getCurrentIndex() -> Int {
-        return self.icons.firstIndex { $0.code == UIApplication.shared.alternateIconName } ?? 0
     }
 }
 
@@ -216,9 +159,9 @@ struct SupporterView: View {
             }
             VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 0) {
                 HStack {
-                    Image(systemName: "star.fill")
+                    Image(systemName: "heart.fill")
                         .font(.system(size: 30, weight: .bold, design: .rounded))
-                        .foregroundColor(.yellow)
+                        .foregroundColor(.pink)
                     Text("Supporter")
                         .font(.system(size: 40, weight: .bold, design: .rounded))
                         .accentColor(Color.orange)
@@ -314,10 +257,16 @@ struct SettingsView: View {
     @EnvironmentObject
     var settings: Settings
     
+    @State var currentIcon = UIApplication.shared.alternateIconName
+    
     var body: some View {
         List {
-            Section(header: Text(""), footer: Text("NOTIF_BODY")
-                .padding(.leading, 20).padding(.trailing, 20).padding(.top, 6)) {
+            Section(header: Text(""), footer: Text("TEAM_BODY").padding(.leading, 0).padding(.trailing, 20).padding(.top, 0)) {
+                NavigationLink(destination: TeamSelectView().navigationTitle("Your Teams")) {
+                    IconLabel(text: "Your Teams", color: .yellow, systemName: "star")
+                }
+            }
+            Section(header: Text(""), footer: Text("NOTIF_BODY").padding(.leading, 0).padding(.trailing, 20).padding(.top, 0)) {
                 Toggle(isOn: $settings.notificationsEnabled, label: {
                     IconLabel(text: "Notifications", color: .blue, systemName: "app.badge")
                 }).onChange(of: settings.notificationsEnabled) { enabled in
@@ -327,12 +276,18 @@ struct SettingsView: View {
                 }
             }
             Section(header: Text(""), footer: Text("SUPPORTER_BODY")
-                .padding(.leading, 20).padding(.trailing, 20).padding(.top, 6)) {
+                .padding(.leading, 0).padding(.trailing, 20).padding(.top, 0)) {
                 NavigationLink(destination: SupporterView()) {
-                    IconLabel(text: "Supporter", color: .yellow, systemName: settings.supporter ? "star.fill" : "star")
+                    IconLabel(text: "Supporter", color: .pink, systemName: settings.supporter ? "heart.fill" : "heart")
                 }
                 Group {
-                    AppIconView()
+                    NavigationLink(destination: IconSelectView(currentIcon: $currentIcon)) {
+                        HStack {
+                            IconLabel(text: "App Icon", color: .green, systemName: "app")
+                            Spacer()
+                            AppIconImage(code: currentIcon, size: 30)
+                        }
+                    }
                     SeasonPicker(currentSeason: $settings.season)
                     HStack {
                         IconLabel(text: "Game Filter", color: .purple, systemName: "loupe")

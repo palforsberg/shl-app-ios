@@ -22,15 +22,6 @@ struct FormGraph: View {
             points = gamesData.getPoints(for: teamCode, numberOfGames: numberOfGames)
         }
     }
-    func getColor(_ p: Int) -> Color {
-        switch (p) {
-        case 0: return .red
-        case 1: return .orange
-        case 2: return .yellow
-        case 3: return .green
-        default: return .green
-        }
-    }
 }
 
 struct Graph: View {
@@ -56,6 +47,31 @@ struct Graph: View {
         case 2: return .yellow
         case 3: return .green
         default: return .green
+        }
+    }
+}
+
+struct PlayoffGraph: View {
+    var points: [Int]
+    
+    var body : some View {
+        HStack(alignment: .center, spacing: 5) {
+            ForEach(values: points.indices) { p in
+                Group {
+                    let c = getCircle(p: points[p])
+                    Circle()
+                        .fill(c.color)
+                        .frame(width: c.radius, height: c.radius)
+                }
+            }
+        }.frame(height: CGFloat(10))
+    }
+    
+    func getCircle(p: Int) -> (radius: CGFloat, color: Color) {
+        switch p {
+        case 2, 3: return (10, Color(uiColor: .white))
+        case 0, 1: return (5, Color(uiColor: .white))
+        default: return (5, Color(uiColor: .darkGray))
         }
     }
 }

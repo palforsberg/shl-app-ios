@@ -171,6 +171,20 @@ class GamesData: ObservableObject {
             .prefix(numberOfGames))
         .reversed()
     }
+    
+    func getPlayoffPoints(for teamCode: String, team2: String, numberOfGames: Int = 5) -> [Int] {
+        return Array(getPlayoffGamesBetween(t1: teamCode, t2: team2)
+            .sorted { $0.start_date_time > $1.start_date_time }
+            .map { !$0.isPlayed() ? -1 : $0.getPoints(for: teamCode) }
+            .prefix(numberOfGames))
+        .reversed()
+    }
+    
+    func getPlayoffGamesBetween(t1: String, t2: String) -> [Game] {
+        self.data
+            .filter { $0.isPlayoff() || $0.isDemotion() }
+            .filter { $0.includesOnly(teams: [t1, t2])}
+    }
 }
 struct Game: Codable, Identifiable, Equatable  {
     var id: String {
@@ -241,6 +255,17 @@ struct Game: Codable, Identifiable, Equatable  {
         teams.contains(self.home_team_code) || teams.contains(self.away_team_code)
     }
     
+    func includesOnly(teams: [String]) -> Bool {
+        teams.contains(self.home_team_code) && teams.contains(self.away_team_code)
+    }
+    
+    func getOpponent(team: String) -> String? {
+        guard self.home_team_code == team || self.away_team_code == team else {
+            return nil
+        }
+        return self.home_team_code == team ? self.away_team_code : self.home_team_code
+    }
+    
     func getPoints(for team: String) -> Int {
         guard isPlayed(),
               (team == home_team_code || team == away_team_code)
@@ -275,6 +300,39 @@ class StandingsData: ObservableObject {
     func getFor(team: String) -> Standing? {
         return self.data.first(where: { $0.team_code == team })
     }
+    
+   /* func getRank(games: [Game], after gamesPlayed: Int = 1000) -> [Standing] {
+        let g = games
+            .filter { $0.isPlayed() }
+            .filter { $0.hasTeam(team) }
+            .sorted { $0.start_date_time > $1.start_date_time }
+        data
+            .map { self.getRankAfter(games: games, gamesPlayed: gamesPlayed, for: $0.team_code) }
+            .sorted {
+                if $0.points == $1.points {
+                    return $0.diff > $1.diff
+                }
+                return $0.points > $1.points
+            }
+            .enumerated()
+            .map { Standing(team_code: $0.element.team_code, gp: $0.element.gp, rank: $0.offset + 1, points: $0.element.points, diff: $0.element.diff) }
+    }
+    
+    func getRankAfter(games: [Game], gamesPlayed: Int, for team: String) -> Standing {
+        Array(games
+            .filter { $0.isPlayed() }
+            .filter { $0.hasTeam(team) }
+            .sorted { $0.start_date_time > $1.start_date_time }
+            .prefix(gamesPlayed))
+            .reduce(Standing(team_code: team, gp: 0, rank: 0, points: 0, diff: 0), { s, g in
+                var p = g.didWin(team) ? 3 : 0
+                if g.penalty_shots || g.overtime {
+                    p = g.didWin(team) ? 2 : 1
+                }
+                let diff = g.home_team_result - g.away_team_result
+                return Standing(team_code: s.team_code, gp: s.gp + 1, rank: -1, points: s.points + p, diff: s.diff + diff)
+        })
+    }*/
 }
 
 struct Standing: Codable, Identifiable {
@@ -296,28 +354,30 @@ struct Standing: Codable, Identifiable {
 }
 
 class TeamsData: ObservableObject {
-    @Published var teams = [String:Team]()
+    @Published var teams = [Team]()
+    @Published var teamsMap = [String:Team]()
     
     func getTeam(_ code: String) -> Team? {
-        return teams[code]
+        return teamsMap[code]
     }
     
     func getName(_ code: String) -> String {
-        return teams[code]?.name ?? code
+        return teamsMap[code]?.name ?? code
     }
     
     func getShortname(_ code: String) -> String {
-        return teams[code]?.shortname ?? code
+        return teamsMap[code]?.shortname ?? code
     }
 
     func setTeams(teams: [Team]) {
+        self.teams = teams
         for team in teams {
-            self.teams[team.code] = team
+            self.teamsMap[team.code] = team
         }
     }
 }
 
-struct Team: Codable {
+struct Team: Codable, Hashable {
     let code: String
     let name: String
     let shortname: String
@@ -584,7 +644,7 @@ struct EndLiveActivity: Codable, Equatable {
     var game_uuid: String
 }
 
-struct PlayoffEntry: Codable, Identifiable {
+struct PlayoffEntry: Codable, Identifiable, Equatable {
     var id: String {
         return "\(team1)_\(team2)"
     }
@@ -593,6 +653,24 @@ struct PlayoffEntry: Codable, Identifiable {
     var score1: UInt8
     var score2: UInt8
     var eliminated: String?
+    var nr_games: Int? = 7
+    
+    func getNrGames() -> Int {
+        nr_games ?? 7
+    }
+    
+    func getBestTo() -> Int {
+        Int(ceil(Double(getNrGames()) / 2))
+    }
+    
+    func has(t1: String, t2: String) -> Bool {
+        let ts = [t1, t2]
+        return ts.contains(team1) && ts.contains(team2)
+    }
+    
+    func has(t1: String) -> Bool {
+        team1 == t1 || team2 == t1
+    }
 }
 
 struct Playoffs: Codable {
@@ -606,8 +684,45 @@ struct Playoffs: Codable {
 class PlayoffData: ObservableObject {
     var data: Playoffs?
     
-    func setData(_ data: Playoffs?) {
+    init(data: Playoffs? = nil) {
+        self.data = data
+    }
+    
+    func set(data: Playoffs?) {
         self.data = data
         self.objectWillChange.send()
+    }
+    
+    func getStage(entry: PlayoffEntry) -> String? {
+        if self.data?.final == entry {
+            return "Final"
+        }
+        if self.data?.semi?.contains(entry) ?? false {
+            return "Semifinal"
+        }
+        if self.data?.quarter?.contains(entry) ?? false {
+            return "Quarterfinal"
+        }
+        if self.data?.eight?.contains(entry) ?? false {
+            return "Eightfinal"
+        }
+        if self.data?.demotion == entry {
+            return "Demotion"
+        }
+        return nil
+    }
+    
+    func getEntry(team: String) -> PlayoffEntry? {
+        func getArr(entry: PlayoffEntry?) -> [PlayoffEntry] {
+            entry != nil ? [entry!] : []
+        }
+        
+        var entries = getArr(entry: self.data?.final)
+        entries += (self.data?.semi ?? [])
+        entries += (self.data?.quarter ?? [])
+        entries += (self.data?.eight ?? [])
+        entries += getArr(entry: self.data?.demotion)
+        
+        return entries.first(where: { $0.has(t1: team) })
     }
 }
