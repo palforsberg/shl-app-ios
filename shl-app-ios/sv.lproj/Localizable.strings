@@ -1,7 +1,8 @@
 "Home" = "Matcher";
-"Standings" = "Ranking";
+"Standings" = "Ligan";
 "Matches" = "Matcher";
 "Coming" = "Kommande";
+"Played" = "Spelade";
 "Played_param %@" = "Spelade %@";
 "Season_param %@" = "Säsongen %@";
 "Favourite" = "Favorit";
@@ -13,6 +14,9 @@
 "Games Played" = "Antal Matcher";
 "Points/Game" = "Poäng / Match";
 "Starts In" = "Börjar om";
+
+// SeasonView
+"Search Games" = "Sök Matcher";
 
 // Game Status
 "Coming" = "Kommande";
@@ -40,8 +44,11 @@
 "Penalty" = "Utvisning";
 
 // Game stats
+"league.shl" = "Svenska Hockey Ligan";
+"league.ha" = "Hockey Allsvenskan";
 "Regular season game" = "Säsongsspel";
 "Playoff game" = "Slutspel";
+"PlayOff" = "Slutspel";
 "Kvalmatch nedflyttning" = "Kvalspel";
 "Shots" = "Skott";
 "Penalty Minutes" = "Straff-minuter";
@@ -93,7 +100,7 @@
 "Game Filter" = "Match Filter";
 "All" = "Alla";
 "TEAM_BODY"="Välj dina lag att följa under säsongen";
-"NOTIF_BODY"="Få notifikationer när dina favorit lag börjar spela eller gör mål.";
+"NOTIF_BODY"="Få notifikationer när dina lag börjar spela eller gör mål.";
 "SUPPORTER_BODY"="Bli supporter och få tillgång till olika ikoner, redan spelade säsonger o match filter.";
 
 // Supporter

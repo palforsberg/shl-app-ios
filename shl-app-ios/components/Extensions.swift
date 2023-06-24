@@ -11,7 +11,7 @@ extension UIFont {
     class func rounded(ofSize size: CGFloat, weight: UIFont.Weight) -> UIFont {
         let systemFont = UIFont.systemFont(ofSize: size, weight: weight)
 
-        guard #available(iOS 13.0, *), let descriptor = systemFont.fontDescriptor.withDesign(.rounded) else { return systemFont }
+        guard let descriptor = systemFont.fontDescriptor.withDesign(.rounded) else { return systemFont }
         return UIFont(descriptor: descriptor, size: size)
     }
 }
@@ -20,9 +20,9 @@ extension Text {
 
     func listHeader(_ leading: Bool = false) -> some View {
         let txt = self
-            .font(.system(size: 18, design: .rounded))
-            .fontWeight(.semibold)
-            .foregroundColor(Color(UIColor.secondaryLabel))
+            .font(.system(size: 16, design: .rounded))
+            .fontWeight(.bold)
+            .foregroundColor(Color(.secondaryLabel))
             .textCase(.uppercase)
         if (leading) {
             return txt
@@ -112,9 +112,11 @@ extension UIColor {
 }
 
 struct ActiveButtonStyle: ButtonStyle {
+    var activeBackground: Color = Color(UIColor.active)
+    var background: Color = .clear
     func makeBody(configuration: Configuration) -> some View {
         return configuration.label
-            .background(configuration.isPressed ? Color(UIColor.active) : .clear)
+            .background(configuration.isPressed ? activeBackground : background)
     }
 }
 

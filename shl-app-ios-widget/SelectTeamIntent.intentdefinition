@@ -8,7 +8,7 @@
 			<key>INEnumDisplayName</key>
 			<string>Widget Team</string>
 			<key>INEnumDisplayNameID</key>
-			<string>MnuJQC</string>
+			<string>icJ4ZE</string>
 			<key>INEnumGeneratesHeader</key>
 			<true/>
 			<key>INEnumName</key>
@@ -21,45 +21,15 @@
 					<key>INEnumValueDisplayName</key>
 					<string>unknown</string>
 					<key>INEnumValueDisplayNameID</key>
-					<string>7SyAdd</string>
+					<string>cWJBLs</string>
 					<key>INEnumValueName</key>
 					<string>unknown</string>
 				</dict>
 				<dict>
 					<key>INEnumValueDisplayName</key>
-					<string>Luleå</string>
+					<string>Frölunda HC</string>
 					<key>INEnumValueDisplayNameID</key>
-					<string>BiChfb</string>
-					<key>INEnumValueIndex</key>
-					<integer>1</integer>
-					<key>INEnumValueName</key>
-					<string>LHF</string>
-				</dict>
-				<dict>
-					<key>INEnumValueDisplayName</key>
-					<string>Timrå</string>
-					<key>INEnumValueDisplayNameID</key>
-					<string>84qrql</string>
-					<key>INEnumValueIndex</key>
-					<integer>2</integer>
-					<key>INEnumValueName</key>
-					<string>TIK</string>
-				</dict>
-				<dict>
-					<key>INEnumValueDisplayName</key>
-					<string>Växjö</string>
-					<key>INEnumValueDisplayNameID</key>
-					<string>qVdO3m</string>
-					<key>INEnumValueIndex</key>
-					<integer>3</integer>
-					<key>INEnumValueName</key>
-					<string>VLH</string>
-				</dict>
-				<dict>
-					<key>INEnumValueDisplayName</key>
-					<string>Frölunda</string>
-					<key>INEnumValueDisplayNameID</key>
-					<string>hjfRol</string>
+					<string>6fIFJU</string>
 					<key>INEnumValueIndex</key>
 					<integer>4</integer>
 					<key>INEnumValueName</key>
@@ -67,19 +37,19 @@
 				</dict>
 				<dict>
 					<key>INEnumValueDisplayName</key>
-					<string>Örebro</string>
+					<string>Färjestad BK</string>
 					<key>INEnumValueDisplayNameID</key>
-					<string>0oP3Y9</string>
+					<string>0Dts9F</string>
 					<key>INEnumValueIndex</key>
-					<integer>5</integer>
+					<integer>14</integer>
 					<key>INEnumValueName</key>
-					<string>OHK</string>
+					<string>FBK</string>
 				</dict>
 				<dict>
 					<key>INEnumValueDisplayName</key>
 					<string>HV71</string>
 					<key>INEnumValueDisplayNameID</key>
-					<string>XQ0mwl</string>
+					<string>SRLhN5</string>
 					<key>INEnumValueIndex</key>
 					<integer>6</integer>
 					<key>INEnumValueName</key>
@@ -87,9 +57,9 @@
 				</dict>
 				<dict>
 					<key>INEnumValueDisplayName</key>
-					<string>Leksand</string>
+					<string>Leksands IF</string>
 					<key>INEnumValueDisplayNameID</key>
-					<string>cKxVpQ</string>
+					<string>3y6tuo</string>
 					<key>INEnumValueIndex</key>
 					<integer>7</integer>
 					<key>INEnumValueName</key>
@@ -97,9 +67,9 @@
 				</dict>
 				<dict>
 					<key>INEnumValueDisplayName</key>
-					<string>Linköping</string>
+					<string>Linköping HC</string>
 					<key>INEnumValueDisplayNameID</key>
-					<string>dsjj5T</string>
+					<string>1gM8U7</string>
 					<key>INEnumValueIndex</key>
 					<integer>8</integer>
 					<key>INEnumValueName</key>
@@ -107,39 +77,19 @@
 				</dict>
 				<dict>
 					<key>INEnumValueDisplayName</key>
-					<string>Skellefteå</string>
+					<string>Luleå Hockey</string>
 					<key>INEnumValueDisplayNameID</key>
-					<string>k7PyVD</string>
+					<string>BZ8lvN</string>
 					<key>INEnumValueIndex</key>
-					<integer>9</integer>
+					<integer>1</integer>
 					<key>INEnumValueName</key>
-					<string>SAIK</string>
+					<string>LHF</string>
 				</dict>
 				<dict>
 					<key>INEnumValueDisplayName</key>
-					<string>Brynäs</string>
+					<string>Malmö Redhawks</string>
 					<key>INEnumValueDisplayNameID</key>
-					<string>RDapQe</string>
-					<key>INEnumValueIndex</key>
-					<integer>10</integer>
-					<key>INEnumValueName</key>
-					<string>BIF</string>
-				</dict>
-				<dict>
-					<key>INEnumValueDisplayName</key>
-					<string>Rögle</string>
-					<key>INEnumValueDisplayNameID</key>
-					<string>q146wM</string>
-					<key>INEnumValueIndex</key>
-					<integer>11</integer>
-					<key>INEnumValueName</key>
-					<string>RBK</string>
-				</dict>
-				<dict>
-					<key>INEnumValueDisplayName</key>
-					<string>Malmö</string>
-					<key>INEnumValueDisplayNameID</key>
-					<string>8xH502</string>
+					<string>wwjWHq</string>
 					<key>INEnumValueIndex</key>
 					<integer>12</integer>
 					<key>INEnumValueName</key>
@@ -147,9 +97,19 @@
 				</dict>
 				<dict>
 					<key>INEnumValueDisplayName</key>
-					<string>Oskarshamn</string>
+					<string>MoDo Hockey</string>
 					<key>INEnumValueDisplayNameID</key>
-					<string>LvmADB</string>
+					<string>VhFJYe</string>
+					<key>INEnumValueIndex</key>
+					<integer>15</integer>
+					<key>INEnumValueName</key>
+					<string>MODO</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>IK Oskarshamn</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>Z7UPH8</string>
 					<key>INEnumValueIndex</key>
 					<integer>13</integer>
 					<key>INEnumValueName</key>
@@ -157,13 +117,193 @@
 				</dict>
 				<dict>
 					<key>INEnumValueDisplayName</key>
-					<string>Färjestad</string>
+					<string>Rögle BK</string>
 					<key>INEnumValueDisplayNameID</key>
-					<string>5fsTUV</string>
+					<string>6xZIqd</string>
 					<key>INEnumValueIndex</key>
-					<integer>14</integer>
+					<integer>11</integer>
 					<key>INEnumValueName</key>
-					<string>FBK</string>
+					<string>RBK</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Skellefteå AIK</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>1uwmPk</string>
+					<key>INEnumValueIndex</key>
+					<integer>9</integer>
+					<key>INEnumValueName</key>
+					<string>SAIK</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Timrå IK</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>JKlrru</string>
+					<key>INEnumValueIndex</key>
+					<integer>2</integer>
+					<key>INEnumValueName</key>
+					<string>TIK</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Växjö Lakers</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>CfRTLG</string>
+					<key>INEnumValueIndex</key>
+					<integer>3</integer>
+					<key>INEnumValueName</key>
+					<string>VLH</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Örebro Hockey</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>99wZ36</string>
+					<key>INEnumValueIndex</key>
+					<integer>5</integer>
+					<key>INEnumValueName</key>
+					<string>OHK</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>AIK</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>Jas7nr</string>
+					<key>INEnumValueIndex</key>
+					<integer>16</integer>
+					<key>INEnumValueName</key>
+					<string>AIK</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Almtuna IS</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>2IuDus</string>
+					<key>INEnumValueIndex</key>
+					<integer>17</integer>
+					<key>INEnumValueName</key>
+					<string>AIS</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Björklöven</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>CvdjEq</string>
+					<key>INEnumValueIndex</key>
+					<integer>18</integer>
+					<key>INEnumValueName</key>
+					<string>IFB</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Brynäs IF</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>byUpEg</string>
+					<key>INEnumValueIndex</key>
+					<integer>10</integer>
+					<key>INEnumValueName</key>
+					<string>BIF</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Djurgården Hockey</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>3zxfPL</string>
+					<key>INEnumValueIndex</key>
+					<integer>19</integer>
+					<key>INEnumValueName</key>
+					<string>DIF</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>BIK Karlskoga</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>zlDOLl</string>
+					<key>INEnumValueIndex</key>
+					<integer>20</integer>
+					<key>INEnumValueName</key>
+					<string>BIK</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Kristianstads IK</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>2e97cF</string>
+					<key>INEnumValueIndex</key>
+					<integer>21</integer>
+					<key>INEnumValueName</key>
+					<string>KRI</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Mora IK</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>IU4jn2</string>
+					<key>INEnumValueIndex</key>
+					<integer>22</integer>
+					<key>INEnumValueName</key>
+					<string>MIK</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Nybro Vikings IF</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>AwHaod</string>
+					<key>INEnumValueIndex</key>
+					<integer>23</integer>
+					<key>INEnumValueName</key>
+					<string>HERR</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Södertälje SK</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>jypvtl</string>
+					<key>INEnumValueIndex</key>
+					<integer>24</integer>
+					<key>INEnumValueName</key>
+					<string>SSK</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Tingsryd AIF</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>RX2mB5</string>
+					<key>INEnumValueIndex</key>
+					<integer>25</integer>
+					<key>INEnumValueName</key>
+					<string>TAIF</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Västerviks IK</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>sqDPlF</string>
+					<key>INEnumValueIndex</key>
+					<integer>26</integer>
+					<key>INEnumValueName</key>
+					<string>VVIK</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Västerås IK</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>OfFuuE</string>
+					<key>INEnumValueIndex</key>
+					<integer>27</integer>
+					<key>INEnumValueName</key>
+					<string>VIK</string>
+				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Östersunds IK</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>4RbbQl</string>
+					<key>INEnumValueIndex</key>
+					<integer>28</integer>
+					<key>INEnumValueName</key>
+					<string>OSIK</string>
 				</dict>
 			</array>
 		</dict>
@@ -173,11 +313,11 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>OUgdJD</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>21G115</string>
+	<string>22E261</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>14C18</string>
+	<string>14E222b</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>14.2</string>
+	<string>14.3</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -192,7 +332,7 @@
 			<key>INIntentIneligibleForSuggestions</key>
 			<true/>
 			<key>INIntentLastParameterTag</key>
-			<integer>3</integer>
+			<integer>4</integer>
 			<key>INIntentManagedParameterCombinations</key>
 			<dict>
 				<key>team</key>
@@ -258,7 +398,7 @@
 						</dict>
 					</array>
 					<key>INIntentParameterTag</key>
-					<integer>2</integer>
+					<integer>4</integer>
 					<key>INIntentParameterType</key>
 					<string>Integer</string>
 				</dict>

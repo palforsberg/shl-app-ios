@@ -35,8 +35,23 @@ class Cache {
         return nil
     }
     
+    static func clearOld() {
+        print("[CACHE] Clear old")
+        let currentKey = Cache.getKey("")
+        Cache.storage.dictionaryRepresentation().keys
+            .filter { $0.starts(with: "http") && !$0.contains(currentKey) }
+            .forEach { cacheKey in
+                print("[CACHE] Remove key \(cacheKey)")
+                Cache.storage.removeObject(forKey: cacheKey)
+            }
+    }
+    
     static func getKey(_ key: String) -> String {
         // to make it possible to change the datamodel between versions
-        return "\(key)_v0.3.0"
+        return "\(key)_v\(Cache.getBuildVersionNumber() ?? "unknown")"
+    }
+    
+    static func getBuildVersionNumber() -> String? {
+        return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
     }
 }

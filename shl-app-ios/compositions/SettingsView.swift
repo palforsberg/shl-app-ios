@@ -19,8 +19,8 @@ struct IconLabel: View {
                 Image(systemName: systemName)
                     .foregroundColor(color)
                 Text(LocalizedStringKey(text))
-                    .font(.system(size: 18, design: .rounded))
-                    .padding(.top, 10).padding(.bottom, 10)
+                    .rounded(size: 16, weight: .semibold)
+                    .padding(.vertical, 9)
             }
         }
     }
@@ -57,7 +57,7 @@ struct GeneralPicker<T: Equatable, Content: View>: View {
 
 struct SeasonPicker: View {
 
-    static var seasons = [2022, 2021, 2020, 2019, 2018]
+    static var seasons = [2023, 2022, 2021, 2020, 2019, 2018]
     
     @Binding var currentSeason: Int
 
@@ -262,7 +262,9 @@ struct SettingsView: View {
     var body: some View {
         List {
             Section(header: Text(""), footer: Text("TEAM_BODY").padding(.leading, 0).padding(.trailing, 20).padding(.top, 0)) {
-                NavigationLink(destination: TeamSelectView().navigationTitle("Your Teams")) {
+                NavigationLink {
+                    StarredTeamSelectView().navigationTitle("Your Teams")
+                } label: {
                     IconLabel(text: "Your Teams", color: .yellow, systemName: "star")
                 }
             }
@@ -277,11 +279,15 @@ struct SettingsView: View {
             }
             Section(header: Text(""), footer: Text("SUPPORTER_BODY")
                 .padding(.leading, 0).padding(.trailing, 20).padding(.top, 0)) {
-                NavigationLink(destination: SupporterView()) {
-                    IconLabel(text: "Supporter", color: .pink, systemName: settings.supporter ? "heart.fill" : "heart")
-                }
+                    NavigationLink {
+                        SupporterView()
+                    } label: {
+                        IconLabel(text: "Supporter", color: .pink, systemName: settings.supporter ? "heart.fill" : "heart")
+                    }
                 Group {
-                    NavigationLink(destination: IconSelectView(currentIcon: $currentIcon)) {
+                    NavigationLink {
+                        IconSelectView(currentIcon: $currentIcon)
+                    } label: {
                         HStack {
                             IconLabel(text: "App Icon", color: .green, systemName: "app")
                             Spacer()

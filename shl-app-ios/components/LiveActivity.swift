@@ -51,12 +51,12 @@ class LiveActivity {
         return false
     }
     
-    func startLiveActivity(for game: Game) async {
+    func startLiveActivity(for game: Game, teamsData: TeamsData) async {
         if #available(iOS 16.1, *) {
             do {
                 await self.endLiveActivity(for: game)
                 
-                let result = try Activity.request(attributes: ShlWidgetAttributes.from(game), contentState: ShlWidgetAttributes.ContentState.from(game), pushType: .token)
+                let result = try Activity.request(attributes: ShlWidgetAttributes.from(game, teamsData: teamsData), contentState: ShlWidgetAttributes.ContentState.from(game), pushType: .token)
                 print("[LIVE] Start \(game.home_team_code) - \(game.away_team_code)")
 
                 self.listenToPushTokenUpdates(result)

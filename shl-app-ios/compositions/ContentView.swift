@@ -14,7 +14,7 @@ struct ContentView: View {
     @ObservedObject var starredTeams = StarredTeams()
     @ObservedObject var teams = TeamsData()
     @ObservedObject var gameData = GamesData(data: [])
-    @ObservedObject var standings = StandingsData(data: [])
+    @ObservedObject var standings = StandingsData(data: StandingRsp(SHL: [], HA: []))
     @ObservedObject var settings = AppDelegate.settings
     @ObservedObject var playoffs = PlayoffData()
     
@@ -33,8 +33,11 @@ struct ContentView: View {
         if let standing = provider?.getCachedStandings(season: settings.season) {
             self.standings.set(data: standing)
         }
-        if let playoffs = provider?.getCachedPlayoffs() {
+        if let playoffs = provider?.getCachedPlayoffs(season: settings.season) {
             self.playoffs.set(data: playoffs)
+        }
+        if let teams = provider?.getCachedTeams() {
+            self.teams.setTeams(teams: teams)
         }
         
         debugPrint("[ContentView] Init")
@@ -43,8 +46,8 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             TabView {
-                SeasonView(provider: provider).tabItem { Label("Home", systemImage: "house.circle") }
-                StandingsView(provider: provider).tabItem { Label("Standings", systemImage: "list.bullet.circle") }
+                SeasonView(provider: provider).tabItem { Label("Home", systemImage: "hockey.puck.circle").environment(\.symbolVariants, .none) }
+                StandingsView(provider: provider).tabItem { Label("Standings", systemImage: "trophy.circle").environment(\.symbolVariants, .none) }
             }
             VStack {
                 GameAlert(alert: alert)
@@ -66,7 +69,7 @@ struct ContentView: View {
         .environmentObject(settings)
         .environmentObject(playoffs)
         .onReceive(NotificationCenter.default.publisher(for: .onGameNotification)) { data in
-            self.alert = data.object as? GameNofitication
+            // self.alert = data.object as? GameNofitication
         }
         .background(Color(UIColor.systemGroupedBackground))
         .accentColor(colorScheme == .light
@@ -97,16 +100,7 @@ struct ContentView_Previews: PreviewProvider {
             getPlayedGame(t1: "LHF", s1: 4, t2: "FBK", s2: 1),
             getPlayedGame(t1: "LIF", s1: 3, t2: "TIK", s2: 1),
         ])
-        contentView.standings = StandingsData(data: [
-            getStanding("LHF", rank: 1),
-            getStanding("FBK", rank: 2),
-            getStanding("RBK", rank: 3),
-            getStanding("IKO", rank: 4),
-            getStanding("FHC", rank: 5),
-            getStanding("TIK", rank: 6),
-            getStanding("MIF", rank: 7),
-            getStanding("SAIK", rank: 8),
-        ])
+        contentView.standings = getStandingsData()
         contentView.alert = GameNofitication(team: "LHF", game_uuid: "game_uuid_123", title: "MÅÅÅL för Skellefteå!", body: "SAIK 1 - 0 HV71", type: "Goal")
         return contentView
             .environment(\.locale, .init(identifier: "sv"))

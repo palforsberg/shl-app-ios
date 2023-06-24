@@ -2,6 +2,7 @@
 "Standings" = "Standings";
 "Matches" = "Matches";
 "Coming" = "Coming";
+"Played" = "Played";
 "Played_param %@" = "Played %@";
 "Season_param %@" = "Season %@";
 "Favourite" = "Favourite";
@@ -13,6 +14,9 @@
 "Games Played" = "Games Played";
 "Points/Game" = "Points / Game";
 "Starts In" = "Starts In";
+
+// SeasonView
+"Search Games" = "Search Games";
 
 // Game Status
 "Coming" = "Coming";
@@ -40,8 +44,11 @@
 "Penalty" = "Penalty";
 
 // Game Stats
+"league.shl" = "Swedish Hockey League";
+"league.ha" = "Hockey Allsvenskan";
 "Regular season game" = "Season game";
 "Playoff game" = "Playoff game";
+"PlayOff" = "Playoff game";
 "Kvalmatch nedflyttning" = "Relegation game";
 "Shots" = "Shots";
 "Penalty Minutes" = "Penalty Minutes";

@@ -10,7 +10,6 @@ import WidgetKit
 
 
 extension Text {
-    
     func points() -> some View {
         return self
             .font(.system(size: 15, weight: .heavy, design: .rounded))
@@ -23,10 +22,12 @@ struct StandingsHeader: View {
         HStack {
             Text("Season_param \(season)").listHeader(true)
             Spacer()
-            Text("GP").points()
+            Text("GP")
+                .rounded(size: 15, weight: .bold)
                 .frame(width: 34, alignment: .center)
                 .foregroundColor(Color(uiColor: .secondaryLabel))
-            Text("P").points()
+            Text("P")
+                .rounded(size: 15, weight: .bold)
                 .frame(width: 34, alignment: .center)
                 .foregroundColor(Color(uiColor: .secondaryLabel))
             Spacer(minLength: 17)
@@ -44,7 +45,7 @@ struct PointsLabel: View {
         let str = "\(val)"
         let nrZeros = nrDigits - str.count
         HStack(spacing: 0) {
-            Text(genZeros(nrZeros)).points().foregroundColor(Color(UIColor.tertiaryLabel))
+            Text(genZeros(nrZeros)).points().foregroundColor(Color(UIColor.quaternaryLabel))
                 .monospacedDigit()
             Text(str).foregroundColor(color).points()
                 .monospacedDigit()
@@ -61,6 +62,7 @@ struct PointsLabel: View {
 
 struct PlayoffEntryView: View {
     @EnvironmentObject var starredTeams: StarredTeams
+    @EnvironmentObject var teamsData: TeamsData
     var entry: PlayoffEntry
     var mini: Bool = true
     
@@ -69,7 +71,7 @@ struct PlayoffEntryView: View {
             HStack {
                 TeamLogo(code: entry.team1, size: UIScreen.isMini ? 20 : 30)
                 if !mini {
-                    Text(entry.team1)
+                    Text(teamsData.getDisplayCode(entry.team1))
                         .starred(starredTeams.isStarred(teamCode: entry.team1))
                         .scaledToFit()
                         .minimumScaleFactor(0.6)
@@ -80,7 +82,7 @@ struct PlayoffEntryView: View {
             HStack {
                 TeamLogo(code: entry.team2, size: UIScreen.isMini ? 20 : 30)
                 if !mini {
-                    Text(entry.team2)
+                    Text(teamsData.getDisplayCode(entry.team2))
                         .starred(starredTeams.isStarred(teamCode: entry.team2))
                         .scaledToFit()
                         .minimumScaleFactor(0.6)
@@ -88,13 +90,12 @@ struct PlayoffEntryView: View {
                 }
                 Text("\(entry.score2)").monospacedDigit()
             }.opacity(entry.team2 == "TBD" || entry.team2 == entry.eliminated ? 0.4 : 1.0)
-        }.font(.system(size: 18, weight: .heavy, design: .rounded))
-            .padding(EdgeInsets(top: 15, leading: 15, bottom: 15, trailing: 15))
-            .background(Color(uiColor: UIColor.secondarySystemGroupedBackground))
-            //.overlay(RoundedRectangle(cornerRadius: 20)
-            //        .inset(by: 1)
-            //        .stroke(.yellow, lineWidth: starredTeams.isStarred(teamCodes: [entry.team1, entry.team2]) ? 2 : 0))
-            .cornerRadius(20)
+        }
+        .font(.system(size: 18, weight: .heavy, design: .rounded))
+        .padding(EdgeInsets(top: 15, leading: 15, bottom: 15, trailing: 15))
+        .background(Color(uiColor: UIColor.secondarySystemGroupedBackground))
+        .overlay(RoundedRectangle(cornerRadius: 20).strokeBorder(.gray.opacity(0.3)))
+        .cornerRadius(20)
 
     }
 }
@@ -160,6 +161,7 @@ struct PlayoffView: View {
         }
     }
 }
+
 struct PlayoffSheet: View {
     @EnvironmentObject var playoffs: PlayoffData
     @EnvironmentObject var teams: TeamsData
@@ -255,6 +257,7 @@ struct PlayoffSheet: View {
                 self.futureGames = games
                     .getPlayoffGamesBetween(t1: entry.team1, t2: entry.team2)
                     .filter { !$0.isPlayed() }
+                    .reversed()
             }
         }
     }
@@ -263,16 +266,20 @@ struct PlayoffSheet: View {
 struct TeamEntry: View {
     @EnvironmentObject var starredTeams: StarredTeams
     var code: String
+    var display_code: String
     
     var body: some View {
         TeamLogo(code: code)
-        Text(code)
-            .font(.system(size: 24, weight: .bold, design: .rounded))
+        Text(display_code)
+            .font(.system(size: 20, weight: .heavy, design: .rounded))
             .starred(starredTeams.isStarred(teamCode: code))
     }
 }
+
 struct StandingsView: View {
+    @Namespace var animation
     @EnvironmentObject var standings: StandingsData
+    @EnvironmentObject var games: GamesData
     @EnvironmentObject var teams: TeamsData
     @EnvironmentObject var starredTeams: StarredTeams
     @EnvironmentObject var settings: Settings
@@ -281,55 +288,84 @@ struct StandingsView: View {
     var provider: DataProvider?
     
     @State var selectedPlayoff: PlayoffEntry?
+    @AppStorage("standing.league") var league = League.shl
     
     var body: some View {
+        let standings = self.standings.get(for: self.league)
         NavigationView {
             ScrollView {
-                if let po = self.playoffs.data, settings.season == Settings.currentSeason {
+                if let po = self.playoffs.get(for: self.league) {
                     PlayoffView(playoff: po, select: self.select)
                     Spacer(minLength: 10)
-                } else {
-                    Spacer(minLength: 20)
                 }
-                StandingsHeader(season: settings.getFormattedSeason())
-                    .padding(EdgeInsets(top: 0, leading: 15, bottom: -2, trailing: 10))
+                HStack {
+                    Text("Season_param \(settings.getFormattedSeason())").listHeader(true)
+                    Spacer()
+                    Text("GP").frame(width: 30, alignment: .center)
+                    Text("P").frame(width: 34, alignment: .center)
+                    Spacer(minLength: 17)
+                }
+                .font(.system(size: 15, weight: .bold, design: .rounded))
+                .foregroundColor(Color(uiColor: .secondaryLabel))
+                .padding(EdgeInsets(top: 0, leading: 10, bottom: -2, trailing: 10))
                 GroupedView(cornerRadius: 15) {
-                    ForEach(standings.get(), id: \.team_code) { item in
+                    ForEach(standings, id: \.team_code) { item in
                         NavigationLink(destination: TeamView(teamCode: item.team_code, standing: item)) {
-                            VStack {
+                            VStack(spacing: 0) {
                                 HStack() {
-                                    HStack(spacing: 0) {
-                                        Text("#").foregroundColor(Color(UIColor.tertiaryLabel))
-                                        PointsLabel(val: "\(item.rank)", nrDigits: 2, color: Color.secondary)
-                                    }
-                                    TeamEntry(code: item.team_code)
+                                    PointsLabel(val: "\(item.rank)", nrDigits: 2)
+                                    TeamEntry(code: item.team_code, display_code: teams.getDisplayCode(item.team_code))
+                                        .id("team-\(item.team_code)")
                                     Spacer()
-                                    PointsLabel(val: "\(item.gp)")
-                                        .frame(width: 34, alignment: .center)
+                                    PointsLabel(val: "\(item.gp)", nrDigits: 2)
+                                        .frame(width: 30, alignment: .center)
                                     PointsLabel(val: "\(item.points)")
                                         .frame(width: 34, alignment: .center)
-                                    
-                                }.padding(EdgeInsets(top: 20, leading: 10, bottom: item.team_code != standings.get().last?.team_code ? 15 : 25, trailing: 16))
-                                if item.team_code != standings.get().last?.team_code {
-                                    Divider()
                                 }
+                                .zIndex(starredTeams.isStarred(teamCode: item.team_code) ? 1000 : 1)
+                                .padding(EdgeInsets(top: 14, leading: 10, bottom: 14, trailing: 16))
                             }
-                            .contentShape(Rectangle()) // Make sure whole row is clickable
+                            .contentShape(Rectangle())
                         }
+                        .transition(.scale)
                         .buttonStyle(ActiveButtonStyle())
+                        if item.team_code != standings.last?.team_code {
+                            Divider()
+                        }
+                        if item.rank == 6 || item.rank == 10 || item.rank == 12 {
+                            Rectangle()
+                                .fill(Color(UIColor.systemGroupedBackground))
+                            Divider()
+                        }
                     }
                 }
+                Spacer(minLength: 40)
             }
             .refreshable {
                 await self.reloadData()
             }
             .id(settings.season) // makes sure list is recreated when rerendered. To take care of reuse cell issues
-            .navigationBarTitle(Text("SHL"))
+            .navigationBarTitle(Text(self.league.rawValue).rounded(size: 16))
             .background(Color(UIColor.systemGroupedBackground))
             .navigationBarItems(trailing: NavigationLink(destination: SettingsView()) {
-                Image(systemName: "gearshape.circle").frame(width: 44, height: 44, alignment: .trailing)
+                Label("Settings", systemImage: "gearshape")
             })
-        }.onReceive(settings.$season, perform: { _ in
+            .navigationBarItems(leading: Button {
+                self.league = self.league == .shl ? .ha : .shl
+            } label: {
+                Text(self.league == .shl ? League.ha.rawValue : League.shl.rawValue)
+                    .rounded(size: 16, weight: .semibold)
+            }.frame(height: 44))
+        }
+        /*.safeAreaInset(edge: .bottom) {
+            VStack(spacing: 0) {
+                Divider()
+                ScrollPicker(index: $scrollIndex.animation(), numberOfCells: self.standingTimeline.gp)
+                    .background(.ultraThinMaterial)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }*/
+        .onReceive(settings.$season, perform: { _ in
             Task {
                 await self.reloadData()
             }
@@ -348,7 +384,7 @@ struct StandingsView: View {
     
     func reloadData() async {
         async let standings = provider?.getStandings(season: settings.season, maxAge: 10)
-        async let playoffs = provider?.getPlayoffs(maxAge: 10)
+        async let playoffs = provider?.getPlayoffs(season: settings.season, maxAge: 10)
         
         let (result_standings, result_playoffs) = await (standings, playoffs)
         
@@ -362,10 +398,8 @@ struct StandingsView: View {
             debugPrint("[STANDINGS] reload widgets")
         }
         
-        if let result = result_playoffs?.entries {
-            withAnimation {
-                self.playoffs.set(data: result)
-            }
+        withAnimation {
+            self.playoffs.set(data: result_playoffs?.entries)
         }
     }
     
@@ -385,28 +419,13 @@ struct StandingsViewWithoutPlayoff_Previews: PreviewProvider {
         let starredTeams = StarredTeams()
         starredTeams.addTeam(teamCode: "SAIK")
         
-        let standingsData = StandingsData(data: [
-                                            getStanding("LHF", rank: 1, gp: 99, points: 999),
-                                            getStanding("SAIK", rank: 2),
-                                            getStanding("TIK", rank: 3),
-                                            getStanding("VLH", rank: 4),
-                                            getStanding("RBK", rank: 5),
-                                            getStanding("LIF", rank: 6),
-                                            getStanding("OHK", rank: 7),
-                                            getStanding("FHC", rank: 8),
-                                            getStanding("FBK", rank: 9),
-                                            getStanding("MIF", rank: 10),
-                                            getStanding("IKO", rank: 11),
-                                            getStanding("LHC", rank: 12),
-                                            getStanding("BIF", rank: 13),
-                                            getStanding("HV71", rank: 14),
-        ])
         let playoffs = PlayoffData()
         playoffs.set(data: nil)
         return StandingsView(provider: nil)
-            .environmentObject(TeamsData())
+            .environmentObject(getTeamsData())
             .environmentObject(starredTeams)
-            .environmentObject(standingsData)
+            .environmentObject(getGamesData())
+            .environmentObject(getStandingsData())
             .environmentObject(Settings())
             .environmentObject(playoffs)
             .environment(\.locale, .init(identifier: "sv"))
@@ -418,29 +437,14 @@ struct StandingsView_Previews: PreviewProvider {
     static var previews: some View {
         let starredTeams = StarredTeams()
         starredTeams.addTeam(teamCode: "SAIK")
-        
-        let standingsData = StandingsData(data: [
-                                            getStanding("LHF", rank: 1, gp: 99, points: 999),
-                                            getStanding("SAIK", rank: 2),
-                                            getStanding("TIK", rank: 3),
-                                            getStanding("VLH", rank: 4),
-                                            getStanding("RBK", rank: 5),
-                                            getStanding("LIF", rank: 6),
-                                            getStanding("OHK", rank: 7),
-                                            getStanding("FHC", rank: 8),
-                                            getStanding("FBK", rank: 9),
-                                            getStanding("MIF", rank: 10),
-                                            getStanding("IKO", rank: 11),
-                                            getStanding("LHC", rank: 12),
-                                            getStanding("BIF", rank: 13),
-                                            getStanding("HV71", rank: 14),
-        ])
+
         let playoffs = PlayoffData()
         playoffs.set(data: getPlayoffs())
         return StandingsView(provider: nil)
             .environmentObject(TeamsData())
             .environmentObject(starredTeams)
-            .environmentObject(standingsData)
+            .environmentObject(getStandingsData())
+            .environmentObject(getGamesData())
             .environmentObject(Settings())
             .environmentObject(playoffs)
             .environment(\.locale, .init(identifier: "sv"))
@@ -450,7 +454,7 @@ struct StandingsView_Previews: PreviewProvider {
 struct PlayoffView_Previews: PreviewProvider {
     static var previews: some View {
         return ScrollView() {
-            PlayoffView(playoff: getPlayoffs(), select: { e in })
+            PlayoffView(playoff: getPlayoffs().SHL!, select: { e in })
         }.background(Color(uiColor: .systemGroupedBackground))
     }
 }
@@ -460,7 +464,7 @@ struct PlayoffSheet_Previews: PreviewProvider {
         let data = PlayoffData()
         data.set(data: getPlayoffs())
         
-        let entry = getPlayoffs().quarter![0]
+        let entry = getPlayoffs().SHL!.quarter![0]
         let gamesData = GamesData(data: [])
 
         gamesData.set(data: [
@@ -470,7 +474,7 @@ struct PlayoffSheet_Previews: PreviewProvider {
             getPlayoffGame(t1: entry.team1, s1: 1, t2: entry.team2, s2: 2),
             getPlayoffGame(t1: entry.team1, s1: 0, t2: entry.team2, s2: 0, status: "Coming"),
         ])
-        return PlayoffSheet(entry: getPlayoffs().quarter![0])
+        return PlayoffSheet(entry: getPlayoffs().SHL!.quarter![0])
                 .environmentObject(data)
                 .environmentObject(StarredTeams())
                 .environmentObject(getTeamsData())

@@ -9,23 +9,19 @@ import Foundation
 import WidgetKit
 
 #if DEBUG
-let baseUrl = "http://192.168.141.229:8080"
+let baseUrl = "https://palsserver.com/shl-api/v2"
 #else
-let baseUrl = "https://palsserver.com/shl-api"
+let baseUrl = "https://palsserver.com/shl-api/v2"
 #endif
 let gamesUrl = { (season: Int) -> String in return "\(baseUrl)/games/\(season)" }
 let standingsUrl = { (season: Int) -> String in return "\(baseUrl)/standings/\(season)" }
-let teamsUrl = "\(baseUrl)/teams?season=\(Settings.currentSeason)"
-let playoffUrl = "\(baseUrl)/playoffs/\(Settings.currentSeason)"
+let teamsUrl = "\(baseUrl)/teams"
+let playoffUrl = { (season: Int) -> String in "\(baseUrl)/playoffs/\(season)" }
 let userUrl = "\(baseUrl)/user"
 let liveActivityStartUrl = "\(baseUrl)/live-activity/start"
 let liveActivityEndUrl = "\(baseUrl)/live-activity/end"
-let gameStatsUrl = { (game: Game) -> String in
-    return "\(baseUrl)/game/\(game.game_uuid)/\(game.game_id)"
-}
-let playersUrl = { (code: String) -> String in
-    "\(baseUrl)/players/\(code)"
-}
+let gameDetailsUrl = { (game_uuid: String) -> String in return "\(baseUrl)/game/\(game_uuid)" }
+let playersUrl = { (season: Int, code: String) -> String in "\(baseUrl)/players/\(season)/\(code)" }
 
 enum GetType {
     case cache
@@ -54,9 +50,9 @@ class DataProvider {
         return Cache.retrieve(key: gamesUrl(season), type: [Game].self)
     }
     
-    func getStandings(season: Int, fetchType: GetType = .throttled, maxAge seconds: TimeInterval = 10) async -> (entries: [Standing]?, type: GetType) {
+    func getStandings(season: Int, fetchType: GetType = .throttled, maxAge seconds: TimeInterval = 10) async -> (entries: StandingRsp?, type: GetType) {
         let url = standingsUrl(season)
-        let type = [Standing].self
+        let type = StandingRsp.self
         switch fetchType {
         case .throttled: return await getThrottledData(url: url, type: type, maxAge: seconds)
         case .cache: return (Cache.retrieve(key: url, type: type), fetchType)
@@ -64,12 +60,12 @@ class DataProvider {
         }
     }
     
-    func getCachedStandings(season: Int) -> [Standing]? {
-        return Cache.retrieve(key: standingsUrl(season), type: [Standing].self)
+    func getCachedStandings(season: Int) -> StandingRsp? {
+        return Cache.retrieve(key: standingsUrl(season), type: StandingRsp.self)
     }
     
-    func getGameStats(game: Game) async -> GameStats? {
-        return await getData(url: gameStatsUrl(game), type: GameStats.self)
+    func getGameDetails(game_uuid: String) async -> GameDetails? {
+        return await getData(url: gameDetailsUrl(game_uuid), type: GameDetails.self)
     }
     
     func getTeams() async -> [Team]? {
@@ -79,16 +75,20 @@ class DataProvider {
         return await getData(url: teamsUrl, type: [Team].self)
     }
     
-    func getPlayoffs(maxAge: TimeInterval) async -> (entries: Playoffs?, type: GetType) {
-        return await getThrottledData(url: playoffUrl, type: Playoffs.self, maxAge: maxAge)
+    func getCachedTeams() -> [Team]? {
+        return Cache.retrieve(key: teamsUrl, type: [Team].self)
     }
     
-    func getCachedPlayoffs() -> Playoffs? {
-        return Cache.retrieve(key: playoffUrl, type: Playoffs.self)
+    func getPlayoffs(season: Int, maxAge: TimeInterval) async -> (entries: PlayoffRsp?, type: GetType) {
+        return await getThrottledData(url: playoffUrl(season), type: PlayoffRsp.self, maxAge: maxAge)
     }
     
-    func getPlayers(for code: String) async -> [PlayerStats]? {
-        return await getThrottledData(url: playersUrl(code), type: [PlayerStats].self, maxAge: 10).entries
+    func getCachedPlayoffs(season: Int) -> PlayoffRsp? {
+        return Cache.retrieve(key: playoffUrl(season), type: PlayoffRsp.self)
+    }
+    
+    func getPlayers(for season: Int, code: String) async -> [Player]? {
+        return await getThrottledData(url: playersUrl(season, code), type: [Player].self, maxAge: 10).entries
     }
     
     func addUser(request: AddUser) async {
@@ -137,7 +137,7 @@ class DataProvider {
             Cache.store(key: urlString, data: parsed)
             return parsed
         } catch let error {
-            print("[DATA] Failed to retrieve data \(error)")
+            print("[DATA] Failed to retrieve data \(urlString) \(error)")
             return Cache.retrieve(key: urlString, type: type)
         }
     }

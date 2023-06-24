@@ -30,12 +30,13 @@ struct Provider: IntentTimelineProvider {
         Task {
             async let async_games = provider.getGames(season: Settings.currentSeason, maxAge: 60)
             async let async_standings = provider.getStandings(season: Settings.currentSeason, maxAge: 60)
-            async let async_playoffs = provider.getPlayoffs(maxAge: 60)
+            async let async_playoffs = provider.getPlayoffs(season: Settings.currentSeason, maxAge: 60)
+            async let async_teams = provider.getTeams()
             
-            let (games, standings, playoffs) = await (async_games, async_standings, async_playoffs)
+            let (games, standings, playoffs, teams) = await (async_games, async_standings, async_playoffs, async_teams)
             
-            print("[WIDGET] fetched games \(String(describing: games))")
-            var entry = getEntry(teamCode, games.entries, standings.entries, playoffs.entries)
+            print("[WIDGET] fetched games")
+            var entry = getEntry(teamCode, games.entries, standings.entries, playoffs.entries, TeamsData(teams: teams ?? []))
             entry.fetched = games.type == .api ? .timeline_api : .timeline_cache
             
             
@@ -54,18 +55,20 @@ struct Provider: IntentTimelineProvider {
             teamCode,
             provider.getCachedGames(season: Settings.currentSeason),
             provider.getCachedStandings(season: Settings.currentSeason),
-            provider.getCachedPlayoffs()
+            provider.getCachedPlayoffs(season: Settings.currentSeason),
+            TeamsData(teams: provider.getCachedTeams() ?? [])
         )
     }
     
     func getEntry(_ teamCode: String,
                   _ games: [Game]?,
-                  _ standings: [Standing]?,
-                  _ playoffs: Playoffs?
+                  _ standings: StandingRsp?,
+                  _ playoffs: PlayoffRsp?,
+                  _ teams: TeamsData?
     ) -> TeamEntry {
         let gamesData = GamesData(data: games ?? [])
         let playOffData = PlayoffData(data: playoffs)
-        let standing = StandingsData(data: standings ?? []).getFor(team: teamCode)
+        let standing = StandingsData(data: standings ?? StandingRsp(SHL: [], HA: [])).getFor(team: teamCode)
         
         var points: [Int] = []
         var playoffStage: String?
@@ -85,7 +88,8 @@ struct Provider: IntentTimelineProvider {
                          game: nextGame,
                          points: points,
                          playoffStage: playoffStage,
-                         fetched: .timeline_cache)
+                         fetched: .timeline_cache,
+                         teams: teams)
     }
 
     func getNextGame(for teamCode: String, games: [Game]?) -> Game? {
@@ -115,16 +119,32 @@ struct Provider: IntentTimelineProvider {
         case .sAIK: return "SAIK"
         case .lHC: return "LHC"
         case .oHK: return "OHK"
+        case .aIK: return "AIK"
+        case .aIS: return "AIS"
+        case .dIF: return "DIF"
+        case .hERR: return "HERR"
+        case .bIK: return "BIK"
+        case .mODO: return "MODO"
+        case .kRI: return "KRI"
+        case .vIK: return "VIK"
+        case .vVIK: return "VVIK"
+        case .tAIF: return "TAIF"
+        case .mIK: return "MIK"
+        case .iFB: return "IFB"
+        case .sSK: return "SSK"
+        case .oSIK: return "OSIK"
         case .unknown: return getStarredTeam() ?? getTopTeam() ?? "FBK"
         }
     }
     
     func getStarredTeam() -> String? {
-        (UserDefaults.shared.array(forKey: "starredTeams") as? [String])?.first
+        let starredTeam = (UserDefaults.shared.array(forKey: "starredTeams") as? [String])?.first
+        print("[WIDGET] Get starred team \(starredTeam ?? "(none)")")
+        return starredTeam
     }
     
     func getTopTeam() -> String? {
-        provider.getCachedStandings(season: Settings.currentSeason)?.first?.team_code
+        provider.getCachedStandings(season: Settings.currentSeason)?.SHL.first?.team_code
     }
 
 }
@@ -144,6 +164,7 @@ struct TeamEntry: TimelineEntry {
     var points: [Int]?
     var playoffStage: String?
     var fetched: FetchType
+    var teams: TeamsData?
     
     func getOpponent(game: Game) -> String {
         if game.home_team_code == self.teamCode {
@@ -166,6 +187,10 @@ struct TeamEntry: TimelineEntry {
         case .timeline_cache: return "🍪"
         case .snapshot: return "🔫"
         }
+    }
+    
+    func getDisplayCode(_ teamCode: String) -> String {
+        self.teams?.getDisplayCode(teamCode) ?? teamCode
     }
 }
 
@@ -220,19 +245,19 @@ struct TeamWidgetSystemSmall: View {
 
                 HStack {
                     WidgetTeamLogo(code: entry.teamCode, size: 30)
-                    Text(entry.teamCode)
-                        .font(.system(size: 26, weight: .heavy, design: .rounded))
+                    Text(entry.getDisplayCode(entry.teamCode))
+                        .font(.system(size: 24, weight: .heavy, design: .rounded))
                 }
                 if let s = entry.playoffStage {
                     Text(LocalizedStringKey(s)).padding(.top, 3)
-                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .font(.system(size: 14, weight: .heavy, design: .rounded))
                         .textCase(.uppercase)
                 } else if let s = entry.standing {
                     HStack {
-                        Text("#").font(.system(size: 14, weight: .regular, design: .rounded)) +
+                        Text("#").font(.system(size: 14, weight: .semibold, design: .rounded)) +
                         Text("\(s.rank)")
-                        Text("\(s.points)") + Text("p").fontWeight(.regular)
-                        Text("\(s.gp)") + Text("gp").fontWeight(.regular)
+                        Text("\(s.points)") + Text("p").fontWeight(.semibold)
+                        Text("\(s.gp)") + Text("gp").fontWeight(.semibold)
                     }
                 }
                 
@@ -240,7 +265,7 @@ struct TeamWidgetSystemSmall: View {
                     if entry.playoffStage != nil {
                         PlayoffGraph(points: p)
                             .padding(.top, 4)
-                    } else {
+                    } else if p.count > 0 {
                         Graph(points: p, monochromeColor: .gray)
                             .padding(.top, 4)
                     }
@@ -268,7 +293,7 @@ struct TeamWidgetSystemSmall: View {
             .padding(.leading, 0)
         }
         .foregroundColor(.white)
-        .font(.system(size: 16, weight: .bold, design: .rounded).lowercaseSmallCaps())
+        .font(.system(size: 16, weight: .heavy, design: .rounded).lowercaseSmallCaps())
         
     }
 }
@@ -280,8 +305,8 @@ struct TeamWidgetViewAccessoryRectangular: View {
         VStack(alignment: .leading, spacing: 3) {
             HStack(spacing: 5) {
                 WidgetTeamLogo(code: entry.teamCode, size: 16)
-                Text("\(entry.teamCode)")
-                    .font(.system(size: 14, weight: .semibold, design: .rounded).lowercaseSmallCaps())
+                Text("\(entry.getDisplayCode(entry.teamCode))")
+                    .font(.system(size: 14, weight: .heavy, design: .rounded).lowercaseSmallCaps())
                     
                 if let s = entry.standing {
                     (Text("#").font(.system(size: 11, weight: .semibold, design: .rounded)) +
@@ -289,30 +314,30 @@ struct TeamWidgetViewAccessoryRectangular: View {
                         .padding(.leading, -2)
                 }
             }
-            .font(.system(size: 13, weight: .bold, design: .rounded).lowercaseSmallCaps())
+            .font(.system(size: 13, weight: .heavy, design: .rounded).lowercaseSmallCaps())
             
             
             if let s = entry.playoffStage {
                 HStack(spacing: 3) {
                     Text(LocalizedStringKey(s)).textCase(.uppercase)
                     Text("•")
-                    Text("\(entry.points?.filter { [2, 3].contains($0) }.count ?? 0)-\(entry.points?.filter { [0, 1].contains($0) }.count ?? 0) ")
+                    Text("\(entry.points?.filter { [2, 3].contains($0) }.count ?? 0):\(entry.points?.filter { [0, 1].contains($0) }.count ?? 0) ")
                         .fontWeight(.bold)
                     
                 }
-            } else if let p = entry.points {
+            } else if let p = entry.points, p.count > 0 {
                 Graph(points: p, monochromeColor: .white)
             }
             
             
             if let g = entry.game {
-                Text("\(entry.getTimeText(game:g)) \(entry.getVsText(game: g)) \(entry.getOpponent(game: g))")
+                Text("\(entry.getTimeText(game:g)) \(entry.getVsText(game: g)) \(entry.getDisplayCode(entry.getOpponent(game: g)))")
                     .scaledToFit()
                     .minimumScaleFactor(0.6)
             }
         }
         .foregroundColor(.white)
-        .font(.system(size: 12, weight: .semibold, design: .rounded).lowercaseSmallCaps())
+        .font(.system(size: 12, weight: .bold, design: .rounded).lowercaseSmallCaps())
 
     }
 }
@@ -340,18 +365,20 @@ struct ShlWidget_Previews: PreviewProvider {
     static var previews: some View {
         let entry = TeamEntry(date: Date(),
                               teamCode: "LHF",
-                              standing: Standing(team_code: "LHF", gp: 18, rank: 11, points: 65, diff: 20),
-                              game: Game(game_id: 1, game_uuid: "1", away_team_code: "LHF", away_team_result: 0, home_team_code: "SAIK", home_team_result: 0, start_date_time: Date(), game_type: "Regular", played: false, overtime: false, penalty_shots: false, status: "Coming", gametime: nil),
+                              standing: Standing(team_code: "LHF", gp: 18, rank: 11, points: 65, diff: 20, league: .shl),
+                              game: Game(game_uuid: "1", away_team_code: "LHF", away_team_result: 0, home_team_code: "SAIK", home_team_result: 0, start_date_time: Date(), game_type: "Regular", played: false, overtime: false, shootout: false, status: "Coming", gametime: nil, league: .shl),
                               points: [3, 2, 2, 0, 0, 3, 3, 1, 2, 3],
-                              fetched: .timeline_api
+                              fetched: .timeline_api,
+                              teams: getTeamsData()
         )
         let playoffTeamEntry = TeamEntry(date: Date(),
                               teamCode: "LHF",
-                              standing: Standing(team_code: "LHF", gp: 18, rank: 11, points: 65, diff: 20),
-                              game: Game(game_id: 1, game_uuid: "1", away_team_code: "LHF", away_team_result: 0, home_team_code: "SAIK", home_team_result: 0, start_date_time: Date(), game_type: "Regular", played: false, overtime: false, penalty_shots: false, status: "Coming", gametime: nil),
+                              standing: Standing(team_code: "LHF", gp: 18, rank: 11, points: 65, diff: 20, league: .shl),
+                                         game: Game(game_uuid: "1", away_team_code: "LHF", away_team_result: 0, home_team_code: "SAIK", home_team_result: 0, start_date_time: Date(), game_type: "Regular", played: false, overtime: false, shootout: false, status: "Coming", gametime: nil, league: .shl),
                                          points: [3, 3, 0, 3, -1, -1, -1],
                                          playoffStage: "Quarterfinal",
-                              fetched: .timeline_api
+                              fetched: .timeline_api,
+                                         teams: getTeamsData()
         )
         
         TeamWidgetView(entry: entry)

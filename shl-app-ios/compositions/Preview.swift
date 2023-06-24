@@ -13,12 +13,12 @@ func getPlayedGame() -> Game {
 }
 
 func getPlayedGame(t1: String, s1: Int, t2: String, s2: Int, overtime: Bool = false, date: Date = Date().addingTimeInterval(TimeInterval(-2_000))) -> Game {
-    return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: s2, home_team_code: t1, home_team_result: s1, start_date_time: date, game_type: GameType.season.rawValue, played: true, overtime: overtime, penalty_shots: false, status: "Finished", gametime: "20:00")
+    return Game(game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: s2, home_team_code: t1, home_team_result: s1, start_date_time: date, game_type: GameType.season.rawValue, played: true, overtime: overtime, shootout: false, status: "Finished", gametime: "20:00", league: .shl)
 }
 
 
 func getPlayoffGame(t1: String, s1: Int, t2: String, s2: Int, status: String = "Finished") -> Game {
-    return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: s2, home_team_code: t1, home_team_result: s1, start_date_time: Date(), game_type: GameType.playoff.rawValue, played: true, overtime: false, penalty_shots: false, status: status, gametime: "20:00")
+    return Game(game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: s2, home_team_code: t1, home_team_result: s1, start_date_time: Date(), game_type: GameType.playoff.rawValue, played: true, overtime: false, shootout: false, status: status, gametime: "20:00", league: .shl)
 }
 
 func getLiveGame() -> Game {
@@ -26,7 +26,7 @@ func getLiveGame() -> Game {
 }
 
 func getLiveGame(t1: String, score1: Int, t2: String, score2: Int, status: String? = "Period2") -> Game {
-    return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: score2, home_team_code: t1, home_team_result: score1, start_date_time: Date().addingTimeInterval(TimeInterval(-50)), game_type: GameType.season.rawValue, played: false, overtime: false, penalty_shots: false, status: status, gametime: "13:37")
+    return Game(game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: score2, home_team_code: t1, home_team_result: score1, start_date_time: Date().addingTimeInterval(TimeInterval(-50)), game_type: GameType.season.rawValue, played: false, overtime: false, shootout: false, status: status, gametime: "13:37", league: .shl)
 }
 
 func getFutureGame() -> Game {
@@ -39,8 +39,8 @@ func getFutureGame(t1: String, t2: String) -> Game {
 
 func getFutureGame(t1: String, t2: String, days: Int) -> Game {
     let futDate = Calendar.current.date(byAdding: DateComponents(day: days), to: Date()) ?? Date()
-    return Game(game_id: 1, game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: 0, home_team_code: t1, home_team_result: 0, start_date_time: futDate,
-                game_type: GameType.season.rawValue, played: false, overtime: false, penalty_shots: false, status: "Coming", gametime: nil)
+    return Game(game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: 0, home_team_code: t1, home_team_result: 0, start_date_time: futDate,
+                game_type: GameType.season.rawValue, played: false, overtime: false, shootout: false, status: "Coming", gametime: nil, league: .shl)
 }
 
 func getStanding(_ teamCode: String, rank: Int) -> Standing {
@@ -49,7 +49,7 @@ func getStanding(_ teamCode: String, rank: Int) -> Standing {
 
 
 func getStanding(_ teamCode: String, rank: Int, gp: Int, points: Int) -> Standing {
-    return Standing(team_code: teamCode, gp: gp, rank: rank, points: points, diff: 10)
+    return Standing(team_code: teamCode, gp: gp, rank: rank, points: points, diff: 10, league: .shl)
 }
 
 func getPlayers() -> [String: TeamPlayers] {
@@ -71,60 +71,55 @@ func getPlayersWithZeroScore() -> [String: TeamPlayers] {
 }
 
 func getPlayer(id: Int, g: Int, a: Int, pim: Int) -> Player {
-    return Player(player: id, team: "LHF", firstName: "Lars", familyName: "Larsson", toi: "13:37", jersey: 69, g: g, a: a, pim: pim, position: "LD")
+    Player(id: id, team_code: "LHF", first_name: "Lars", family_name: "Larsson", jersey: 69, position: "LD", season: "Season2022", gp: 1, toi_s: 1337, g: g, a: a, pim: pim)
 }
 
-func getPlayerStats(id: Int, g: Int, a: Int, pim: Int) -> PlayerStats {
-    return PlayerStats(player: id, team: "LHF", firstName: "Lars", familyName: "Larsson", position: "LD", jersey: 69, gp: 24, toi: "13:37", g: g, a: a, pim: pim)
+func getPlayerStats(id: Int, g: Int, a: Int, pim: Int) -> Player {
+    Player(id: id, team_code: "LHF", first_name: "Lars", family_name: "Larsson", jersey: 69, position: "LD", season: "Season2022", gp: 1, toi_s: 1337, g: g, a: a, pim: pim)
 }
 
 func getEventPlayer() -> EventPlayer {
-    return EventPlayer(firstName: "Lars", familyName: "Larsson", jersey: 69)
+    return EventPlayer(first_name: "Lars", family_name: "Larsson", jersey: 69)
 }
 
 func getEvent(type: GameEventType, period: Int = 1, team: String = "LHF") -> GameEvent {
-    let info: GameEventInfo
     switch type {
     case .goal:
-        info = GameEventInfo(homeTeamId: "LHF", awayTeamId: "FHC", homeResult: 3, awayResult: 0, team: team, player: getEventPlayer(), teamAdvantage: "PP1")
-        break
-    case .periodStart, .periodEnd:
-        info = GameEventInfo(homeTeamId: "LHF", awayTeamId: "FHC", homeResult: 0, awayResult: 0, periodNumber: period)
-        break
+        return GameEvent(game_uuid: UUID().uuidString, event_id: "event_id", status: "Period1", gametime: "13:37", type: type.rawValue, team: team, reason: nil, player: getEventPlayer(), penalty: nil, home_team_result: 3, away_team_result: 0, team_advantage: "PP1")
     case .penalty:
-        info = GameEventInfo(homeTeamId: "LHF", awayTeamId: "FHC", homeResult: 0, awayResult: 0, team: team, player: getEventPlayer(), penaltyLong: "2 min + GM", reason: "Too many players on the ice")
-        break
+        return GameEvent(game_uuid: UUID().uuidString, event_id: "event_id", status: "Period1", gametime: "13:37", type: type.rawValue, team: team, reason: "Too many players on the ice", player: getEventPlayer(), penalty: "2 min + GM", home_team_result: nil, away_team_result: nil, team_advantage: nil)
     default:
-        info = GameEventInfo(homeTeamId: "LHF", awayTeamId: "FHC", homeResult: 3, awayResult: 0)
-        break
+        return GameEvent(game_uuid: UUID().uuidString, event_id: "event_id", status: "Period1", gametime: "13:37", type: type.rawValue, team: team, reason: nil, player: nil, penalty: nil, home_team_result: nil, away_team_result: nil, team_advantage: nil)
     }
-    return GameEvent(type: type.rawValue, info: info, timestamp: Date.now, id: type.rawValue + period.formatted(), gametime: "13:37")
+    
 }
 
 func getTeamsData() -> TeamsData {
     let teamsData = TeamsData()
     teamsData.setTeams(teams: [
-        Team( code: "TIK", name: "Timrå IK", shortname: "Timrå" ),
-        Team( code: "VLH", name: "Växjö Lakers", shortname: "Växjö" ),
-        Team( code: "RBK", name: "Rögle BK", shortname: "Rögle" ),
-        Team( code: "LIF", name: "Leksands IF", shortname: "Leksand" ),
-        Team( code: "SAIK", name: "Skellefteå AIK", shortname: "Skellefteå" ),
-        Team( code: "LHF", name: "Luleå HF", shortname: "Luleå" ),
-        Team( code: "OHK", name: "Örebro Hockey", shortname: "Örebro" ),
-        Team( code: "FHC", name: "Frölunda HC", shortname: "Frölunda" ),
-        Team( code: "FBK", name: "Färjestad BK", shortname: "Färjestad" ),
-        Team( code: "MIF", name: "IF Malmö Redhawks", shortname: "Malmö" ),
-        Team( code: "DIF", name: "Djurgården IF", shortname: "Djurgården" ),
-        Team( code: "IKO", name: "IK Oskarshamn", shortname: "Oskarshamn" ),
-        Team( code: "LHC", name: "Linköpings HC", shortname: "Linköping" ),
-        Team( code: "BIF", name: "Brynäs IF", shortname: "Brynäs" ),
-        Team( code: "HV71", name: "HV71", shortname: "HV71"),
+        Team( code: "TIK", name: "Timrå IK", shortname: "Timrå", display_code: "TIK", league: .shl, golds: nil, founded: nil ),
+        Team( code: "VLH", name: "Växjö Lakers", shortname: "Växjö", display_code: "VLH", league: .shl, golds: nil, founded: nil ),
+        Team( code: "RBK", name: "Rögle BK", shortname: "Rögle", display_code: "RBK", league: .shl, golds: nil, founded: nil ),
+        Team( code: "LIF", name: "Leksands IF", shortname: "Leksand", display_code: "LIF", league: .shl, golds: nil, founded: nil ),
+        Team( code: "SAIK", name: "Skellefteå AIK", shortname: "Skellefteå", display_code: "SKE", league: .shl, golds: nil, founded: nil ),
+        Team( code: "LHF", name: "Luleå HF", shortname: "Luleå", display_code: "LHF", league: .shl, golds: ["1976", "1977", "1978", "1979", "1986", "1987", "1988", "1989", "1996", "1997", "1998", "1999"], founded: "1976" ),
+        Team( code: "OHK", name: "Örebro Hockey", shortname: "Örebro", display_code: "ÖRE", league: .shl, golds: nil, founded: nil ),
+        Team( code: "FHC", name: "Frölunda HC", shortname: "Frölunda", display_code: "FHC", league: .shl, golds: nil, founded: nil ),
+        Team( code: "FBK", name: "Färjestad BK", shortname: "Färjestad", display_code: "FBK", league: .shl, golds: nil, founded: nil ),
+        Team( code: "MIF", name: "IF Malmö Redhawks", shortname: "Malmö", display_code: "MIF", league: .shl, golds: nil, founded: nil ),
+        Team( code: "IKO", name: "IK Oskarshamn", shortname: "Oskarshamn", display_code: "IKO", league: .shl, golds: nil, founded: nil ),
+        Team( code: "LHC", name: "Linköpings HC", shortname: "Linköping", display_code: "LHC", league: .shl, golds: nil, founded: nil ),
+        Team( code: "HV71", name: "HV71", shortname: "HV71", display_code: "HV71", league: .shl, golds: nil, founded: nil),
+        
+        Team( code: "IFB", name: "IF Björklöven", shortname: "Björklöven", display_code: "IFB", league: .ha, golds: nil, founded: nil),
+        Team( code: "DIF", name: "Djurgården IF", shortname: "Djurgården", display_code: "DIF", league: .ha, golds: nil, founded: nil ),
+        Team( code: "BIF", name: "Brynäs IF", shortname: "Brynäs", display_code: "BIF", league: .ha, golds: nil, founded: nil ),
     ])
     return teamsData
 }
 
-func getPlayoffs() -> Playoffs {
-    Playoffs(
+func getPlayoffs() -> PlayoffRsp {
+    let playoff = Playoffs(
                 demotion: PlayoffEntry(team1: "HV71", team2: "MIF", score1: 2, score2: 2),
                 eight: [
                     PlayoffEntry(team1: "LHF", team2: "OHK", score1: 2, score2: 1, eliminated: "OHK"),
@@ -142,4 +137,33 @@ func getPlayoffs() -> Playoffs {
                 ],
                 final: PlayoffEntry(team1: "FHC", team2: "RBK", score1: 2, score2: 1)
             )
+    return PlayoffRsp(SHL: playoff, HA: Playoffs())
+}
+
+
+func getGamesData() -> GamesData {
+    GamesData(data: [
+        getLiveGame(t1: "MIF", score1: 4, t2: "MODO", score2: 2, status: "Intermission"),
+        getLiveGame(t1: "MIF", score1: 1, t2: "TIK", score2: 3, status: nil),
+        getLiveGame(t1: "LHF", score1: 4, t2: "FHC", score2: 2),
+                           
+        getPlayedGame(t1: "LHF", s1: 4, t2: "FBK", s2: 1),
+        getPlayedGame(t1: "SAIK", s1: 3, t2: "TIK", s2: 1, overtime: true),
+        getPlayedGame(t1: "OHK", s1: 2, t2: "MODO", s2: 1, overtime: true, date: Date().addingTimeInterval(TimeInterval(-1000_000))),
+
+        getFutureGame(t1: "LHF", t2: "TBD", days: 1),
+        getFutureGame(t1: "LHF", t2: "TIK", days: 2)])
+}
+
+func getStandingsData() -> StandingsData {
+    StandingsData(data: StandingRsp(SHL: [
+        getStanding("LHF", rank: 1),
+        getStanding("FBK", rank: 2),
+        getStanding("RBK", rank: 3),
+        getStanding("IKO", rank: 4),
+        getStanding("FHC", rank: 5),
+        getStanding("TIK", rank: 6),
+        getStanding("MIF", rank: 7),
+        getStanding("SAIK", rank: 8),
+    ], HA: []))
 }

@@ -43,18 +43,25 @@ struct ShlWidgetAttributes: ActivityAttributes {
     // Fixed non-changing properties about your activity go here!
     var homeTeam: String
     var awayTeam: String
+    var homeTeamDisplayCode: String
+    var awayTeamDisplayCode: String
     var gameUuid: String
     var startDateTime: Date
     
-    static func from(_ game: Game) -> ShlWidgetAttributes {
-        ShlWidgetAttributes(homeTeam: game.home_team_code, awayTeam: game.away_team_code, gameUuid: game.game_uuid, startDateTime: game.start_date_time)
+    static func from(_ game: Game, teamsData: TeamsData) -> ShlWidgetAttributes {
+        ShlWidgetAttributes(homeTeam: game.home_team_code,
+                            awayTeam: game.away_team_code,
+                            homeTeamDisplayCode: teamsData.getDisplayCode(game.home_team_code),
+                            awayTeamDisplayCode: teamsData.getDisplayCode(game.away_team_code),
+                            gameUuid: game.game_uuid,
+                            startDateTime: game.start_date_time)
     }
 }
 
 enum GameType: String, Codable {
-    case playoff = "Playoff game"
-    case season = "Regular season game"
-    case kvalmatch = "Kvalmatch nedflyttning"
+    case playoff = "PlayOff"
+    case season = "Season"
+    case kvalmatch = "Demotion"
 }
 enum GameStatus: String, Codable {
     case coming = "Coming"
@@ -94,7 +101,7 @@ enum GameStatus: String, Codable {
 }
 
 class GamesData: ObservableObject {
-    private var data: [Game]
+    var data: [Game]
     
     init(data: [Game]) {
         self.data = data
@@ -185,12 +192,76 @@ class GamesData: ObservableObject {
             .filter { $0.isPlayoff() || $0.isDemotion() }
             .filter { $0.includesOnly(teams: [t1, t2])}
     }
+
+
+    func getStandingTimeline(league: League) -> StandingTimeline {
+        var team_series: [String: [Standing]] = [:]
+        var team_sums: [String: Standing] = [:]
+        var max_gp = 0
+        
+        func update(code: String, p: Int, d: Int) {
+            var sum = team_sums[code] ?? Standing(team_code: code, gp: 0, rank: -1, points: 0, diff: 0, league: league)
+            sum.points += p
+            sum.diff += d
+            sum.gp += 1
+            team_sums[code] = sum
+             
+            var series = team_series[code] ?? [Standing(team_code: code, gp: 0, rank: -1, points: 0, diff: 0, league: league)]
+            series.append(sum)
+            team_series[code] = series
+            
+            max_gp = max(max_gp, sum.gp)
+        }
+        
+        func getLast(_ entries: [Standing], index: Int, code: String) -> Standing {
+            entries[safe: index] ?? entries.last ?? Standing(team_code: code, gp: 0, rank: -1, points: 0, diff: 0, league: .shl)
+        }
+         
+        self.data
+            .filter { $0.isPlayed() }
+            .filter { $0.getGameType() == GameType.season }
+            .filter { $0.league == league }
+            .sorted { $0.start_date_time > $1.start_date_time }
+            .forEach { game in
+                update(code: game.home_team_code, p: game.getPoints(for: game.home_team_code), d: game.getDiff(for: game.home_team_code))
+                update(code: game.away_team_code, p: game.getPoints(for: game.away_team_code), d: game.getDiff(for: game.away_team_code))
+        }
+        
+        
+        var result: [Int: [Standing]] = [:]
+        for i in 0...max_gp {
+            let entries = team_series.map({e in getLast(e.value, index: i, code: e.key) })
+            let standing = entries.sorted(by: {(a, b) in
+                if a.points == b.points {
+                    return a.diff > b.diff
+                } else {
+                    return a.points > b.points
+                }
+            })
+                .enumerated()
+                .map { Standing(team_code: $1.team_code, gp: $1.gp, rank: $0 + 1, points: $1.points, diff: $1.diff, league: $1.league) }
+            
+            result[i] = standing
+        }
+        
+        return StandingTimeline(gp: max_gp, timeline: result)
+     }
 }
+
+struct StandingTimeline {
+    let gp: Int
+    let timeline: [Int: [Standing]]
+    
+    func getCurrent() -> [Standing] {
+        timeline[gp - 1] ?? []
+    }
+}
+
+
 struct Game: Codable, Identifiable, Equatable  {
     var id: String {
         return game_uuid
     }
-    let game_id: Int
     let game_uuid: String
     let away_team_code: String
     let away_team_result: Int
@@ -200,9 +271,10 @@ struct Game: Codable, Identifiable, Equatable  {
     let game_type: String
     let played: Bool
     let overtime: Bool
-    let penalty_shots: Bool
+    let shootout: Bool
     let status: String?
     let gametime: String?
+    let league: League
     
     func hasTeam(_ teamCode: String) -> Bool {
         return away_team_code == teamCode || home_team_code == teamCode
@@ -244,11 +316,11 @@ struct Game: Codable, Identifiable, Equatable  {
     }
 
     func isPlayoff() -> Bool {
-        self.game_type == "Playoff game"
+        self.game_type == "PlayOff"
     }
     
     func isDemotion() -> Bool {
-        self.game_type == "Kvalmatch nedflyttning"
+        self.game_type == "Demotion"
     }
     
     func includesTeams(_ teams: [String]) -> Bool {
@@ -273,66 +345,63 @@ struct Game: Codable, Identifiable, Equatable  {
             return 0
         }
         
-        if overtime || penalty_shots {
+        if overtime || shootout {
             return didWin(team) ? 2 : 1
         }
         return didWin(team) ? 3 : 0
+    }
+    
+    func getDiff(for team: String) -> Int {
+        guard isPlayed(),
+              (team == home_team_code || team == away_team_code)
+        else {
+            return 0
+        }
+        if team == home_team_code {
+            return home_team_result - away_team_result
+        } else {
+            return away_team_result - home_team_result
+        }
     }
 }
 
 
 class StandingsData: ObservableObject {
-    public var data: [Standing]
+    public var data: StandingRsp
     
-    init(data: [Standing]) {
+    init(data: StandingRsp) {
         self.data = data
     }
     
-    func get() -> [Standing] {
-        return data
+    func get(for league: League) -> [Standing] {
+        switch league {
+            case .shl: return data.SHL
+            case .ha: return data.HA
+        }
     }
 
-    func set(data: [Standing]) {
+    func set(data: StandingRsp) {
         self.data = data
         self.objectWillChange.send()
     }
     
     func getFor(team: String) -> Standing? {
-        return self.data.first(where: { $0.team_code == team })
+        return self.data.getAll().first(where: { $0.team_code == team })
     }
+}
+
+enum League : String, Codable {
+    case shl = "SHL"
+    case ha = "HA"
+}
+
+struct StandingRsp: Codable {
+    var SHL: [Standing]
+    var HA: [Standing]
     
-   /* func getRank(games: [Game], after gamesPlayed: Int = 1000) -> [Standing] {
-        let g = games
-            .filter { $0.isPlayed() }
-            .filter { $0.hasTeam(team) }
-            .sorted { $0.start_date_time > $1.start_date_time }
-        data
-            .map { self.getRankAfter(games: games, gamesPlayed: gamesPlayed, for: $0.team_code) }
-            .sorted {
-                if $0.points == $1.points {
-                    return $0.diff > $1.diff
-                }
-                return $0.points > $1.points
-            }
-            .enumerated()
-            .map { Standing(team_code: $0.element.team_code, gp: $0.element.gp, rank: $0.offset + 1, points: $0.element.points, diff: $0.element.diff) }
+    func getAll() -> [Standing] {
+        SHL + HA
     }
-    
-    func getRankAfter(games: [Game], gamesPlayed: Int, for team: String) -> Standing {
-        Array(games
-            .filter { $0.isPlayed() }
-            .filter { $0.hasTeam(team) }
-            .sorted { $0.start_date_time > $1.start_date_time }
-            .prefix(gamesPlayed))
-            .reduce(Standing(team_code: team, gp: 0, rank: 0, points: 0, diff: 0), { s, g in
-                var p = g.didWin(team) ? 3 : 0
-                if g.penalty_shots || g.overtime {
-                    p = g.didWin(team) ? 2 : 1
-                }
-                let diff = g.home_team_result - g.away_team_result
-                return Standing(team_code: s.team_code, gp: s.gp + 1, rank: -1, points: s.points + p, diff: s.diff + diff)
-        })
-    }*/
 }
 
 struct Standing: Codable, Identifiable {
@@ -340,10 +409,11 @@ struct Standing: Codable, Identifiable {
         return team_code
     }
     let team_code: String
-    let gp: Int
+    var gp: Int
     let rank: Int
-    let points: Int
-    let diff: Int
+    var points: Int
+    var diff: Int
+    var league: League
     
     func getPointsPerGame() -> String {
         if (gp == 0) {
@@ -357,8 +427,16 @@ class TeamsData: ObservableObject {
     @Published var teams = [Team]()
     @Published var teamsMap = [String:Team]()
     
+    init(teams: [Team] = [Team]()) {
+        self.setTeams(teams: teams)
+    }
+    
     func getTeam(_ code: String) -> Team? {
         return teamsMap[code]
+    }
+    
+    func getTeams(_ league: League) -> [Team] {
+        return teams.filter { $0.league == league }
     }
     
     func getName(_ code: String) -> String {
@@ -367,6 +445,10 @@ class TeamsData: ObservableObject {
     
     func getShortname(_ code: String) -> String {
         return teamsMap[code]?.shortname ?? code
+    }
+    
+    func getDisplayCode(_ code: String) -> String {
+        return teamsMap[code]?.display_code ?? code
     }
 
     func setTeams(teams: [Team]) {
@@ -381,124 +463,62 @@ struct Team: Codable, Hashable {
     let code: String
     let name: String
     let shortname: String
+    let display_code: String
+    let league: League?
+    let golds: [String]?
+    let founded: String?
 }
 
-struct GameStatsData: Codable {
-    var data: GameStats
+struct GameDetails: Codable {
+    let game: Game
+    var events: [GameEvent]
+    let stats: ApiGameStats?
+    let players: [Player]
 }
 
-struct GameStats: Codable {
-    var recaps: AllPeriods
-    var gameState: String
-    var playersByTeam: [String: TeamPlayers]?
-    var status: String?
-    var events: [GameEvent]?
-    var report: GameReport?
-    
-    func getTopPlayers() -> [Player] {
-        var allPlayers = [Player]()
-        playersByTeam?.forEach({ (key: String, value: TeamPlayers) in
-            allPlayers.append(contentsOf: value.players ?? [])
-        })
-        
-        return Array(allPlayers
-                        .filter({ p in p.getScore() > 0 })
-                        .sorted(by: { p1, p2 in p1.id >= p2.id })
-                        .sorted(by: { p1, p2 in p1.getScore() >= p2.getScore() })
-                        .prefix(5))
-    }
-    
-    func getStatus() -> GameStatus? {
-        return self.status != nil ? GameStatus.init(rawValue: self.status!) : nil
-    }
+struct ApiGameStats: Codable {
+    let home: ApiGameTeamStats
+    let away: ApiGameTeamStats
+}
+
+struct ApiGameTeamStats: Codable {
+    let g: Int
+    let sog: Int
+    let pim: Int
+    let fow: Int
 }
 
 struct TeamPlayers: Codable {
     var players: [Player]?
 }
 
-struct AllPeriods: Codable {
-    var gameRecap: Period?
-    var period1: Period?
-    var period2: Period?
-    var period3: Period?
-    var period4: Period?
-    var period5: Period?
-    
-    private enum CodingKeys : String, CodingKey {
-        case gameRecap, period1 = "0", period2 = "1", period3 = "2", period4 = "3", period5 = "4"
-    }
-}
-
-struct Period: Codable {
-    var periodNumber: Int8
-    var homeG: Int
-    var awayG: Int
-    var homeHits: Int
-    var homeSOG: Int
-    var homePIM: Int
-    var homeFOW: Int
-    var awayHits: Int
-    var awaySOG: Int
-    var awayPIM: Int
-    var awayFOW: Int
-}
-
 struct Player: Codable, Identifiable {
-    var id: String {
-        return "\(player)\(firstName)\(familyName)"
-    }
-    var player: Int
-    var team: String
-    var firstName: String
-    var familyName: String
-    var toi: String
+    let id: Int
+    var team_code: String
+    var first_name: String
+    var family_name: String
     var jersey: Int
-    var g: Int
-    var a: Int
-    var pim: Int
     var position: String
+    var season: String
     
-    func getScore() -> Int {
-        return (g * 6) + (a * 3) + (pim * 1)
-    }
-}
-
-
-struct PlusMinus: Codable {
-    var d: Int
-}
-
-struct PlayerStats: Codable, Identifiable {
-    var id: String {
-        return "\(player)\(firstName)\(familyName)"
-    }
-    var player: Int
-    var team: String
-    var firstName: String
-    var familyName: String
-    var position: String
-    var jersey: Int
-    var gp: Int?
-    var rank: Int?
-
-    var toi: String?
+    let gp: Int
+    
+    // Player stats
+    var toi_s: Int?
     var g: Int?
     var a: Int?
-    var sog: Int?
     var pim: Int?
-    var toiSeconds: Int?
+    var sog: Int?
     var pop: Int?
     var nep: Int?
-    var pops: [PlusMinus]?
     
     // GK stats
-    var tot_svs: Int?
-    var tot_ga: Int?
-    var tot_soga: Int?
+    var svs: Int?
+    var ga: Int?
+    var soga: Int?
     
     func hasPlayed() -> Bool {
-        (self.gp ?? 0) > 0
+        self.gp > 0
     }
     
     func getScore() -> Int {
@@ -517,11 +537,11 @@ struct PlayerStats: Codable, Identifiable {
     }
     
     func getGkScore() -> Int {
-        return tot_svs ?? 0
+        return svs ?? 0
     }
     
     func getSavesPercentage() -> Float {
-        return ((Float)(tot_svs ?? 0) / (Float)(tot_soga ?? 1)) * 100
+        return ((Float)(svs ?? 0) / (Float)(soga ?? 1)) * 100
     }
     
     func getGoalsPerShotPercentage() -> Float {
@@ -529,33 +549,20 @@ struct PlayerStats: Codable, Identifiable {
     }
     
     func getPointsPerGame() -> Float {
-        Float(getPoints()) / Float(gp ?? 0)
+        Float(getPoints()) / Float(gp != 0 ? gp : 1)
     }
     
     func getToiFormatted() -> String {
-        PlayerStats.formatSeconds(toiSeconds ?? 0)
+        Player.formatSeconds(toi_s ?? 0)
     }
     
     func getToiPerGame() -> Int {
-        (toiSeconds ?? 0) / (gp ?? 1)
+        (toi_s ?? 0) / (gp != 0 ? gp : 1)
     }
     
     func getToiPerGameFormatted() -> String {
-        PlayerStats.formatSeconds(getToiPerGame())
+        Player.formatSeconds(getToiPerGame())
     }
-    
-    /*
-    func getPlusMinusEntries() -> [PlusMinusEntry] {
-        var total = 0
-        return self.pops?
-            .enumerated()
-            .map({ i, e in
-                total += e.d
-                return PlusMinusEntry(i: i, d: total)
-            })
-        ?? []
-    }
-     */
     
     static func formatSeconds(_ seconds: Int) -> String {
         let (h, m, s) = (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
@@ -566,35 +573,15 @@ struct PlayerStats: Codable, Identifiable {
     }
 }
 
-struct EventPlayer: Codable {
-    var firstName: String
-    var familyName: String
-    var jersey: Int
+
+struct PlusMinus: Codable {
+    var d: Int
 }
-struct GameEventInfo: Codable {
-    var homeTeamId: String
-    var awayTeamId: String
-    var homeResult: Int
-    var awayResult: Int
-    
-    var team: String?
-    var player: EventPlayer?
-    
-    var isPowerPlay: Bool?
-    var teamAdvantage: String?
-    
-    var periodNumber: Int?
-    
-    var penalty: Int?
-    var penaltyLong: String?
-    var reason: String?
-    
-    func getTeamAdvantage() -> String {
-        if self.teamAdvantage == "EQ" {
-            return ""
-        }
-        return self.teamAdvantage ?? ""
-    }
+
+struct EventPlayer: Codable {
+    var first_name: String
+    var family_name: String
+    var jersey: Int
 }
 
 enum GameEventType : String, Codable {
@@ -607,22 +594,34 @@ enum GameEventType : String, Codable {
 }
 
 struct GameEvent: Codable, Identifiable {
+    var id: String {
+        "\(game_uuid):\(event_id)"
+    }
+    let game_uuid: String
+    let event_id: String
+    let status: String
+    let gametime: String
     var type: String
-    var info: GameEventInfo
-    var timestamp: Date
-    var id: String
-    var gametime: String
+    
+    let team: String?
+    
+    let reason: String?
+    let player: EventPlayer?
+    let penalty: String?
+    
+    let home_team_result: Int?
+    let away_team_result: Int?
+    let team_advantage: String?
     
     func getEventType() -> GameEventType? {
         return GameEventType(rawValue: type)
     }
-}
-
-struct GameReport: Codable {
-    var gametime: String
-    var timePeriod: Int
-    var period: Int
-    var gameState: String
+    func getTeamAdvantage() -> String {
+        if self.team_advantage == "EQ" {
+            return ""
+        }
+        return self.team_advantage ?? ""
+    }
 }
 
 struct AddUser: Codable, Equatable {
@@ -642,6 +641,12 @@ struct StartLiveActivity: Codable, Equatable {
 struct EndLiveActivity: Codable, Equatable {
     var user_id: String
     var game_uuid: String
+}
+
+
+struct PlayoffRsp: Codable {
+    var SHL: Playoffs?
+    var HA: Playoffs?
 }
 
 struct PlayoffEntry: Codable, Identifiable, Equatable {
@@ -679,34 +684,21 @@ struct Playoffs: Codable {
     var quarter: [PlayoffEntry]?
     var semi: [PlayoffEntry]?
     var final: PlayoffEntry?
-}
-
-class PlayoffData: ObservableObject {
-    var data: Playoffs?
-    
-    init(data: Playoffs? = nil) {
-        self.data = data
-    }
-    
-    func set(data: Playoffs?) {
-        self.data = data
-        self.objectWillChange.send()
-    }
     
     func getStage(entry: PlayoffEntry) -> String? {
-        if self.data?.final == entry {
+        if self.final == entry {
             return "Final"
         }
-        if self.data?.semi?.contains(entry) ?? false {
+        if self.semi?.contains(entry) ?? false {
             return "Semifinal"
         }
-        if self.data?.quarter?.contains(entry) ?? false {
+        if self.quarter?.contains(entry) ?? false {
             return "Quarterfinal"
         }
-        if self.data?.eight?.contains(entry) ?? false {
+        if self.eight?.contains(entry) ?? false {
             return "Eightfinal"
         }
-        if self.data?.demotion == entry {
+        if self.demotion == entry {
             return "Demotion"
         }
         return nil
@@ -717,12 +709,40 @@ class PlayoffData: ObservableObject {
             entry != nil ? [entry!] : []
         }
         
-        var entries = getArr(entry: self.data?.final)
-        entries += (self.data?.semi ?? [])
-        entries += (self.data?.quarter ?? [])
-        entries += (self.data?.eight ?? [])
-        entries += getArr(entry: self.data?.demotion)
+        var entries = getArr(entry: self.final)
+        entries += (self.semi ?? [])
+        entries += (self.quarter ?? [])
+        entries += (self.eight ?? [])
+        entries += getArr(entry: self.demotion)
         
         return entries.first(where: { $0.has(t1: team) })
+    }
+}
+
+class PlayoffData: ObservableObject {
+    var data: PlayoffRsp?
+    
+    init(data: PlayoffRsp? = nil) {
+        self.data = data
+    }
+    
+    func set(data: PlayoffRsp?) {
+        self.data = data
+        self.objectWillChange.send()
+    }
+    
+    func get(for league: League) -> Playoffs? {
+        switch league {
+        case .shl: return data?.SHL
+        case .ha: return data?.HA
+        }
+    }
+    
+    func getStage(entry: PlayoffEntry) -> String? {
+        data?.SHL?.getStage(entry: entry) ?? data?.HA?.getStage(entry: entry)
+    }
+    
+    func getEntry(team: String) -> PlayoffEntry? {
+        data?.SHL?.getEntry(team: team) ?? data?.HA?.getEntry(team: team)
     }
 }

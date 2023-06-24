@@ -30,6 +30,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         application.applicationIconBadgeNumber = 0
+        Cache.clearOld()
         return true
     }
     

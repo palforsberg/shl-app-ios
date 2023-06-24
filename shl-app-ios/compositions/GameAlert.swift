@@ -26,7 +26,6 @@ struct GoalAlert: View {
                     .clipped()
             }
         }.frame(width: .infinity, height: 90, alignment: .top)
-        .id(alert?.body ?? "")
         .onAppear {
          //   withAnimation(.easeOut(duration: 1)) {
          //       self.spacing = 20
@@ -73,8 +72,8 @@ struct GameAlert: View {
         Group {
             if visible {
                 switch alert?.type {
-                case "Goal": GoalAlert(alert: alert).id(alert?.body ?? "")
-                default: TitleAlert(alert: alert).id(alert?.game_uuid ?? "")
+                case "Goal": GoalAlert(alert: alert).id((alert?.title ?? "") + (alert?.body ?? ""))
+                default: TitleAlert(alert: alert).id((alert?.title ?? "") + (alert?.body ?? ""))
                 }
             }
         }
@@ -85,7 +84,7 @@ struct GameAlert: View {
             }
         })
         .onChange(of: alert) { newAlert in
-            withAnimation {
+            withAnimation(.spring()) {
                 self.visible = true
             }
             self.workItem?.cancel()
@@ -105,14 +104,16 @@ struct AlertWrapper: View {
     @State var alert: GameNofitication?
     @State var numberGoals = 1
     var body: some View {
-        Group {
+        ZStack {
+            VStack {
+                GameAlert(alert: self.alert)
+                Spacer()
+            }
             VStack(spacing: 10) {
                 Spacer(minLength: 40)
                 Text("\(numberGoals)")
                     .font(.system(size: 30, weight: .black, design: .rounded))
-                    .id(numberGoals)
-                    .transition(.asymmetric(insertion: .scale(scale: 2),
-                                            removal: .identity))
+                
                 Spacer()
                 Button("Toggle") {
                     withAnimation {

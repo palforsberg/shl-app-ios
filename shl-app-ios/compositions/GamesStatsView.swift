@@ -13,7 +13,7 @@ struct PenaltyEventRow: View {
     @EnvironmentObject var teamsData: TeamsData
     var body: some View {
         HStack(spacing: 10) {
-            TeamLogo(code: event.info.team ?? "", size: 28)
+            TeamLogo(code: event.team ?? "", size: 28)
             VStack (spacing: 2) {
                 HStack(spacing: 2) {
                     Text(LocalizedStringKey("Penalty"))
@@ -23,14 +23,14 @@ struct PenaltyEventRow: View {
                         .opacity(0.9)
                         .offset(y: 1)
                     Spacer()
-                    Text(event.info.penaltyLong ?? "")
+                    Text(event.penalty ?? "")
                 }.font(.system(size: 16, weight: .semibold, design: .rounded))
                 .cornerRadius(10)
                 HStack {
-                    if let player = event.info.player {
-                        Text("#\(player.jersey) \(player.firstName) \(player.familyName)").truncationMode(.tail).lineLimit(1)
+                    if let player = event.player {
+                        Text("#\(player.jersey) \(player.first_name) \(player.family_name)").truncationMode(.tail).lineLimit(1)
                     }
-                    Text(event.info.reason ?? "").truncationMode(.tail).lineLimit(1)
+                    Text(event.reason ?? "").truncationMode(.tail).lineLimit(1)
                     Spacer()
                     Text(event.gametime)
                 }.font(.system(size: 14, weight: .medium, design: .rounded))
@@ -43,10 +43,11 @@ struct PenaltyEventRow: View {
 
 struct GoalEventRow: View {
     var event: GameEvent
+    var game: Game
     @EnvironmentObject var teamsData: TeamsData
     @EnvironmentObject var starredTeams: StarredTeams
     var body: some View {
-        let team = event.info.team ?? ""
+        let team = event.team ?? ""
         let starred = starredTeams.isStarred(teamCode: team)
 
         HStack(spacing: 10) {
@@ -59,15 +60,15 @@ struct GoalEventRow: View {
                         Text(LocalizedStringKey("Goal"))
                     }
                     Spacer()
-                    Text("\(event.info.homeResult)").underline(team == event.info.homeTeamId) +
+                    Text("\(event.home_team_result ?? 0)").underline(team == game.home_team_code) +
                     Text(" - ") +
-                    Text("\(event.info.awayResult)").underline(team == event.info.awayTeamId)
+                    Text("\(event.away_team_result ?? 0)").underline(team == game.away_team_code)
                 }.font(.system(size: starred ? 20 : 20, weight: .heavy, design: .rounded))
                 HStack {
-                    if let player = event.info.player {
-                        Text("#\(player.jersey) \(player.firstName) \(player.familyName)")
+                    if let player = event.player {
+                        Text("#\(player.jersey) \(player.first_name) \(player.family_name)")
                     }
-                    Text(event.info.getTeamAdvantage())
+                    Text(event.getTeamAdvantage())
                     Spacer()
                     Text(event.gametime)
                 }.font(.system(size: starred ? 14 : 14, weight: .semibold, design: .rounded))
@@ -102,33 +103,43 @@ struct PeriodEventRow: View {
     }
     
     private func getLocalizedString() -> LocalizedStringKey {
-        let periodNumber = event.info.periodNumber?.formatted() ?? "1"
+        
         switch self.event.getEventType() {
         case .periodStart:
-            if event.info.periodNumber == 99 {
+            if event.status == "Shootout" {
                 return LocalizedStringKey("PenaltiesStart")
-            } else if (event.info.periodNumber ?? 0) >= 4 {
+            } else if event.status == "Overtime" {
                 return LocalizedStringKey("OvertimeStart")
             }
-            return LocalizedStringKey("PeriodStart \(periodNumber)")
+            return LocalizedStringKey("PeriodStart \(getPeriod(s: event.status))")
         case .periodEnd:
-            if event.info.periodNumber == 99 {
+            if event.status == "Shootout" {
                 return LocalizedStringKey("PenaltiesEnd")
-            } else if (event.info.periodNumber ?? 0) >= 4 {
+            } else if event.status == "Overtime" {
                 return LocalizedStringKey("OvertimeEnd")
             }
-            return LocalizedStringKey("PeriodEnd \(periodNumber)")
+            return LocalizedStringKey("PeriodEnd \(getPeriod(s: event.status))")
         default: return LocalizedStringKey("")
+        }
+    }
+    
+    private func getPeriod(s: String) -> String {
+        switch s {
+        case "Period1": return "1"
+        case "Period2": return "2"
+        case "Period3": return "3"
+        default: return "1"
         }
     }
 }
 
 struct GameEventRow: View {
     var event: GameEvent
+    var game: Game
     var body: some View {
         switch event.getEventType() {
         case.gameStart, .gameEnd: return AnyView(GameStartEventRow(event: event))
-        case .goal: return AnyView(GoalEventRow(event: event))
+        case .goal: return AnyView(GoalEventRow(event: event, game: game))
         case .periodStart, .periodEnd: return AnyView(PeriodEventRow(event: event))
         case .penalty: return AnyView(PenaltyEventRow(event: event))
         default: return AnyView(Text(""))
@@ -138,25 +149,44 @@ struct GameEventRow: View {
 
 struct GroupedView<Content: View>: View {
     var title: LocalizedStringKey?
-    var cornerRadius = CGFloat(25)
+    var cornerRadius = CGFloat(15)
+    var backgroundColor = Color(UIColor.secondarySystemGroupedBackground)
     @ViewBuilder var content: () -> Content
     
     var body: some View {
         VStack(spacing: 0) {
             if let t = title {
                 Text(t).listHeader(true)
-                    .padding(.bottom, 6)
+                    .padding(.bottom, 2)
             }
             ZStack {
-                RoundedRectangle(cornerRadius: cornerRadius)
-                    .foregroundColor(Color(UIColor.secondarySystemGroupedBackground))
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .foregroundColor(self.backgroundColor)
+                    .overlay(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .strokeBorder(.gray.opacity(0.3)))
+                
                 VStack(spacing: 0) {
                     content()
                 }
-                // .cornerRadius(cornerRadius)
+                .cornerRadius(cornerRadius)
                 .clipped()
             }
         }.padding(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 15))
+    }
+}
+
+struct RoundedSection<Content: View>: View {
+    var cornerRadius = CGFloat(25)
+    @ViewBuilder var content: () -> Content
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .strokeBorder(.gray.opacity(0.3))
+                .background(RoundedRectangle(cornerRadius: cornerRadius).foregroundColor( Color(UIColor.secondarySystemGroupedBackground)))
+            content()
+            .clipped()
+        }
     }
 }
 
@@ -168,37 +198,37 @@ struct StatsRow: View {
     var body: some View {
         HStack() {
             Text(left)
-                .font(.system(size: 20, design: .rounded))
-                .fontWeight(.heavy).frame(width: 45, alignment: .leading)
+                .rounded(size: 20, weight: .heavy)
+                .frame(width: 45, alignment: .leading)
                 .monospacedDigit()
             Spacer()
             Text(LocalizedStringKey(center))
-                .font(.system(size: 18, design: .rounded))
-                .fontWeight(.bold)
-                .frame(maxWidth: .infinity, alignment: .center)
+                .rounded(size: 18, weight: .bold)
                 .scaledToFit()
                 .minimumScaleFactor(0.8)
             Spacer()
             Text(right)
-                .font(.system(size: 20, design: .rounded))
-                .fontWeight(.heavy).frame(width: 45, alignment: .trailing)
+                .rounded(size: 20, weight: .heavy)
+                .frame(width: 45, alignment: .trailing)
                 .monospacedDigit()
-        }.padding(EdgeInsets(top: 3, leading: 0, bottom: 3, trailing: 0))
+        }
+        .padding(.vertical, 3)
     }
 }
 
-struct PeriodStatsView: View {
+struct StatsView: View {
     let title: LocalizedStringKey
-    let stats: Period?
+    let stats: ApiGameStats
     
     var body: some View {
         GroupedView(title: title) {
             VStack {
-                StatsRow(left: "\(stats?.homeSOG ?? 0)", center: "Shots", right: "\(stats?.awaySOG ?? 0)")
-                StatsRow(left: "\(stats?.homePIM ?? 0)", center: "Penalty Minutes", right: "\(stats?.awayPIM ?? 0)")
-                StatsRow(left: "\(stats?.homeFOW ?? 0)", center: "Face Offs Won", right: "\(stats?.awayFOW ?? 0)")
-                StatsRow(left: "\(stats?.homeHits ?? 0)", center: "Hits", right: "\(stats?.awayHits ?? 0)")
-            }.padding(EdgeInsets(top: 16, leading: 30, bottom: 16, trailing: 30))
+                StatsRow(left: "\(stats.home.sog)", center: "Shots", right: "\(stats.away.sog)")
+                StatsRow(left: "\(stats.home.pim)", center: "Penalty Minutes", right: "\(stats.away.pim)")
+                StatsRow(left: "\(stats.home.fow)", center: "Face Offs Won", right: "\(stats.away.fow)")
+            }
+            .padding(.vertical, 15)
+            .padding(.horizontal, 30)
         }
     }
 }
@@ -236,30 +266,6 @@ struct MatchHistoryView: View {
     }
 }
 
-struct TopPlayerView: View {
-    var player: Player
-    var body: some View {
-        VStack {
-            HStack {
-                TeamLogo(code: player.team, size: 19)
-                Text("\(player.firstName) \(player.familyName)").fontWeight(.semibold).font(.system(size: 16, design: .rounded))
-                Text("\(player.position)").fontWeight(.regular).font(.system(size: 16, design: .rounded))
-                Spacer()
-                Text("#\(player.jersey)").fontWeight(.semibold).font(.system(size: 15, design: .rounded))
-            }.padding(.bottom, -4)
-            HStack {
-                Text("G \(player.g)").fontWeight(.semibold).font(.system(size: 14, design: .rounded)).opacity(player.g == 0 ? 0.4 : 1)
-                Text("A \(player.a)").fontWeight(.semibold).font(.system(size: 14, design: .rounded)).opacity(player.a == 0 ? 0.4 : 1)
-                Text("PIM \(player.pim)").fontWeight(.semibold).font(.system(size: 14, design: .rounded)).opacity(player.pim == 0 ? 0.4 : 1)
-                if let toi = player.toi {
-                    Text("TOI \(toi)").fontWeight(.semibold).font(.system(size: 14, design: .rounded)).opacity(0.4)
-                }
-                Spacer()
-            }.padding(.leading, 27)
-        }
-    }
-}
-
 
 struct PuckText: View {
     @State var animate: Bool = false
@@ -273,12 +279,11 @@ struct PuckText: View {
     }
 }
 struct GamesStatsView: View {
-    @State var gameStats: GameStats?
+    @State var details: GameDetails?
     @State var previousGames: [Game] = []
-    @State var topPlayers: [Player] = []
     @State var hasFetched = false
     @State var liveActivityEnabled = false
-
+    
     @EnvironmentObject var gamesData: GamesData
     @EnvironmentObject var starredTeams: StarredTeams
     @EnvironmentObject var teamsData: TeamsData
@@ -301,40 +306,61 @@ struct GamesStatsView: View {
                 }
                 Spacer(minLength: 10)
                 Group {
-                    Text("Swedish Hockey League")
+                    Text("\(game.league.rawValue) • \(settings.getFormattedSeason())")
                     Text(LocalizedStringKey(game.getGameType()?.rawValue ?? ""))
                 }
-                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                .font(.system(size: 14, weight: .bold, design: .rounded))
                 .foregroundColor(Color(UIColor.secondaryLabel))
                 Spacer(minLength: 15)
                 Group { // Header
-                    HStack(alignment: .center, spacing: 0) {
+                    HStack(alignment: .top, spacing: 0) {
                         VStack {
                             TeamLogo(code: game.home_team_code, size: 50.0)
                             Text(teamsData.getShortname(game.home_team_code))
-                                .font(.system(size: 20, weight: .bold, design: .rounded))
+                                .rounded(size: 17, weight: .bold)
                                 .starred(starredTeams.isStarred(teamCode: game.home_team_code))
                                 .scaledToFit()
                                 .minimumScaleFactor(0.6)
                                 
                         }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 80).frame(maxWidth: 140)
                 
-                        HStack(alignment: .center, spacing: 15) {
-                            Text("\(gameStats?.recaps.gameRecap?.homeG ?? game.home_team_result)")
-                                .font(.system(size: 40, weight: .heavy, design: .rounded))
-                                .scaledToFit()
-                                .minimumScaleFactor(0.6)
-                            Text("vs").font(.system(size: 20, weight: .bold, design: .rounded)).padding(.top, 2)
-                            Text("\(gameStats?.recaps.gameRecap?.awayG ?? game.away_team_result)")
-                                .font(.system(size: 40, weight: .heavy, design: .rounded))
-                                .scaledToFit()
-                                .minimumScaleFactor(0.6)
-                        }.padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5))
+                        VStack(spacing: 8) {
+                            HStack(alignment: .center, spacing: 12) {
+                                Text("\(details?.game.home_team_result ?? game.home_team_result)")
+                                    .font(.system(size: 40, weight: .heavy, design: .rounded))
+                                    .scaledToFit()
+                                    .minimumScaleFactor(0.6)
+                                Text(":").rounded(size: 20, weight: .heavy).padding(.top, 2)
+                                Text("\(details?.game.away_team_result ?? game.away_team_result)")
+                                    .font(.system(size: 40, weight: .heavy, design: .rounded))
+                                    .scaledToFit()
+                                    .minimumScaleFactor(0.6)
+                            }.padding(EdgeInsets(top: 3, leading: 5, bottom: 0, trailing: 5))
+                            HStack(spacing: 3) {
+                                if (game.isFuture()) {
+                                    Text("\(game.start_date_time.getFormattedDate()) • \(game.start_date_time.getFormattedTime())")
+                                } else {
+                                    if let statusString = details?.game.status {
+                                        Text(LocalizedStringKey(statusString))
+                                    }
+                                    if details?.game.getStatus()?.isGameTimeApplicable() ?? false,
+                                       let gt = details?.game.gametime {
+                                        Text("•")
+                                        Text(gt)
+                                    }
+                                }
+                            }
+                            .lineLimit(1)
+                            .scaledToFit()
+                            .minimumScaleFactor(0.5)
+                            .padding(EdgeInsets(top: 2, leading: 5, bottom: 2, trailing: 5))
+                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                        }
                         
                         VStack {
                             TeamLogo(code: game.away_team_code, size: 50)
                             Text(teamsData.getShortname(game.away_team_code))
-                                .font(.system(size: 20, weight: .bold, design: .rounded))
+                                .rounded(size: 16, weight: .bold)
                                 .starred(starredTeams.isStarred(teamCode: game.away_team_code))
                                 .scaledToFit()
                                 .minimumScaleFactor(0.6)
@@ -342,26 +368,7 @@ struct GamesStatsView: View {
                         }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 80).frame(maxWidth: 140)
                     }.frame(maxWidth: .infinity)
                 }
-                HStack(spacing: 6) {
-                    if (game.isFuture()) {
-                        Text(game.start_date_time.getFormattedDate())
-                        Text(game.start_date_time.getFormattedTime())
-                    } else {
-                        if let periodString = gameStats?.status {
-                            Text(LocalizedStringKey(periodString))
-                        }
-                        if gameStats?.getStatus()?.isGameTimeApplicable() ?? false,
-                           gameStats?.report?.gametime != nil {
-                            Text("•")
-                        }
-                        if gameStats?.getStatus()?.isGameTimeApplicable() ?? false,
-                           let gt = gameStats?.report?.gametime {
-                            Text(gt)
-                        }
-                    }
-                }
-                .font(.system(size: 20, weight: .heavy, design: .rounded))
-                .padding(.top, -26)
+                
                 
                 if #available(iOS 16.1, *),
                    LiveActivity.shared?.isGameApplicable(game: game) ?? false,
@@ -377,6 +384,9 @@ struct GamesStatsView: View {
                         } else {
                             Spacer(minLength: 20)
                             Button("Start Live") { self.startLiveActivity(for: game) }
+                                .cornerRadius(10)
+                                .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                    .strokeBorder(.gray.opacity(0.3)))
                             Spacer(minLength: 20)
                         }
                     }
@@ -394,8 +404,8 @@ struct GamesStatsView: View {
                     Spacer(minLength: 20)
                 }
                 
-                if let period = gameStats?.recaps.gameRecap {
-                    PeriodStatsView(title: "Match Detail", stats: period)
+                if let stats = details?.stats {
+                    StatsView(title: "Match Detail", stats: stats)
                     Spacer(minLength: 25)
                 } else if game.isFuture(),
                           let homeRank = standings.getFor(team: game.home_team_code),
@@ -423,39 +433,34 @@ struct GamesStatsView: View {
                     
                 }
                 if hasFetched { // hide until all data has been fetched to avoid jumping UI
-                    if !(gameStats?.events ?? []).isEmpty {
+                    if !(details?.events.isEmpty ?? false) {
                         Spacer(minLength: 0)
                         Group {
-                            ForEach(gameStats!.events!) { p in
-                                GameEventRow(event: p)
+                            ForEach(details?.events ?? []) { p in
+                                GameEventRow(event: p, game: game)
                             }
                         }.padding(EdgeInsets(top: 0, leading: 30, bottom: 0, trailing: 35))
                         Spacer(minLength: 30)
                         Divider()
                         Spacer(minLength: 20)
-                    } else  if !topPlayers.isEmpty {
-                        Group {
-                            ForEach(topPlayers) { p in
-                                TopPlayerView(player: p)
-                            }
-                        }.padding(EdgeInsets(top: 7, leading: 30, bottom: 8, trailing: 35))
-                        Spacer(minLength: 30)
                     }
             
                     MatchHistoryView(homeTeam: game.home_team_code, awayTeam: game.away_team_code)
                     Spacer(minLength: 10)
                     if (!previousGames.isEmpty) {
-                        GroupedView(title: "", cornerRadius: 15) {
-                            ForEach(previousGames) { (item) in
-                                NavigationLink(destination: GamesStatsView(game: item)) {
-                                    PlayedGame(game: item)
-                                        .padding(EdgeInsets(top: 15, leading: 10, bottom: 10, trailing: 10))
-                                    if item.game_id != previousGames.last?.game_id {
+                        GroupedView(title: "") {
+                            VStack(spacing: 0) {
+                                ForEach(previousGames) { item in
+                                    NavigationLink(destination: GamesStatsView(game: item)) {
+                                        PlayedGame(game: item)
+                                            .padding(.vertical, 20)
+                                            .contentShape(Rectangle())
+                                    }
+                                    .buttonStyle(ActiveButtonStyle())
+                                    if item != previousGames.last {
                                         Divider()
-                                            .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                                     }
                                 }
-                                .buttonStyle(ActiveButtonStyle())
                             }
                         }
                         Spacer(minLength: 40)
@@ -494,14 +499,12 @@ struct GamesStatsView: View {
     }
     
     func reloadData() async {
-        if let stats = await provider?.getGameStats(game: game) {
-            self.gameStats = stats
-            self.gameStats!.events = GamesStatsView.handleEvents(self.gameStats?.events)
-            self.topPlayers = stats.getTopPlayers()
+        if let details = await provider?.getGameDetails(game_uuid: game.game_uuid) {
+            self.details = details
+            self.details!.events = GamesStatsView.handleEvents(self.details?.events)
             self.hasFetched = true
         }
         if provider == nil {
-            self.topPlayers = self.gameStats?.getTopPlayers() ?? []
             self.hasFetched = true
         }
     }
@@ -510,7 +513,7 @@ struct GamesStatsView: View {
     @available(iOS 16.1, *)
     func startLiveActivity(for game: Game) {
         Task {
-            await LiveActivity.shared?.startLiveActivity(for: game)
+            await LiveActivity.shared?.startLiveActivity(for: game, teamsData: teamsData)
         }
     }
     
@@ -541,11 +544,7 @@ struct GamesStatsView: View {
 struct GamesStatsView_Previews: PreviewProvider {
     static var previews: some View {
         let teams = getTeamsData()
-        let allPeriods = AllPeriods(gameRecap: getPeriod(),
-                                    period1: getPeriod(),
-                                    period2: getPeriod(),
-                                    period3: getPeriod()
-        )
+        let stats = ApiGameStats(home: ApiGameTeamStats(g: 2, sog: 24, pim: 42, fow: 2), away: ApiGameTeamStats(g: 0, sog: 42, pim: 3, fow: 2))
         
         let events: [GameEvent] = GamesStatsView.handleEvents([
             getEvent(type: .gameStart),
@@ -560,45 +559,26 @@ struct GamesStatsView_Previews: PreviewProvider {
             getEvent(type: .periodStart, period: 99),
             getEvent(type: .goal),
         ])
-        let standings = [
-            getStanding("LHF", rank: 1),
-            getStanding("FHC", rank: 12),
-        ]
         
         let starredTeams = StarredTeams()
-        starredTeams.addTeam(teamCode: "LHF")
-        
-        let report = GameReport(gametime: "13:27", timePeriod: 444, period: 1, gameState: "Ongoing")
-        return GamesStatsView(gameStats: GameStats(recaps: allPeriods,
-                                                   gameState: "Ongoing",
-                                                   playersByTeam: getPlayers(),
-                                                   status: "Period1",
-                                                   events: events,
-                                                   report: report),
+        starredTeams.addTeam(teamCode: "SAIK")
+        let game = getLiveGame(t1: "SAIK", score1: 4, t2: "IKO", score2: 2, status: "Overtime")
+        return GamesStatsView(details: GameDetails(game: game, events: events, stats: stats, players: []),
                               provider: nil,
-                              game: getLiveGame())
+                              game: game)
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
             .environmentObject(teams)
             .environmentObject(Settings())
             .environmentObject(starredTeams)
-            .environmentObject(StandingsData(data: standings))
+            .environmentObject(getStandingsData())
             .environment(\.locale, .init(identifier: "sv"))
-    }
-    
-    static func getPeriod() -> Period {
-        return Period(periodNumber: 0, homeG: 3, awayG: 0, homeHits: 14, homeSOG: 64, homePIM: 654, homeFOW: 55, awayHits: 53, awaySOG: 23, awayPIM: 23, awayFOW: 0)
     }
 }
 
 struct GamesStatsView_Played_Previews: PreviewProvider {
     static var previews: some View {
         let teams = getTeamsData()
-        let allPeriods = AllPeriods(gameRecap: getPeriod(),
-                                    period1: getPeriod(),
-                                    period2: getPeriod(),
-                                    period3: getPeriod()
-        )
-        
+        let stats = ApiGameStats(home: ApiGameTeamStats(g: 2, sog: 24, pim: 42, fow: 2), away: ApiGameTeamStats(g: 0, sog: 42, pim: 3, fow: 2))
         let events: [GameEvent] = GamesStatsView.handleEvents([
             getEvent(type: .gameStart),
             getEvent(type: .periodStart, period: 1),
@@ -613,33 +593,19 @@ struct GamesStatsView_Played_Previews: PreviewProvider {
             getEvent(type: .goal),
             getEvent(type: .periodEnd, period: 99),
         ])
-        let standings = [
-            getStanding("LHF", rank: 1),
-            getStanding("FHC", rank: 12),
-        ]
         
         let starredTeams = StarredTeams()
         starredTeams.addTeam(teamCode: "LHF")
         
-        let report = GameReport(gametime: "00:00", timePeriod: 444, period: 3, gameState: "Finished")
-        return GamesStatsView(gameStats: GameStats(recaps: allPeriods,
-                                                   gameState: "Finished",
-                                                   playersByTeam: getPlayers(),
-                                                   status: "Finished",
-                                                   events: events,
-                                                   report: report),
+        return GamesStatsView(details: GameDetails(game: getLiveGame(), events: events, stats: stats, players: []),
                               provider: nil,
                               game: getPlayedGame(t1: "LHF", s1: 3, t2: "FHC", s2: 0, overtime: false, date: Date().addingTimeInterval(TimeInterval(-2_000_000))))
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
             .environmentObject(teams)
             .environmentObject(Settings())
             .environmentObject(starredTeams)
-            .environmentObject(StandingsData(data: standings))
+            .environmentObject(getStandingsData())
             .environment(\.locale, .init(identifier: "sv"))
-    }
-    
-    static func getPeriod() -> Period {
-        return Period(periodNumber: 0, homeG: 3, awayG: 0, homeHits: 14, homeSOG: 64, homePIM: 654, homeFOW: 55, awayHits: 53, awaySOG: 23, awayPIM: 23, awayFOW: 0)
     }
 }
 
@@ -647,36 +613,18 @@ struct GamesStatsView_Played_Previews: PreviewProvider {
 struct GamesStatsView_No_Events_Previews: PreviewProvider {
     static var previews: some View {
         let teams = getTeamsData()
-        let allPeriods = AllPeriods(gameRecap: getPeriod(),
-                                    period1: getPeriod(),
-                                    period2: getPeriod(),
-                                    period3: getPeriod()
-        )
-        
-        let standings = [
-            getStanding("LHF", rank: 1),
-            getStanding("FHC", rank: 12),
-        ]
         
         let starredTeams = StarredTeams()
         starredTeams.addTeam(teamCode: "LHF")
-        return GamesStatsView(gameStats: GameStats(recaps: allPeriods,
-                                                   gameState: "Ongoing",
-                                                   playersByTeam: getPlayers(),
-                                                   status: "Period1",
-                                                   events: nil),
+        return GamesStatsView(details: GameDetails(game: getLiveGame(), events: [], stats: nil, players: []),
                               provider: nil,
                               game: getLiveGame())
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
             .environmentObject(teams)
             .environmentObject(Settings())
             .environmentObject(starredTeams)
-            .environmentObject(StandingsData(data: standings))
+            .environmentObject(getStandingsData())
             .environment(\.locale, .init(identifier: "sv"))
-    }
-    
-    static func getPeriod() -> Period {
-        return Period(periodNumber: 0, homeG: 3, awayG: 0, homeHits: 14, homeSOG: 64, homePIM: 654, homeFOW: 55, awayHits: 53, awaySOG: 23, awayPIM: 23, awayFOW: 0)
     }
 }
 
@@ -684,50 +632,33 @@ struct GamesStatsView_No_Events_Previews: PreviewProvider {
 struct GamesStatsView_Future_Game_Previews: PreviewProvider {
     static var previews: some View {
         let teams = getTeamsData()
-        let standings = [
-            getStanding("LHF", rank: 1),
-            getStanding("FHC", rank: 12),
-        ]
         
         let starred = StarredTeams()
         starred.addTeam(teamCode: "LHF")
-        return GamesStatsView(gameStats: GameStats(recaps: AllPeriods(), gameState: "", playersByTeam: getPlayersWithZeroScore()),
+        return GamesStatsView(details: GameDetails(game: getLiveGame(), events: [], stats: nil, players: []),
                               provider: nil,
                               game: getFutureGame())
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
             .environmentObject(teams)
             .environmentObject(Settings())
             .environmentObject(starred)
-            .environmentObject(StandingsData(data: standings))
+            .environmentObject(getStandingsData())
             .environment(\.locale, .init(identifier: "sv"))
-    }
-    
-    static func getPeriod() -> Period {
-        return Period(periodNumber: 0, homeG: 3, awayG: 0, homeHits: 14, homeSOG: 64, homePIM: 654, homeFOW: 55, awayHits: 53, awaySOG: 23, awayPIM: 23, awayFOW: 0)
     }
 }
 
 struct GamesStatsView_Future_No_Prev_Game_Previews: PreviewProvider {
     static var previews: some View {
         let teams = getTeamsData()
-        let allPeriods = AllPeriods(gameRecap: nil)
         
-        let standings = [
-            getStanding("LHF", rank: 1),
-            getStanding("FHC", rank: 12),
-        ]
-        return GamesStatsView(gameStats: GameStats(recaps: allPeriods, gameState: "GameEnded", playersByTeam: getPlayersWithZeroScore()),
+        return GamesStatsView(details: GameDetails(game: getLiveGame(), events: [], stats: nil, players: []),
                               provider: nil,
                               game: getFutureGame())
             .environmentObject(GamesData(data: []))
             .environmentObject(teams)
             .environmentObject(Settings())
-            .environmentObject(StandingsData(data: standings))
+            .environmentObject(getStandingsData())
             .environmentObject(StarredTeams())
             .environment(\.locale, .init(identifier: "sv"))
-    }
-    
-    static func getPeriod() -> Period {
-        return Period(periodNumber: 0, homeG: 3, awayG: 0, homeHits: 14, homeSOG: 64, homePIM: 654, homeFOW: 55, awayHits: 53, awaySOG: 23, awayPIM: 23, awayFOW: 0)
     }
 }

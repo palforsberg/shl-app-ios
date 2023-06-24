@@ -37,10 +37,11 @@ struct WidgetTeamLogo: View {
 
 struct WidgetTeamAvatar: View {
     var code: String
+    var displayCode: String
     var body: some View {
         VStack(spacing: 5) {
             WidgetTeamLogo(code: code)
-            Text(code)
+            Text(displayCode)
         }
     }
 }
@@ -51,11 +52,11 @@ struct LiveActivityReportView: View {
     
     var body: some View {
         HStack(alignment: .top, spacing: 40) {
-            WidgetTeamAvatar(code: context.attributes.homeTeam)
+            WidgetTeamAvatar(code: context.attributes.homeTeam, displayCode: context.attributes.homeTeamDisplayCode)
             VStack(spacing: 3) {
-                HStack(spacing: 10) {
+                HStack(spacing: 8) {
                     Text("\(context.state.report.homeScore)")
-                    Text("-").font(.system(size: 22, weight: .black, design: .rounded))
+                    Text(":").font(.system(size: 22, weight: .black, design: .rounded))
                     Text("\(context.state.report.awayScore)")
                 }
                 .font(.system(size: 34, weight: .heavy, design: .rounded))
@@ -71,9 +72,9 @@ struct LiveActivityReportView: View {
                         Text(s)
                     }
                 }
-                .font(.system(size: 16, weight: .bold, design: .rounded))
+                .font(.system(size: 14, weight: .heavy, design: .rounded))
             }
-            WidgetTeamAvatar(code: context.attributes.awayTeam)
+            WidgetTeamAvatar(code: context.attributes.awayTeam, displayCode: context.attributes.awayTeamDisplayCode)
         }
         .font(.system(size: 14, weight: .heavy, design: .rounded))
     }
@@ -94,7 +95,7 @@ struct LiveActivityEventView: View {
                     Text(event.title)
                     if let b = event.body {
                         Text(b)
-                            .font(.system(size: 14, weight: .semibold, design: .rounded))
+                            .font(.system(size: 14, weight: .bold, design: .rounded))
                     }
                 }
                 Spacer()
@@ -102,7 +103,7 @@ struct LiveActivityEventView: View {
             .padding(.top, 10).padding(.bottom, 12)
 
         }
-        .font(.system(size: 14, weight: .bold, design: .rounded))
+        .font(.system(size: 14, weight: .heavy, design: .rounded))
         .background(Color(uiColor: .systemBackground).opacity(0.2))
     }
 }
@@ -137,7 +138,7 @@ struct ShlWidgetLiveActivity: Widget {
                 }
                 DynamicIslandExpandedRegion(.center) {
                     VStack(alignment: .center) {
-                        HStack {
+                        HStack(spacing: 4) {
                             if let s = context.state.report.status {
                                 Text(LocalizedStringKey(s))
                             }
@@ -146,7 +147,7 @@ struct ShlWidgetLiveActivity: Widget {
                                 Text(s)
                             }
                         }
-                    }.font(.system(size: 16, weight: .bold, design: .rounded))
+                    }.font(.system(size: 16, weight: .heavy, design: .rounded))
                 }
                 DynamicIslandExpandedRegion(.bottom) {
                     if let e = context.state.event {
@@ -157,10 +158,10 @@ struct ShlWidgetLiveActivity: Widget {
                             VStack(alignment: .leading) {
                                 Text(e.title)
                                 if let b = e.body {
-                                    Text(b).font(.system(size: 14, weight: .semibold, design: .rounded))
+                                    Text(b).font(.system(size: 14, weight: .bold, design: .rounded))
                                 }
                             }
-                        }.font(.system(size: 16, weight: .bold, design: .rounded))
+                        }.font(.system(size: 16, weight: .heavy, design: .rounded))
                     }
                 }
             } compactLeading: {
@@ -178,7 +179,6 @@ struct ShlWidgetLiveActivity: Widget {
             } minimal: {
                 WidgetTeamLogo(code: context.attributes.homeTeam, size: 28)
             }
-            .widgetURL(URL(string: "http://www.apple.com"))
             .keylineTint(.yellow)
         }
     }
@@ -186,7 +186,7 @@ struct ShlWidgetLiveActivity: Widget {
 
 @available(iOS 16.2, *)
 struct ShlWidgetLiveActivity_Previews: PreviewProvider {
-    static let attributes = ShlWidgetAttributes(homeTeam: "LHF", awayTeam: "FHC", gameUuid: "game_uuid_123", startDateTime: Date())
+    static let attributes = ShlWidgetAttributes(homeTeam: "LHF", awayTeam: "SAIK", homeTeamDisplayCode: "LHF", awayTeamDisplayCode: "SKE", gameUuid: "game_uuid_123", startDateTime: Date())
     static let report = LiveActivityReport(homeScore: 2, awayScore: 0, status: "Period1", gametime: "12:23")
     static let event = LiveActivityEvent(title: "MÅÅL! 🎉", body: nil, teamCode: "LHF")
     static let contentState = ShlWidgetAttributes.ContentState(report: report, event: event)

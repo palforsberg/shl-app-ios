@@ -35,7 +35,7 @@ struct IconSelectView: View {
                         Icon(name: "Frölunda", code: "fhc-icon"),
                         Icon(name: "HV71", code: "hv71-icon"),
                         Icon(name: "Oskarshamn", code: "iko-icon"),
-                        Icon(name: "Lindköpings", code: "lhc-icon"),
+                        Icon(name: "Linköping", code: "lhc-icon"),
                         Icon(name: "Luleå", code: "lhf-icon"),
                         Icon(name: "Leksands", code: "lif-icon"),
                         Icon(name: "Malmö", code: "mif-icon"),
@@ -78,7 +78,7 @@ struct IconSelectView: View {
                     self.currentIcon = code
                 }
             }
-            print(error?.localizedDescription ?? "[SETTINGS] Changed app icon successfully")
+            print(error?.localizedDescription ?? "[SETTINGS] Changed app icon successfully \(code ?? "default")")
         }
     }
 }
