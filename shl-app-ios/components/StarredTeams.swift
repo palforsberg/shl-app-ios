@@ -19,7 +19,7 @@ class StarredTeams: ObservableObject {
     
     init() {
         self.starredTeams = StarredTeams.readFromDisk()
-        debugPrint("[STARREDTEAMS] write to shared")
+        debugPrint("[STARREDTEAMS] write to shared \(self.starredTeams)")
         UserDefaults.shared.setValue(self.starredTeams, forKey: "starredTeams")
     }
     
@@ -61,6 +61,6 @@ class StarredTeams: ObservableObject {
     }
     
     static func readFromDisk() -> [String] {
-        return UserDefaults.standard.array(forKey: "starredTeams") as? [String] ?? []
+        return UserDefaults.standard.stringArray(forKey: "starredTeams") ?? []
     }
 }

@@ -266,6 +266,30 @@ struct MatchHistoryView: View {
     }
 }
 
+struct PickemSelectView: View {
+    @EnvironmentObject var pickemData: PickemData
+    
+    var gameUuid: String
+    var teamCode: String
+    
+    var body: some View {
+        let isPicked = pickemData.isPicked(gameUuid: gameUuid, team: teamCode)
+        Button {
+            withAnimation(.spring()) {
+                pickemData.vote(gameUuid: gameUuid, team: teamCode)
+            }
+        } label: {
+            Text(isPicked ? "PICKED" : "PICK")
+        }
+        .disabled(isPicked)
+        .padding(.vertical, 8).padding(.horizontal, 18)
+        .cornerRadius(20)
+        .font(.system(size: 12, weight: .heavy, design: .rounded))
+        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous)
+            .strokeBorder(.gray.opacity(0.3)))
+        .id("pick.select.\(teamCode)")
+    }
+}
 
 struct PuckText: View {
     @State var animate: Bool = false
@@ -273,11 +297,12 @@ struct PuckText: View {
         Text("•")
             .offset(x: animate ? 1.5 : -1.5)
             .animation(.easeOut(duration: 0.3).repeatForever(), value: animate)
-            .onAppear(){
+            .onAppear {
                 self.animate = true
             }
     }
 }
+
 struct GamesStatsView: View {
     @State var details: GameDetails?
     @State var previousGames: [Game] = []
@@ -295,6 +320,7 @@ struct GamesStatsView: View {
     var game: Game
     
     var body: some View {
+        let game = details?.game ?? game
             ScrollView {
                 if #available(iOS 16.0, *) {
                 } else {
@@ -321,30 +347,36 @@ struct GamesStatsView: View {
                                 .starred(starredTeams.isStarred(teamCode: game.home_team_code))
                                 .scaledToFit()
                                 .minimumScaleFactor(0.6)
+                            if PickemData.isPickable(game: game) {
+                                PickemSelectView(gameUuid: game.game_uuid, teamCode: game.home_team_code)
+                            }
                                 
-                        }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 80).frame(maxWidth: 140)
+                        }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/).frame(maxWidth: 140)
                 
                         VStack(spacing: 8) {
-                            HStack(alignment: .center, spacing: 12) {
-                                Text("\(details?.game.home_team_result ?? game.home_team_result)")
+                            HStack(alignment: .center, spacing: 8) {
+                                Text("\(game.home_team_result)")
                                     .font(.system(size: 40, weight: .heavy, design: .rounded))
                                     .scaledToFit()
                                     .minimumScaleFactor(0.6)
                                 Text(":").rounded(size: 20, weight: .heavy).padding(.top, 2)
-                                Text("\(details?.game.away_team_result ?? game.away_team_result)")
+                                Text("\(game.away_team_result)")
                                     .font(.system(size: 40, weight: .heavy, design: .rounded))
                                     .scaledToFit()
                                     .minimumScaleFactor(0.6)
-                            }.padding(EdgeInsets(top: 3, leading: 5, bottom: 0, trailing: 5))
+                            }
+                            .padding(EdgeInsets(top: 3, leading: 5, bottom: 0, trailing: 5))
+                            .opacity(game.isFuture() ? 0.2 : 1.0)
                             HStack(spacing: 3) {
                                 if (game.isFuture()) {
                                     Text("\(game.start_date_time.getFormattedDate()) • \(game.start_date_time.getFormattedTime())")
+                                        .foregroundColor(Color(uiColor: .secondaryLabel))
                                 } else {
-                                    if let statusString = details?.game.status {
+                                    if let statusString = game.status {
                                         Text(LocalizedStringKey(statusString))
                                     }
-                                    if details?.game.getStatus()?.isGameTimeApplicable() ?? false,
-                                       let gt = details?.game.gametime {
+                                    if game.getStatus()?.isGameTimeApplicable() ?? false,
+                                       let gt = game.gametime {
                                         Text("•")
                                         Text(gt)
                                     }
@@ -364,8 +396,11 @@ struct GamesStatsView: View {
                                 .starred(starredTeams.isStarred(teamCode: game.away_team_code))
                                 .scaledToFit()
                                 .minimumScaleFactor(0.6)
+                            if PickemData.isPickable(game: game) {
+                                PickemSelectView(gameUuid: game.game_uuid, teamCode: game.away_team_code)
+                            }
 
-                        }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 80).frame(maxWidth: 140)
+                        }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/).frame(maxWidth: 140)
                     }.frame(maxWidth: .infinity)
                 }
                 
@@ -569,6 +604,7 @@ struct GamesStatsView_Previews: PreviewProvider {
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
             .environmentObject(teams)
             .environmentObject(Settings())
+            .environmentObject(getPickemData())
             .environmentObject(starredTeams)
             .environmentObject(getStandingsData())
             .environment(\.locale, .init(identifier: "sv"))
@@ -603,6 +639,7 @@ struct GamesStatsView_Played_Previews: PreviewProvider {
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
             .environmentObject(teams)
             .environmentObject(Settings())
+            .environmentObject(getPickemData())
             .environmentObject(starredTeams)
             .environmentObject(getStandingsData())
             .environment(\.locale, .init(identifier: "sv"))
@@ -622,6 +659,7 @@ struct GamesStatsView_No_Events_Previews: PreviewProvider {
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
             .environmentObject(teams)
             .environmentObject(Settings())
+            .environmentObject(getPickemData())
             .environmentObject(starredTeams)
             .environmentObject(getStandingsData())
             .environment(\.locale, .init(identifier: "sv"))
@@ -635,12 +673,13 @@ struct GamesStatsView_Future_Game_Previews: PreviewProvider {
         
         let starred = StarredTeams()
         starred.addTeam(teamCode: "LHF")
-        return GamesStatsView(details: GameDetails(game: getLiveGame(), events: [], stats: nil, players: []),
+        return GamesStatsView(details: GameDetails(game: getFutureGame(), events: [], stats: nil, players: []),
                               provider: nil,
                               game: getFutureGame())
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
             .environmentObject(teams)
             .environmentObject(Settings())
+            .environmentObject(getPickemData())
             .environmentObject(starred)
             .environmentObject(getStandingsData())
             .environment(\.locale, .init(identifier: "sv"))
@@ -651,12 +690,13 @@ struct GamesStatsView_Future_No_Prev_Game_Previews: PreviewProvider {
     static var previews: some View {
         let teams = getTeamsData()
         
-        return GamesStatsView(details: GameDetails(game: getLiveGame(), events: [], stats: nil, players: []),
+        return GamesStatsView(details: GameDetails(game: getFutureGame(), events: [], stats: nil, players: []),
                               provider: nil,
                               game: getFutureGame())
             .environmentObject(GamesData(data: []))
             .environmentObject(teams)
             .environmentObject(Settings())
+            .environmentObject(getPickemData())
             .environmentObject(getStandingsData())
             .environmentObject(StarredTeams())
             .environment(\.locale, .init(identifier: "sv"))

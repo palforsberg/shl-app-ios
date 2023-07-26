@@ -138,7 +138,7 @@ struct Provider: IntentTimelineProvider {
     }
     
     func getStarredTeam() -> String? {
-        let starredTeam = (UserDefaults.shared.array(forKey: "starredTeams") as? [String])?.first
+        let starredTeam = (UserDefaults.shared.stringArray(forKey: "starredTeams"))?.first
         print("[WIDGET] Get starred team \(starredTeam ?? "(none)")")
         return starredTeam
     }
@@ -146,7 +146,6 @@ struct Provider: IntentTimelineProvider {
     func getTopTeam() -> String? {
         provider.getCachedStandings(season: Settings.currentSeason)?.SHL.first?.team_code
     }
-
 }
 
 

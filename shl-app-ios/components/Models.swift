@@ -138,21 +138,35 @@ class GamesData: ObservableObject {
     }
     
     func getFutureGames(teamCodes: [String], starred: [String] = []) -> [Game] {
-        return Array(data
-                        .filter({ $0.isFuture() })
-                        .filter(getTeamFilter(teamCodes: teamCodes))
-                        .sorted { a, b in
-                            if a.start_date_time == b.start_date_time {
-                                if a.includesTeams(starred) {
-                                    return true
-                                }
-                            }
-                            if a.start_date_time < b.start_date_time {
-                                return true
-                            }
-                            return false
-                        }
-                        .prefix(5))
+        let games = data
+            .filter({ $0.isFuture() })
+            .filter(getTeamFilter(teamCodes: teamCodes))
+            .sorted { a, b in
+                if a.start_date_time == b.start_date_time {
+                    if a.includesTeams(starred) {
+                        return true
+                    }
+                }
+                if a.start_date_time < b.start_date_time {
+                    return true
+                }
+                return false
+            }
+        
+        var result: [Game] = []
+        for e in games {
+            if result.count > 4 {
+                let sameDay = Calendar.current.isDate(e.start_date_time, equalTo: result.last?.start_date_time ?? Date.distantPast, toGranularity: .day)
+                if sameDay {
+                    result.append(e)
+                } else {
+                    break
+                }
+            } else {
+                result.append(e)
+            }
+        }
+        return result
     }
     
     func getTeamFilter(teamCodes: [String]) -> (Game) -> Bool {
@@ -288,6 +302,10 @@ struct Game: Codable, Identifiable, Equatable  {
         return played && home_team_result > away_team_result
     }
     
+    func isTbd() -> Bool {
+        home_team_code == "TBD" || away_team_code == "TBD"
+    }
+    
     func didWin(_ teamCode: String) -> Bool {
         if (isHome(teamCode)) {
             return homeWon()
@@ -313,6 +331,13 @@ struct Game: Codable, Identifiable, Equatable  {
 
     func getStatus() -> GameStatus? {
         return self.status != nil ? GameStatus.init(rawValue: self.status!) : nil
+    }
+    
+    func getWinner() -> String {
+        guard isPlayed() else {
+            return ""
+        }
+        return didWin(home_team_code) ? home_team_code : away_team_code
     }
 
     func isPlayoff() -> Bool {
@@ -745,4 +770,11 @@ class PlayoffData: ObservableObject {
     func getEntry(team: String) -> PlayoffEntry? {
         data?.SHL?.getEntry(team: team) ?? data?.HA?.getEntry(team: team)
     }
+}
+
+
+struct PickReq: Codable, Equatable {
+    let game_uuid: String
+    let user_id: String
+    let team_code: String
 }

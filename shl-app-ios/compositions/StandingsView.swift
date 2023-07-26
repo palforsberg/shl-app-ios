@@ -45,9 +45,9 @@ struct PointsLabel: View {
         let str = "\(val)"
         let nrZeros = nrDigits - str.count
         HStack(spacing: 0) {
-            Text(genZeros(nrZeros)).points().foregroundColor(Color(UIColor.quaternaryLabel))
+            Text(genZeros(nrZeros)).foregroundColor(Color(UIColor.quaternaryLabel))
                 .monospacedDigit()
-            Text(str).foregroundColor(color).points()
+            Text(str).foregroundColor(color)
                 .monospacedDigit()
         }
     }
@@ -322,6 +322,7 @@ struct StandingsView: View {
                                     PointsLabel(val: "\(item.points)")
                                         .frame(width: 34, alignment: .center)
                                 }
+                                .font(.system(size: 15, weight: .heavy, design: .rounded))
                                 .zIndex(starredTeams.isStarred(teamCode: item.team_code) ? 1000 : 1)
                                 .padding(EdgeInsets(top: 14, leading: 10, bottom: 14, trailing: 16))
                             }
@@ -345,7 +346,7 @@ struct StandingsView: View {
                 await self.reloadData()
             }
             .id(settings.season) // makes sure list is recreated when rerendered. To take care of reuse cell issues
-            .navigationBarTitle(Text(self.league.rawValue).rounded(size: 16))
+            .navigationBarTitle(Text(self.league == .shl ? "SHL" : "HA").rounded(size: 16))
             .background(Color(UIColor.systemGroupedBackground))
             .navigationBarItems(trailing: NavigationLink(destination: SettingsView()) {
                 Label("Settings", systemImage: "gearshape")
@@ -353,7 +354,7 @@ struct StandingsView: View {
             .navigationBarItems(leading: Button {
                 self.league = self.league == .shl ? .ha : .shl
             } label: {
-                Text(self.league == .shl ? League.ha.rawValue : League.shl.rawValue)
+                Text(self.league == .ha ? "SHL" : "HA")
                     .rounded(size: 16, weight: .semibold)
             }.frame(height: 44))
         }

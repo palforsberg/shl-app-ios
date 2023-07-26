@@ -57,21 +57,8 @@ struct WidgetPromo: View {
     }
 }
 
-struct VotePromo: View {
-    var body: some View {
-        NavigationLink(destination: VoteView()) {
-            GroupedView {
-                Text("Pick your games")
-            }
-        }
-        Spacer(minLength: 40)
-    }
-}
-
-
 struct WidgetPromo_Previews: PreviewProvider {
     static var previews: some View {
         WidgetPromo()
-        VotePromo()
     }
 }

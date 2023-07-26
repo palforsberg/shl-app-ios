@@ -167,3 +167,7 @@ func getStandingsData() -> StandingsData {
         getStanding("SAIK", rank: 8),
     ], HA: []))
 }
+
+func getPickemData() -> PickemData {
+    PickemData(user_id: "123", provider: nil, errorHandler: nil)
+}

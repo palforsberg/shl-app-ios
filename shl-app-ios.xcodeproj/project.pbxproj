@@ -85,11 +85,17 @@
 		23537ED226B3FE6D00C9B6ED /* Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ED126B3FE6D00C9B6ED /* Preview.swift */; };
 		23537ED426B454B800C9B6ED /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ED326B454B800C9B6ED /* Extensions.swift */; };
 		23537ED626B57B9C00C9B6ED /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ED526B57B9C00C9B6ED /* SettingsView.swift */; };
+		235C59DC2A4AF33C0091073B /* PickemData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C59DB2A4AF33C0091073B /* PickemData.swift */; };
+		235C59DD2A5175BC0091073B /* PickemData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C59DB2A4AF33C0091073B /* PickemData.swift */; };
+		235C59DF2A5ABD770091073B /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C59DE2A5ABD770091073B /* ErrorHandler.swift */; };
+		235C59E02A5ABDD40091073B /* ErrorHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C59DE2A5ABD770091073B /* ErrorHandler.swift */; };
+		235C59E22A62A6A10091073B /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C59E12A62A6A10091073B /* Keys.swift */; };
+		235C59E32A62A6A10091073B /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235C59E12A62A6A10091073B /* Keys.swift */; };
 		235CB13C2889650000A898D7 /* PullToRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235CB13B2889650000A898D7 /* PullToRefresh.swift */; };
 		236917D72A1CC83C000FE8A2 /* TeamSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236917D62A1CC83C000FE8A2 /* TeamSelectView.swift */; };
 		236917D92A21E627000FE8A2 /* Promos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236917D82A21E627000FE8A2 /* Promos.swift */; };
 		236917DB2A25C1EA000FE8A2 /* ScrollPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236917DA2A25C1EA000FE8A2 /* ScrollPicker.swift */; };
-		236917DD2A2F3B96000FE8A2 /* VoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236917DC2A2F3B96000FE8A2 /* VoteView.swift */; };
+		236917DD2A2F3B96000FE8A2 /* PickemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 236917DC2A2F3B96000FE8A2 /* PickemView.swift */; };
 		23743B0829B4C0DF00BE0AA6 /* LiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23743B0729B4C0DF00BE0AA6 /* LiveActivity.swift */; };
 		2397EDDF29A62BD30014410E /* TeamWidget.png in Resources */ = {isa = PBXBuildFile; fileRef = 2397EDDE29A62BD30014410E /* TeamWidget.png */; };
 		23A373C1299115D100FEA997 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A373C0299115D100FEA997 /* NotificationService.swift */; };
@@ -221,11 +227,14 @@
 		23537ED126B3FE6D00C9B6ED /* Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preview.swift; sourceTree = "<group>"; };
 		23537ED326B454B800C9B6ED /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		23537ED526B57B9C00C9B6ED /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		235C59DB2A4AF33C0091073B /* PickemData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickemData.swift; sourceTree = "<group>"; };
+		235C59DE2A5ABD770091073B /* ErrorHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorHandler.swift; sourceTree = "<group>"; };
+		235C59E12A62A6A10091073B /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		235CB13B2889650000A898D7 /* PullToRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullToRefresh.swift; sourceTree = "<group>"; };
 		236917D62A1CC83C000FE8A2 /* TeamSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamSelectView.swift; sourceTree = "<group>"; };
 		236917D82A21E627000FE8A2 /* Promos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Promos.swift; sourceTree = "<group>"; };
 		236917DA2A25C1EA000FE8A2 /* ScrollPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollPicker.swift; sourceTree = "<group>"; };
-		236917DC2A2F3B96000FE8A2 /* VoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoteView.swift; sourceTree = "<group>"; };
+		236917DC2A2F3B96000FE8A2 /* PickemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickemView.swift; sourceTree = "<group>"; };
 		23743B0729B4C0DF00BE0AA6 /* LiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivity.swift; sourceTree = "<group>"; };
 		2397EDDE29A62BD30014410E /* TeamWidget.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TeamWidget.png; sourceTree = "<group>"; };
 		23A373BE299115D100FEA997 /* shl-app-ios-notification-service.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "shl-app-ios-notification-service.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -432,7 +441,7 @@
 				2308A23829C47410004EC1F0 /* StarredTeamSelectView.swift */,
 				236917D62A1CC83C000FE8A2 /* TeamSelectView.swift */,
 				2313983F2A179CF20048F041 /* SearchGamesView.swift */,
-				236917DC2A2F3B96000FE8A2 /* VoteView.swift */,
+				236917DC2A2F3B96000FE8A2 /* PickemView.swift */,
 				23537ED126B3FE6D00C9B6ED /* Preview.swift */,
 				2339F6B526C25CDE006DE5F0 /* Launch Screen.storyboard */,
 			);
@@ -445,6 +454,7 @@
 				D1AFF8B325A8831100E50ADE /* DataProvider.swift */,
 				231C0563299B9F3100BEB846 /* Cache.swift */,
 				231C055C299A529B00BEB846 /* Models.swift */,
+				235C59DB2A4AF33C0091073B /* PickemData.swift */,
 				D1AAF86125AB10BF008D3D62 /* TeamLogo.swift */,
 				D1AFC2A825B07F5E00490FCE /* StarredTeams.swift */,
 				234AF3C528E7626900FE3AEC /* Effect.swift */,
@@ -461,6 +471,8 @@
 				23743B0729B4C0DF00BE0AA6 /* LiveActivity.swift */,
 				236917D82A21E627000FE8A2 /* Promos.swift */,
 				236917DA2A25C1EA000FE8A2 /* ScrollPicker.swift */,
+				235C59DE2A5ABD770091073B /* ErrorHandler.swift */,
+				235C59E12A62A6A10091073B /* Keys.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -668,13 +680,16 @@
 			files = (
 				231C056D299E3DB900BEB846 /* FormGraph.swift in Sources */,
 				231C056E299E3F4900BEB846 /* Preview.swift in Sources */,
+				235C59DD2A5175BC0091073B /* PickemData.swift in Sources */,
 				23A376532997AEAE00FEA997 /* ShlWidgetLiveActivity.swift in Sources */,
 				231C0569299CEBC700BEB846 /* Settings.swift in Sources */,
+				235C59E02A5ABDD40091073B /* ErrorHandler.swift in Sources */,
 				231C057129A207C900BEB846 /* SelectTeamIntent.intentdefinition in Sources */,
 				23A376512997AEAE00FEA997 /* ShlWidgetBundle.swift in Sources */,
 				23A376552997AEAE00FEA997 /* ShlWidget.swift in Sources */,
 				231C0565299B9F3E00BEB846 /* Cache.swift in Sources */,
 				231C055E299A52A800BEB846 /* Models.swift in Sources */,
+				235C59E32A62A6A10091073B /* Keys.swift in Sources */,
 				231C056A299CEBE900BEB846 /* DataProvider.swift in Sources */,
 				231C0566299BA60000BEB846 /* Extensions.swift in Sources */,
 			);
@@ -686,9 +701,10 @@
 			files = (
 				D1AFF8A125A8550500E50ADE /* StandingsView.swift in Sources */,
 				D1AFF8B425A8831100E50ADE /* DataProvider.swift in Sources */,
-				236917DD2A2F3B96000FE8A2 /* VoteView.swift in Sources */,
+				236917DD2A2F3B96000FE8A2 /* PickemView.swift in Sources */,
 				231C057029A207C900BEB846 /* SelectTeamIntent.intentdefinition in Sources */,
 				2339F6B426C15075006DE5F0 /* UserService.swift in Sources */,
+				235C59DF2A5ABD770091073B /* ErrorHandler.swift in Sources */,
 				23537ED226B3FE6D00C9B6ED /* Preview.swift in Sources */,
 				D1AFF86B25A84FCB00E50ADE /* ContentView.swift in Sources */,
 				D1AFF89725A8537B00E50ADE /* SeasonView.swift in Sources */,
@@ -698,6 +714,7 @@
 				234AF3C8290521E100FE3AEC /* GameAlert.swift in Sources */,
 				23537ED426B454B800C9B6ED /* Extensions.swift in Sources */,
 				D1AFC2A425B07E8100490FCE /* TeamView.swift in Sources */,
+				235C59DC2A4AF33C0091073B /* PickemData.swift in Sources */,
 				236917D72A1CC83C000FE8A2 /* TeamSelectView.swift in Sources */,
 				231398402A179CF20048F041 /* SearchGamesView.swift in Sources */,
 				23743B0829B4C0DF00BE0AA6 /* LiveActivity.swift in Sources */,
@@ -707,6 +724,7 @@
 				235CB13C2889650000A898D7 /* PullToRefresh.swift in Sources */,
 				D1AAF86225AB10BF008D3D62 /* TeamLogo.swift in Sources */,
 				234AF3C628E7626900FE3AEC /* Effect.swift in Sources */,
+				235C59E22A62A6A10091073B /* Keys.swift in Sources */,
 				236917D92A21E627000FE8A2 /* Promos.swift in Sources */,
 				2308A23B29C47DD7004EC1F0 /* IconSelectView.swift in Sources */,
 				2344E36629C5C9430069F4F5 /* TeamStatsView.swift in Sources */,
@@ -820,12 +838,13 @@
 				DEVELOPMENT_TEAM = 3LK2DRBJ29;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "shl-app-ios/Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -855,7 +874,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -884,7 +903,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -913,7 +932,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -945,7 +964,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -977,7 +996,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1009,7 +1028,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1151,12 +1170,13 @@
 				DEVELOPMENT_TEAM = 3LK2DRBJ29;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "shl-app-ios/Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1181,12 +1201,13 @@
 				DEVELOPMENT_TEAM = 3LK2DRBJ29;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "shl-app-ios/Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

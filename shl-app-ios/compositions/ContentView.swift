@@ -7,6 +7,49 @@
 
 import SwiftUI
 
+struct ErrorView: View {
+    @EnvironmentObject var errorHandler: ErrorHandler
+    
+    @State var errorMsg: String?
+    @State var workItem: DispatchWorkItem?
+    
+    var body: some View {
+        VStack {
+            if let e = self.errorMsg {
+                HStack {
+                    Image(systemName: "exclamationmark.octagon")
+                        .foregroundColor(Color(UIColor.systemRed))
+                    Text(LocalizedStringKey(e))
+                }
+                .font(.system(size: 14, weight: .bold, design: .rounded))
+                .padding()
+                .background(.ultraThinMaterial)
+                .cornerRadius(20)
+                .onTapGesture {
+                    self.workItem?.perform()
+                }
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
+        
+        .onReceive(errorHandler.$error) { error in
+            withAnimation(.spring()) {
+                self.errorMsg = error
+            }
+            
+            if let e = error {
+                self.workItem?.cancel()
+                self.workItem = DispatchWorkItem {
+                    print("[ErrorView] Workitem")
+                    self.errorHandler.set(error: nil)
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 6, execute: self.workItem!)
+                print("[ErrorView] \(e)")
+            }
+        }
+    }
+}
+
 struct ContentView: View {
     
     @Environment(\.colorScheme) var colorScheme
@@ -17,6 +60,8 @@ struct ContentView: View {
     @ObservedObject var standings = StandingsData(data: StandingRsp(SHL: [], HA: []))
     @ObservedObject var settings = AppDelegate.settings
     @ObservedObject var playoffs = PlayoffData()
+    @ObservedObject var pickemData: PickemData
+    @ObservedObject var errorHandler = ErrorHandler()
     
     var provider: DataProvider? = DataProvider()
     
@@ -27,6 +72,9 @@ struct ContentView: View {
     var alert: GameNofitication? = nil
     
     init() {
+        self.pickemData = PickemData(user_id: AppDelegate.settings.uuid,
+                                     provider: self.provider, errorHandler: nil)
+        
         if let games = provider?.getCachedGames(season: settings.season) {
             self.gameData.set(data: games)
         }
@@ -40,17 +88,22 @@ struct ContentView: View {
             self.teams.setTeams(teams: teams)
         }
         
+        self.pickemData.errorHandler = errorHandler
         debugPrint("[ContentView] Init")
     }
 
     var body: some View {
         ZStack {
             TabView {
-                SeasonView(provider: provider).tabItem { Label("Home", systemImage: "hockey.puck.circle").environment(\.symbolVariants, .none) }
-                StandingsView(provider: provider).tabItem { Label("Standings", systemImage: "trophy.circle").environment(\.symbolVariants, .none) }
+                SeasonView(provider: provider).tabItem { Label("Home", systemImage: getImageForGamesView()).environment(\.symbolVariants, .none) }
+                StandingsView(provider: provider).tabItem { Label("Standings", systemImage: getImageForStandingsView()).environment(\.symbolVariants, .none) }
             }
             VStack {
                 GameAlert(alert: alert)
+                Spacer()
+            }
+            VStack {
+                ErrorView()
                 Spacer()
             }
         }.task {
@@ -68,6 +121,8 @@ struct ContentView: View {
         .environmentObject(gameData)
         .environmentObject(settings)
         .environmentObject(playoffs)
+        .environmentObject(pickemData)
+        .environmentObject(errorHandler)
         .onReceive(NotificationCenter.default.publisher(for: .onGameNotification)) { data in
             // self.alert = data.object as? GameNofitication
         }
@@ -75,6 +130,22 @@ struct ContentView: View {
         .accentColor(colorScheme == .light
                         ? Color.init(.displayP3, white: 0.1, opacity: 1)
                         : Color.init(.displayP3, white: 0.9, opacity: 1))
+    }
+    
+    func getImageForGamesView() -> String {
+        if #available(iOS 16.0, *) {
+            return "hockey.puck.circle"
+        } else {
+            return "house.circle"
+        }
+    }
+    
+    func getImageForStandingsView() -> String {
+        if #available(iOS 16.0, *) {
+            return "trophy.circle"
+        } else {
+            return "list.bullet.circle"
+        }
     }
 }
 

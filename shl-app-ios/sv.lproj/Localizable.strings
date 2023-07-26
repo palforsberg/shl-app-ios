@@ -116,3 +116,10 @@
 // PROMO
 "WIDGETPROMO.HEADER" = "Widgets är här!";
 "WIDGETPROMO.BODY" = "Följ ditt lag på både lås- och hemskärmen";
+
+// Pickem
+"PICKED" = "PICKED";
+"PICKEM.PICK" = "Pick";
+"PICKEM.SWIPE" = "Dra för att tippa vinnare";
+"PICKEM.NO_GAMES_LEFT" = "Inga matcher kvar just nu.\nTryck för att göra om.";
+"PICKEM.SYNCERROR" = "Kunde inte skicka pick till server.";

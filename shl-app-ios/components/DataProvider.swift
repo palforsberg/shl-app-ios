@@ -22,6 +22,7 @@ let liveActivityStartUrl = "\(baseUrl)/live-activity/start"
 let liveActivityEndUrl = "\(baseUrl)/live-activity/end"
 let gameDetailsUrl = { (game_uuid: String) -> String in return "\(baseUrl)/game/\(game_uuid)" }
 let playersUrl = { (season: Int, code: String) -> String in "\(baseUrl)/players/\(season)/\(code)" }
+let picksUrl = "\(baseUrl)/vote"
 
 enum GetType {
     case cache
@@ -92,15 +93,31 @@ class DataProvider {
     }
     
     func addUser(request: AddUser) async {
-        await postData(url: userUrl, data: request)
+        do {
+            try await postData(url: userUrl, data: request)
+        } catch {
+            
+        }
     }
     
     func startLiveActivity(_ request: StartLiveActivity) async {
-        await postData(url: liveActivityStartUrl, data: request)
+        do {
+            try await postData(url: liveActivityStartUrl, data: request)
+        } catch {
+            
+        }
     }
     
     func endLiveActivity(_ request: EndLiveActivity) async {
-        await postData(url: liveActivityEndUrl, data: request, idempotencyCheck: false)
+        do {
+            try await postData(url: liveActivityEndUrl, data: request, idempotencyCheck: false)
+        } catch {
+            
+        }
+    }
+    
+    func pick(_ request: PickReq) async throws {
+        try await postData(url: picksUrl, data: request, idempotencyCheck: false)
     }
     
     /**
@@ -142,7 +159,11 @@ class DataProvider {
         }
     }
     
-    func postData<T : Codable & Equatable>(url urlString: String, data: T, idempotencyCheck: Bool = true) async {
+    enum PostError: Error {
+        case parse
+        case statusCode
+    }
+    func postData<T : Codable & Equatable>(url urlString: String, data: T, idempotencyCheck: Bool = true) async throws {
         
         guard isNewRequest(data, key: urlString) || !idempotencyCheck else {
             print("[DATA] Idempotent \(type(of: data)) Request")
@@ -158,20 +179,24 @@ class DataProvider {
         request.httpMethod = "POST"
         request.httpBody = try! JSONEncoder().encode(data)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(API_KEY, forHTTPHeaderField: "x-api-key")
         
         do {
             let (_, response) = try await URLSession.shared.data(for: request)
             guard let response = response as? HTTPURLResponse else {
                 print("[DATA] error", response)
-                return
+                throw PostError.parse
             }
             guard response.statusCode == 200 else {
                 print("[DATA] statusCode should be 200, but is \(response.statusCode)")
-                return
+                throw PostError.statusCode
             }
-            Cache.store(key: urlString, data: data)
+            if idempotencyCheck {
+                Cache.store(key: urlString, data: data)
+            }
         } catch {
             print("[DATA] error", error)
+            throw error
         }
     }
     

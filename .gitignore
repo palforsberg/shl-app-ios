@@ -2,6 +2,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/swift,xcode,Cobjective-c,osx
 # Edit at https://www.toptal.com/developers/gitignore?templates=swift,xcode,Cobjective-c,osx
 
+shl-app-ios/components/Keys.swift
+
 #!! ERROR: cobjective-c is undefined. Use list command to see defined gitignore types !!#
 
 ### OSX ###

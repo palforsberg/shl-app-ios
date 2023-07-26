@@ -254,10 +254,9 @@ struct SupporterView: View {
 }
 
 struct SettingsView: View {
-    @EnvironmentObject
-    var settings: Settings
+    @EnvironmentObject var settings: Settings
     
-    @State var currentIcon = UIApplication.shared.alternateIconName
+    @State var currentIcon: String?
     
     var body: some View {
         List {
@@ -313,6 +312,26 @@ struct SettingsView: View {
                 .disabled(!settings.supporter)
                 #endif
             }
+            HStack {
+                Spacer()
+                VStack(alignment: .center) {
+                    Text("Version \(Cache.getBuildVersionNumber() ?? "0.0")")
+                    Text("User ID \(String(settings.uuid.prefix(4)))...\(String(settings.uuid.suffix(4)))")
+                }
+                Spacer()
+            }
+            .onTapGesture {
+                UIPasteboard.general.string = """
+                Version \(Cache.getBuildVersionNumber() ?? "0.0")
+                User ID \(settings.uuid)
+                """
+            }
+            .font(.system(size: 12, weight: .bold, design: .rounded))
+            .foregroundColor(Color(uiColor: .tertiaryLabel))
+            .listRowBackground(Color.clear)
+        }
+        .task {
+            self.currentIcon = UIApplication.shared.alternateIconName
         }
         .listStyle(InsetGroupedListStyle())
         .navigationBarTitle(Text("Settings"))
