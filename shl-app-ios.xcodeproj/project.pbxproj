@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -99,14 +99,14 @@
 		23743B0829B4C0DF00BE0AA6 /* LiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23743B0729B4C0DF00BE0AA6 /* LiveActivity.swift */; };
 		2397EDDF29A62BD30014410E /* TeamWidget.png in Resources */ = {isa = PBXBuildFile; fileRef = 2397EDDE29A62BD30014410E /* TeamWidget.png */; };
 		23A373C1299115D100FEA997 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A373C0299115D100FEA997 /* NotificationService.swift */; };
-		23A373C5299115D100FEA997 /* shl-app-ios-notification-service.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 23A373BE299115D100FEA997 /* shl-app-ios-notification-service.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		23A373C5299115D100FEA997 /* shl-app-ios-notification-service.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 23A373BE299115D100FEA997 /* shl-app-ios-notification-service.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		23A3764D2997AEAE00FEA997 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1AFF8D525A898AD00E50ADE /* WidgetKit.framework */; };
 		23A3764E2997AEAE00FEA997 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1AFF8D725A898AD00E50ADE /* SwiftUI.framework */; };
 		23A376512997AEAE00FEA997 /* ShlWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A376502997AEAE00FEA997 /* ShlWidgetBundle.swift */; };
 		23A376532997AEAE00FEA997 /* ShlWidgetLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A376522997AEAE00FEA997 /* ShlWidgetLiveActivity.swift */; };
 		23A376552997AEAE00FEA997 /* ShlWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A376542997AEAE00FEA997 /* ShlWidget.swift */; };
 		23A376582997AEB000FEA997 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23A376572997AEB000FEA997 /* Assets.xcassets */; };
-		23A3765E2997AEB000FEA997 /* shl-app-ios-widgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 23A3764C2997AEAE00FEA997 /* shl-app-ios-widgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		23A3765E2997AEB000FEA997 /* shl-app-ios-widgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 23A3764C2997AEAE00FEA997 /* shl-app-ios-widgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		23A376712997CC6000FEA997 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D1AFF8C725A88CF700E50ADE /* Localizable.strings */; };
 		23E405372705DCEA00C516F6 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E405352705DCEA00C516F6 /* ImageLoader.swift */; };
 		23E405382705DCEA00C516F6 /* URLImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E405362705DCEA00C516F6 /* URLImage.swift */; };
@@ -141,16 +141,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		D1AFF8E825A898B300E50ADE /* Embed App Extensions */ = {
+		D1AFF8E825A898B300E50ADE /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				23A3765E2997AEB000FEA997 /* shl-app-ios-widgetExtension.appex in Embed App Extensions */,
-				23A373C5299115D100FEA997 /* shl-app-ios-notification-service.appex in Embed App Extensions */,
+				23A3765E2997AEB000FEA997 /* shl-app-ios-widgetExtension.appex in Embed Foundation Extensions */,
+				23A373C5299115D100FEA997 /* shl-app-ios-notification-service.appex in Embed Foundation Extensions */,
 			);
-			name = "Embed App Extensions";
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -531,7 +531,7 @@
 				D1AFF86125A84FCB00E50ADE /* Sources */,
 				D1AFF86225A84FCB00E50ADE /* Frameworks */,
 				D1AFF86325A84FCB00E50ADE /* Resources */,
-				D1AFF8E825A898B300E50ADE /* Embed App Extensions */,
+				D1AFF8E825A898B300E50ADE /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -550,8 +550,9 @@
 		D1AFF85D25A84FCB00E50ADE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1420;
-				LastUpgradeCheck = 1230;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					23A373BD299115D100FEA997 = {
 						CreatedOnToolsVersion = 14.2;
