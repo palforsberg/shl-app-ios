@@ -94,7 +94,7 @@ class DataProvider {
     
     func addUser(request: AddUser) async {
         do {
-            try await postData(url: userUrl, data: request)
+            _ = try await postData(url: userUrl, data: request)
         } catch {
             
         }
@@ -102,7 +102,7 @@ class DataProvider {
     
     func startLiveActivity(_ request: StartLiveActivity) async {
         do {
-            try await postData(url: liveActivityStartUrl, data: request)
+            _ = try await postData(url: liveActivityStartUrl, data: request)
         } catch {
             
         }
@@ -110,14 +110,14 @@ class DataProvider {
     
     func endLiveActivity(_ request: EndLiveActivity) async {
         do {
-            try await postData(url: liveActivityEndUrl, data: request, idempotencyCheck: false)
+            _ = try await postData(url: liveActivityEndUrl, data: request, idempotencyCheck: false)
         } catch {
             
         }
     }
     
-    func pick(_ request: PickReq) async throws {
-        try await postData(url: picksUrl, data: request, idempotencyCheck: false)
+    func pick(_ request: PickReq) async throws -> VotesPerGame? {
+        try await postData(url: picksUrl, data: request, type: VotesPerGame.self, idempotencyCheck: false)
     }
     
     /**
@@ -163,15 +163,22 @@ class DataProvider {
         case parse
         case statusCode
     }
-    func postData<T : Codable & Equatable>(url urlString: String, data: T, idempotencyCheck: Bool = true) async throws {
-        
+    
+    func postData<T : Codable, R : Codable>(url urlString: String, data: T, type: R.Type, idempotencyCheck: Bool = true) async throws -> R? where T : Equatable {
+        if let data = try await postData(url: urlString, data: data, idempotencyCheck: idempotencyCheck) {
+            return try apiJsonDecoder.decode(type, from: data)
+        }
+        return nil
+    }
+    
+    func postData<T : Codable>(url urlString: String, data: T, idempotencyCheck: Bool = true) async throws -> Data? where T : Equatable {
         guard isNewRequest(data, key: urlString) || !idempotencyCheck else {
-            print("[DATA] Idempotent \(type(of: data)) Request")
-            return
+            print("[DATA] Idempotent \(data.self) Request")
+            return nil
         }
         guard let url = URL(string: urlString) else {
             print("[DATA] Your API end point is Invalid")
-            return
+            return nil
         }
         print("[DATA] POST \(data) to \(url)")
         
@@ -182,7 +189,7 @@ class DataProvider {
         request.setValue(API_KEY, forHTTPHeaderField: "x-api-key")
         
         do {
-            let (_, response) = try await URLSession.shared.data(for: request)
+            let (data, response) = try await URLSession.shared.data(for: request)
             guard let response = response as? HTTPURLResponse else {
                 print("[DATA] error", response)
                 throw PostError.parse
@@ -194,6 +201,7 @@ class DataProvider {
             if idempotencyCheck {
                 Cache.store(key: urlString, data: data)
             }
+            return data
         } catch {
             print("[DATA] error", error)
             throw error

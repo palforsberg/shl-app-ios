@@ -13,12 +13,12 @@ func getPlayedGame() -> Game {
 }
 
 func getPlayedGame(t1: String, s1: Int, t2: String, s2: Int, overtime: Bool = false, date: Date = Date().addingTimeInterval(TimeInterval(-2_000))) -> Game {
-    return Game(game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: s2, home_team_code: t1, home_team_result: s1, start_date_time: date, game_type: GameType.season.rawValue, played: true, overtime: overtime, shootout: false, status: "Finished", gametime: "20:00", league: .shl)
+    return Game(game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: s2, home_team_code: t1, home_team_result: s1, start_date_time: date, game_type: GameType.season.rawValue, played: true, overtime: overtime, shootout: false, status: "Finished", gametime: "20:00", league: .shl, votes: VotesPerGame(home_perc: 58, away_perc: 42))
 }
 
 
 func getPlayoffGame(t1: String, s1: Int, t2: String, s2: Int, status: String = "Finished") -> Game {
-    return Game(game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: s2, home_team_code: t1, home_team_result: s1, start_date_time: Date(), game_type: GameType.playoff.rawValue, played: true, overtime: false, shootout: false, status: status, gametime: "20:00", league: .shl)
+    return Game(game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: s2, home_team_code: t1, home_team_result: s1, start_date_time: Date(), game_type: GameType.playoff.rawValue, played: true, overtime: false, shootout: false, status: status, gametime: "20:00", league: .shl, votes: VotesPerGame(home_perc: 58, away_perc: 42))
 }
 
 func getLiveGame() -> Game {
@@ -26,7 +26,7 @@ func getLiveGame() -> Game {
 }
 
 func getLiveGame(t1: String, score1: Int, t2: String, score2: Int, status: String? = "Period2") -> Game {
-    return Game(game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: score2, home_team_code: t1, home_team_result: score1, start_date_time: Date().addingTimeInterval(TimeInterval(-50)), game_type: GameType.season.rawValue, played: false, overtime: false, shootout: false, status: status, gametime: "13:37", league: .shl)
+    return Game(game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: score2, home_team_code: t1, home_team_result: score1, start_date_time: Date().addingTimeInterval(TimeInterval(-50)), game_type: GameType.season.rawValue, played: false, overtime: false, shootout: false, status: status, gametime: "13:37", league: .shl, votes: VotesPerGame(home_perc: 58, away_perc: 42))
 }
 
 func getFutureGame() -> Game {
@@ -40,7 +40,7 @@ func getFutureGame(t1: String, t2: String) -> Game {
 func getFutureGame(t1: String, t2: String, days: Int) -> Game {
     let futDate = Calendar.current.date(byAdding: DateComponents(day: days), to: Date()) ?? Date()
     return Game(game_uuid: UUID().uuidString, away_team_code: t2, away_team_result: 0, home_team_code: t1, home_team_result: 0, start_date_time: futDate,
-                game_type: GameType.season.rawValue, played: false, overtime: false, shootout: false, status: "Coming", gametime: nil, league: .shl)
+                game_type: GameType.season.rawValue, played: false, overtime: false, shootout: false, status: "Coming", gametime: nil, league: .shl, votes: VotesPerGame(home_perc: 58, away_perc: 42))
 }
 
 func getStanding(_ teamCode: String, rank: Int) -> Standing {

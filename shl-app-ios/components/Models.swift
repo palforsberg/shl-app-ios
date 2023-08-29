@@ -271,6 +271,10 @@ struct StandingTimeline {
     }
 }
 
+struct VotesPerGame: Codable, Equatable {
+    let home_perc: Int
+    let away_perc: Int
+}
 
 struct Game: Codable, Identifiable, Equatable  {
     var id: String {
@@ -289,6 +293,7 @@ struct Game: Codable, Identifiable, Equatable  {
     let status: String?
     let gametime: String?
     let league: League
+    var votes: VotesPerGame?
     
     func hasTeam(_ teamCode: String) -> Bool {
         return away_team_code == teamCode || home_team_code == teamCode
@@ -495,7 +500,7 @@ struct Team: Codable, Hashable {
 }
 
 struct GameDetails: Codable {
-    let game: Game
+    var game: Game
     var events: [GameEvent]
     let stats: ApiGameStats?
     let players: [Player]

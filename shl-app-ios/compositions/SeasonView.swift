@@ -100,11 +100,13 @@ struct TeamAvatar: View {
 struct PickedLabel: View {
     var picked: Bool
     var body: some View {
-        Text("PICKED")
-            .rounded(size: 10, weight: .heavy)
-            .foregroundColor(Color(uiColor: .tertiaryLabel))
-            .padding(0)
-            .opacity(picked ? 1 : 0)
+        HStack(spacing: 2) {
+            Image(systemName: "checkmark.circle")
+            Text("PICKED")
+        }
+        .font(.system(size: 10, weight: .heavy))
+        .foregroundColor(Color(uiColor: .tertiaryLabel))
+        .opacity(picked ? 1 : 0)
     }
 }
 struct LiveGame: View {

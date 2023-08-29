@@ -365,7 +365,7 @@ struct ShlWidget_Previews: PreviewProvider {
         let entry = TeamEntry(date: Date(),
                               teamCode: "LHF",
                               standing: Standing(team_code: "LHF", gp: 18, rank: 11, points: 65, diff: 20, league: .shl),
-                              game: Game(game_uuid: "1", away_team_code: "LHF", away_team_result: 0, home_team_code: "SAIK", home_team_result: 0, start_date_time: Date(), game_type: "Regular", played: false, overtime: false, shootout: false, status: "Coming", gametime: nil, league: .shl),
+                              game: Game(game_uuid: "1", away_team_code: "LHF", away_team_result: 0, home_team_code: "SAIK", home_team_result: 0, start_date_time: Date(), game_type: "Regular", played: false, overtime: false, shootout: false, status: "Coming", gametime: nil, league: .shl, votes: nil),
                               points: [3, 2, 2, 0, 0, 3, 3, 1, 2, 3],
                               fetched: .timeline_api,
                               teams: getTeamsData()
@@ -373,7 +373,7 @@ struct ShlWidget_Previews: PreviewProvider {
         let playoffTeamEntry = TeamEntry(date: Date(),
                               teamCode: "LHF",
                               standing: Standing(team_code: "LHF", gp: 18, rank: 11, points: 65, diff: 20, league: .shl),
-                                         game: Game(game_uuid: "1", away_team_code: "LHF", away_team_result: 0, home_team_code: "SAIK", home_team_result: 0, start_date_time: Date(), game_type: "Regular", played: false, overtime: false, shootout: false, status: "Coming", gametime: nil, league: .shl),
+                                         game: Game(game_uuid: "1", away_team_code: "LHF", away_team_result: 0, home_team_code: "SAIK", home_team_result: 0, start_date_time: Date(), game_type: "Regular", played: false, overtime: false, shootout: false, status: "Coming", gametime: nil, league: .shl, votes: nil),
                                          points: [3, 3, 0, 3, -1, -1, -1],
                                          playoffStage: "Quarterfinal",
                               fetched: .timeline_api,

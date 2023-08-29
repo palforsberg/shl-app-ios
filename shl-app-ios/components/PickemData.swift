@@ -43,28 +43,32 @@ class PickemData: ObservableObject {
         self.picksPerGame
     }
     
-    func vote(gameUuid: String, team: String) {
+    func vote(gameUuid: String, team: String) async -> VotesPerGame? {
         self.picksInFlight[gameUuid] = Pick(gameUuid: gameUuid, pickedTeam: team)
         self.objectWillChange.send()
-        
-        Task {
-            do {
-                try await self.provider?.pick(PickReq(game_uuid: gameUuid, user_id: self.user_id, team_code: team))
-                self.picksPerGame[gameUuid] = Pick(gameUuid: gameUuid, pickedTeam: team)
-                PickemData.updateStored(key: PICKS_KEY, picks: Array(self.picksPerGame.values))
-            } catch {
-                self.errorHandler?.set(error: "PICKEM.SYNCERROR")
-            }
-            self.picksInFlight.removeValue(forKey: gameUuid)
-            
-            DispatchQueue.main.async {
-                self.objectWillChange.send()
-            }
+        var result: VotesPerGame? = nil
+        do {
+            result = try await self.provider?.pick(PickReq(game_uuid: gameUuid, user_id: self.user_id, team_code: team))
+            self.picksPerGame[gameUuid] = Pick(gameUuid: gameUuid, pickedTeam: team)
+            PickemData.updateStored(key: PICKS_KEY, picks: Array(self.picksPerGame.values))
+        } catch {
+            self.errorHandler?.set(error: "PICKEM.SYNCERROR")
         }
+        self.picksInFlight.removeValue(forKey: gameUuid)
+        
+        DispatchQueue.main.async {
+            self.objectWillChange.send()
+        }
+        
+        return result
     }
     
     func isPicked(gameUuid: String, team: String) -> Bool {
         picksPerGame[gameUuid]?.pickedTeam == team
+    }
+    
+    func getPicked(gameUuid: String) -> String? {
+        get(gameUuid)?.pickedTeam
     }
     
     func getNrCorrect(playedGames: [Game]) -> Int {
@@ -87,7 +91,7 @@ class PickemData: ObservableObject {
     private static let STORAGE = UserDefaults.shared
     private static let PICKS_SEPARATOR = "::"
     
-    private static func updateStored(key: String, picks: [Pick]) {
+    public static func updateStored(key: String, picks: [Pick]) {
         let pickStrings: [String] = picks.map { "\($0.gameUuid)\(PICKS_SEPARATOR)\($0.pickedTeam)"}
         STORAGE.setValue(pickStrings, forKey: key)
     }

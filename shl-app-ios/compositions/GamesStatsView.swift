@@ -199,7 +199,7 @@ struct StatsRow: View {
         HStack() {
             Text(left)
                 .rounded(size: 20, weight: .heavy)
-                .frame(width: 45, alignment: .leading)
+                .frame(width: 65, alignment: .leading)
                 .monospacedDigit()
             Spacer()
             Text(LocalizedStringKey(center))
@@ -209,7 +209,7 @@ struct StatsRow: View {
             Spacer()
             Text(right)
                 .rounded(size: 20, weight: .heavy)
-                .frame(width: 45, alignment: .trailing)
+                .frame(width: 65, alignment: .trailing)
                 .monospacedDigit()
         }
         .padding(.vertical, 3)
@@ -266,28 +266,111 @@ struct MatchHistoryView: View {
     }
 }
 
-struct PickemSelectView: View {
+struct PickemSliderView: View {
+    @Namespace var animation
     @EnvironmentObject var pickemData: PickemData
     
-    var gameUuid: String
-    var teamCode: String
+    var game: Game
+    @State var picked: String?
+    
+    var onVote: (VotesPerGame?) -> ()
     
     var body: some View {
-        let isPicked = pickemData.isPicked(gameUuid: gameUuid, team: teamCode)
-        Button {
-            withAnimation(.spring()) {
-                pickemData.vote(gameUuid: gameUuid, team: teamCode)
-            }
-        } label: {
-            Text(isPicked ? "PICKED" : "PICK")
+        let home_team = game.home_team_code
+        let away_team = game.away_team_code
+        let home_perc = game.votes?.home_perc ?? 50
+        let home_val = "\(home_perc)%"
+        let away_perc = game.votes?.away_perc ?? 50
+        let away_val = "\(away_perc)%"
+        let pickable = PickemData.isPickable(game: game)
+        let show_perc = picked != nil || !pickable
+        let height: CGFloat = pickable ? 54 : 44
+
+        GeometryReader { geometry in
+            HStack(spacing: 0) {
+                Button { self.vote(team: home_team) } label: {
+                    HStack() {
+                        TeamLogo(code: home_team, size: 28)
+                        if home_team == picked {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(Color(uiColor: .label))
+                                .matchedGeometryEffect(id: "checkmark", in: animation)
+                        }
+                        Spacer()
+                        Text(home_val)
+                            .rounded(size: 13, weight: .heavy)
+                            .foregroundColor(picked == home_team ? Color(uiColor: .label) : Color(uiColor: .secondaryLabel))
+                            .opacity(show_perc ? 1 : 0)
+                            .id("home.perc")
+                    }
+                }
+                .padding(.leading, 12).padding(.trailing, 6)
+                .frame(width: geometry.size.width * self.getWidthPerc(votes: home_perc))
+                .frame(height: height)
+                
+                Rectangle()
+                    .foregroundColor(.gray.opacity(0.3))
+                    .frame(width: 1, height: height-2)
+                    .matchedGeometryEffect(id: "middle-line", in: animation)
+                
+                Button { self.vote(team: away_team) } label: {
+                    HStack() {
+                        Text(away_val)
+                            .rounded(size: 13, weight: .heavy)
+                            .foregroundColor(picked == away_team ? Color(uiColor: .label) : Color(uiColor: .secondaryLabel))
+                            .opacity(show_perc ? 1 : 0)
+                            .id("away.perc")
+                        Spacer()
+                        if away_team == picked {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(Color(uiColor: .label))
+                                .matchedGeometryEffect(id: "checkmark", in: animation)
+                        }
+                        TeamLogo(code: away_team, size: 28)
+                    }
+                }
+                .padding(.leading, 6).padding(.trailing, 12)
+                .frame(width: geometry.size.width * self.getWidthPerc(votes: away_perc))
+                .frame(height: height)
+              }
+            .frame(width: geometry.size.width)
+            .background(Color(UIColor.secondarySystemGroupedBackground))
+            .cornerRadius(15)
+            .overlay(RoundedRectangle(cornerRadius: 15, style: .continuous)
+                .strokeBorder(.gray.opacity(0.3), lineWidth: 1))
         }
-        .disabled(isPicked)
-        .padding(.vertical, 8).padding(.horizontal, 18)
-        .cornerRadius(20)
-        .font(.system(size: 12, weight: .heavy, design: .rounded))
-        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous)
-            .strokeBorder(.gray.opacity(0.3)))
-        .id("pick.select.\(teamCode)")
+        .frame(height: height)
+        .disabled(!pickable)
+        .opacity(pickable ? 1 : 0.8)
+        .id("pick.select.\(game.game_uuid)")
+        .onReceive(pickemData.objectWillChange) { pd in
+            let newPicked = self.pickemData.getPicked(gameUuid: game.game_uuid)
+            if newPicked != self.picked {
+                withAnimation(.spring()) {
+                    self.picked = newPicked
+                }
+            }
+        }
+        .onAppear {
+            self.picked = self.pickemData.getPicked(gameUuid: game.game_uuid)
+        }
+    }
+    
+    func vote(team: String) {
+        guard team != self.picked, PickemData.isPickable(game: game) else {
+            return
+        }
+        Task {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            onVote(await pickemData.vote(gameUuid: game.game_uuid, team: team))
+        }
+    }
+    
+    func getWidthPerc(votes: Int) -> CGFloat {
+        guard self.picked != nil else {
+            return 0.5
+        }
+        return min(0.65, max(0.35, CGFloat(votes) / 100.0))
     }
 }
 
@@ -347,9 +430,6 @@ struct GamesStatsView: View {
                                 .starred(starredTeams.isStarred(teamCode: game.home_team_code))
                                 .scaledToFit()
                                 .minimumScaleFactor(0.6)
-                            if PickemData.isPickable(game: game) {
-                                PickemSelectView(gameUuid: game.game_uuid, teamCode: game.home_team_code)
-                            }
                                 
                         }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/).frame(maxWidth: 140)
                 
@@ -396,10 +476,6 @@ struct GamesStatsView: View {
                                 .starred(starredTeams.isStarred(teamCode: game.away_team_code))
                                 .scaledToFit()
                                 .minimumScaleFactor(0.6)
-                            if PickemData.isPickable(game: game) {
-                                PickemSelectView(gameUuid: game.game_uuid, teamCode: game.away_team_code)
-                            }
-
                         }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/).frame(maxWidth: 140)
                     }.frame(maxWidth: .infinity)
                 }
@@ -434,6 +510,7 @@ struct GamesStatsView: View {
                         Text("Starts In").listHeader(false)
                         TimerView(referenceDate: game.start_date_time)
                     }
+                    
                     Spacer(minLength: 30)
                 } else {
                     Spacer(minLength: 20)
@@ -466,6 +543,15 @@ struct GamesStatsView: View {
                       }
                       Spacer(minLength: 30)
                     
+                }
+                if game.votes != nil || PickemData.isPickable(game: game) {
+                    Group {
+                        Text("Pick'em").listHeader()
+                            .padding(.bottom, -3)
+                        PickemSliderView(game: game, onVote: self.updateVote)
+                            .padding(.leading, 15).padding(.trailing, 15)
+                        Spacer(minLength: 40)
+                    }
                 }
                 if hasFetched { // hide until all data has been fetched to avoid jumping UI
                     if !(details?.events.isEmpty ?? false) {
@@ -544,6 +630,13 @@ struct GamesStatsView: View {
         }
     }
     
+    func updateVote(_ votes: VotesPerGame?) {
+        if let votes = votes {
+            withAnimation(.spring()) {
+                self.details?.game.votes = votes
+            }
+        }
+    }
     
     @available(iOS 16.1, *)
     func startLiveActivity(for game: Game) {
@@ -594,10 +687,10 @@ struct GamesStatsView_Previews: PreviewProvider {
             getEvent(type: .periodStart, period: 99),
             getEvent(type: .goal),
         ])
-        
         let starredTeams = StarredTeams()
         starredTeams.addTeam(teamCode: "SAIK")
         let game = getLiveGame(t1: "SAIK", score1: 4, t2: "IKO", score2: 2, status: "Overtime")
+        PickemData.updateStored(key: "picks.\(Settings.currentSeason)", picks: [Pick(gameUuid: game.game_uuid, pickedTeam: "SAIK")])
         return GamesStatsView(details: GameDetails(game: game, events: events, stats: stats, players: []),
                               provider: nil,
                               game: game)
@@ -693,6 +786,28 @@ struct GamesStatsView_Future_No_Prev_Game_Previews: PreviewProvider {
         return GamesStatsView(details: GameDetails(game: getFutureGame(), events: [], stats: nil, players: []),
                               provider: nil,
                               game: getFutureGame())
+            .environmentObject(GamesData(data: []))
+            .environmentObject(teams)
+            .environmentObject(Settings())
+            .environmentObject(getPickemData())
+            .environmentObject(getStandingsData())
+            .environmentObject(StarredTeams())
+            .environment(\.locale, .init(identifier: "sv"))
+    }
+}
+struct PickemSliderViewPreviews: PreviewProvider {
+    static var previews: some View {
+        let teams = getTeamsData()
+        
+        return VStack {
+            Spacer()
+            PickemSliderView(game: getFutureGame(), onVote: { vote in
+                
+            })
+            Spacer()
+        }
+        .padding()
+        .background(Color(uiColor: .systemGroupedBackground))
             .environmentObject(GamesData(data: []))
             .environmentObject(teams)
             .environmentObject(Settings())

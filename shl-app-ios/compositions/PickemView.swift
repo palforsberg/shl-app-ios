@@ -207,8 +207,10 @@ struct PickemView: View {
                 self.isPresent = false
             }
         }
-        
-        self.pickemData.vote(gameUuid: game.game_uuid, team: teamCode)
+        Task {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            _ = await self.pickemData.vote(gameUuid: game.game_uuid, team: teamCode)
+        }
     }
     
     func resetFrom(picks: [String:Pick]) {
