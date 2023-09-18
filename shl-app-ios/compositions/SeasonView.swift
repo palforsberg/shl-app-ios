@@ -269,10 +269,6 @@ struct PickemSectionView: View {
             }
         }
         .padding(.horizontal, 36)
-        .onAppear {
-            let corrects = pickemsData.getNrCorrect(playedGames: games.getGames().filter { $0.isPlayed() })
-            self.nrCorrects = corrects > 0 ? corrects : nil
-        }
         .sheet(isPresented: $showPickems){
             if #available(iOS 16.0, *) {
                 PickemView(isPresent: $showPickems)
@@ -291,6 +287,33 @@ struct PickemSectionView: View {
                 PickemStatsView()
             }
         }
+        .onReceive(self.games.objectWillChange) { _ in self.updateNrCorrects() }
+    }
+    
+    func updateNrCorrects() {
+        let corrects = pickemsData.getNrCorrect(playedGames: games.getGames().filter { $0.isPlayed() })
+        self.nrCorrects = corrects > 0 ? corrects : nil
+    }
+}
+
+struct StatusView: View {
+    var status: Status
+    
+    var body: some View {
+        VStack {
+            GroupedView(backgroundColor: status.lvl == "warn" ? Color(uiColor: .systemYellow).opacity(0.1) : Color(UIColor.secondarySystemGroupedBackground)) {
+                HStack {
+                    if status.lvl == "warn" {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                    }
+                    Text(status.msg)
+                        .rounded(size: 14, weight: .bold)
+                }
+                .padding()
+                
+            }
+            Spacer(minLength: 20)
+        }
     }
 }
 
@@ -298,6 +321,8 @@ struct SeasonView: View {
     @EnvironmentObject var starredTeams: StarredTeams
     @EnvironmentObject var gamesData: GamesData
     @EnvironmentObject var settings: Settings
+    
+    @State var status: Status?
     
     var provider: DataProvider?
     
@@ -319,6 +344,9 @@ struct SeasonView: View {
                     Spacer(minLength: 10)
                 }
                 WidgetPromo()
+                if let status = self.status {
+                    StatusView(status: status)
+                }
                 if (!liveGames.isEmpty) {
                     GroupedView(title: "Live", cornerRadius: 20) {
                         ForEach(liveGames) { (item) in
@@ -428,7 +456,12 @@ struct SeasonView: View {
 
         let maxAge = self.gamesData.getLiveGames(teamCodes: []).count > 0 ? 2 : throttling
         
-        if let gd = await provider?.getGames(season: settings.season, fetchType: .throttled, maxAge: maxAge) {
+        async let gamesDataReq = provider?.getGames(season: settings.season, fetchType: .throttled, maxAge: maxAge)
+        async let statusReq = provider?.getStatus()
+        
+        let (gameRsp, status) = await (gamesDataReq, statusReq)
+        
+        if let gd = gameRsp {
             if let games = gd.entries {
                 gamesData.set(data: games)
             }
@@ -437,6 +470,8 @@ struct SeasonView: View {
                debugPrint("[SEASON] reload widgets")
             }
         }
+        
+        self.status = status
     }
 }
 

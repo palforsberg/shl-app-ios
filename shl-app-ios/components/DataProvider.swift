@@ -9,7 +9,7 @@ import Foundation
 import WidgetKit
 
 #if DEBUG
-let baseUrl = "https://palsserver.com/shl-api/v2"
+let baseUrl = "http://192.168.141.229:8080"
 #else
 let baseUrl = "https://palsserver.com/shl-api/v2"
 #endif
@@ -90,6 +90,10 @@ class DataProvider {
     
     func getPlayers(for season: Int, code: String) async -> [Player]? {
         return await getThrottledData(url: playersUrl(season, code), type: [Player].self, maxAge: 10).entries
+    }
+    
+    func getStatus() async -> Status? {
+        return await getThrottledData(url: "\(baseUrl)/status", type: StatusRsp.self, maxAge: 120).entries?.status
     }
     
     func addUser(request: AddUser) async {
@@ -189,7 +193,7 @@ class DataProvider {
         request.setValue(API_KEY, forHTTPHeaderField: "x-api-key")
         
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
+            let (rspData, response) = try await URLSession.shared.data(for: request)
             guard let response = response as? HTTPURLResponse else {
                 print("[DATA] error", response)
                 throw PostError.parse
@@ -201,7 +205,7 @@ class DataProvider {
             if idempotencyCheck {
                 Cache.store(key: urlString, data: data)
             }
-            return data
+            return rspData
         } catch {
             print("[DATA] error", error)
             throw error

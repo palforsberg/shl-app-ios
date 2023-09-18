@@ -783,3 +783,14 @@ struct PickReq: Codable, Equatable {
     let user_id: String
     let team_code: String
 }
+
+
+struct Status: Codable {
+    let msg: String
+    let lvl: String
+}
+
+
+struct StatusRsp: Codable {
+    let status: Status?
+}
