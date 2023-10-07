@@ -10,6 +10,15 @@ import Foundation
 struct Pick: Codable {
     let gameUuid: String
     var pickedTeam: String
+    
+    func getPickedTeam() -> String {
+        if pickedTeam == "HERR" || pickedTeam == "NVIF" {
+            return "NYB"
+        } else if pickedTeam == "KAL" {
+            return "KHC"
+        }
+        return pickedTeam
+    }
 }
 
 private let PICKS_KEY = "picks.\(Settings.currentSeason)"
@@ -31,7 +40,7 @@ class PickemData: ObservableObject {
         self.picksPerGame = [:]
         
         PickemData.readStoredPicks(key: PICKS_KEY).forEach { p in
-            self.picksPerGame[p.gameUuid] = Pick(gameUuid: p.gameUuid, pickedTeam: p.pickedTeam)
+            self.picksPerGame[p.gameUuid] = Pick(gameUuid: p.gameUuid, pickedTeam: p.getPickedTeam())
         }
     }
     
@@ -64,11 +73,11 @@ class PickemData: ObservableObject {
     }
     
     func isPicked(gameUuid: String, team: String) -> Bool {
-        picksPerGame[gameUuid]?.pickedTeam == team
+        picksPerGame[gameUuid]?.getPickedTeam() == team
     }
     
     func getPicked(gameUuid: String) -> String? {
-        get(gameUuid)?.pickedTeam
+        get(gameUuid)?.getPickedTeam()
     }
     
     func getNrCorrect(playedGames: [Game]) -> Int {
@@ -92,7 +101,7 @@ class PickemData: ObservableObject {
     private static let PICKS_SEPARATOR = "::"
     
     public static func updateStored(key: String, picks: [Pick]) {
-        let pickStrings: [String] = picks.map { "\($0.gameUuid)\(PICKS_SEPARATOR)\($0.pickedTeam)"}
+        let pickStrings: [String] = picks.map { "\($0.gameUuid)\(PICKS_SEPARATOR)\($0.getPickedTeam())"}
         STORAGE.setValue(pickStrings, forKey: key)
     }
     

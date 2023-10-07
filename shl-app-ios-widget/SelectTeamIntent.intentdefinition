@@ -253,7 +253,7 @@
 					<key>INEnumValueIndex</key>
 					<integer>23</integer>
 					<key>INEnumValueName</key>
-					<string>HERR</string>
+					<string>NYB</string>
 				</dict>
 				<dict>
 					<key>INEnumValueDisplayName</key>
@@ -305,6 +305,16 @@
 					<key>INEnumValueName</key>
 					<string>OSIK</string>
 				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Kalmar HC</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>pQT7bD</string>
+					<key>INEnumValueIndex</key>
+					<integer>29</integer>
+					<key>INEnumValueName</key>
+					<string>KHC</string>
+				</dict>
 			</array>
 		</dict>
 	</array>
@@ -313,11 +323,11 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>OUgdJD</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>22E261</string>
+	<string>22G91</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>14E222b</string>
+	<string>15A240d</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>14.3</string>
+	<string>15.0</string>
 	<key>INIntents</key>
 	<array>
 		<dict>

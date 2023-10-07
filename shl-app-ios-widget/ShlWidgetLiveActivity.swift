@@ -56,8 +56,10 @@ struct LiveActivityReportView: View {
             VStack(spacing: 3) {
                 HStack(spacing: 8) {
                     Text("\(context.state.report.homeScore)")
+                        .contentTransition(.numericText())
                     Text(":").font(.system(size: 22, weight: .black, design: .rounded))
                     Text("\(context.state.report.awayScore)")
+                        .contentTransition(.numericText())
                 }
                 .font(.system(size: 34, weight: .heavy, design: .rounded))
                 
@@ -114,7 +116,7 @@ struct ShlWidgetLiveActivity: Widget {
         ActivityConfiguration(for: ShlWidgetAttributes.self) { context in
             // Lock screen/banner UI goes here
             LiveActivityReportView(context: context)
-                .padding(EdgeInsets(top: 20, leading: 0, bottom: context.state.event == nil ? 20 : 10, trailing: 0))
+                .padding(EdgeInsets(top: 20, leading: 0, bottom: context.state.event == nil ? 20 : 0, trailing: 0))
             if let e = context.state.event {
                 LiveActivityEventView(event: e)
             }
@@ -188,9 +190,10 @@ struct ShlWidgetLiveActivity: Widget {
 struct ShlWidgetLiveActivity_Previews: PreviewProvider {
     static let attributes = ShlWidgetAttributes(homeTeam: "LHF", awayTeam: "SAIK", homeTeamDisplayCode: "LHF", awayTeamDisplayCode: "SKE", gameUuid: "game_uuid_123", startDateTime: Date())
     static let report = LiveActivityReport(homeScore: 2, awayScore: 0, status: "Period1", gametime: "12:23")
-    static let event = LiveActivityEvent(title: "MÅÅL! 🎉", body: nil, teamCode: "LHF")
+    static let event = LiveActivityEvent(title: "MÅÅL! 🎉", body: "Olle Ollson • P1 15:35", teamCode: "LHF")
     static let contentState = ShlWidgetAttributes.ContentState(report: report, event: event)
-
+    static let contentStateNoEvent = ShlWidgetAttributes.ContentState(report: report, event: nil)
+    
     static var previews: some View {
         attributes
             .previewContext(contentState, viewKind: .dynamicIsland(.compact))
@@ -207,6 +210,10 @@ struct ShlWidgetLiveActivity_Previews: PreviewProvider {
         attributes
             .previewContext(contentState, viewKind: .content)
             .previewDisplayName("Notification")
+            .environment(\.locale, .init(identifier: "sv"))
+        attributes
+            .previewContext(contentStateNoEvent, viewKind: .content)
+            .previewDisplayName("Notification - No event")
             .environment(\.locale, .init(identifier: "sv"))
     }
 }

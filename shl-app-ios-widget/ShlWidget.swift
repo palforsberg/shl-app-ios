@@ -122,7 +122,8 @@ struct Provider: IntentTimelineProvider {
         case .aIK: return "AIK"
         case .aIS: return "AIS"
         case .dIF: return "DIF"
-        case .hERR: return "HERR"
+        case .nYB: return "NYB"
+        case .kHC: return "KHC"
         case .bIK: return "BIK"
         case .mODO: return "MODO"
         case .kRI: return "KRI"
@@ -153,6 +154,15 @@ enum FetchType {
     case timeline_api
     case timeline_cache
     case snapshot
+}
+
+extension View {
+    func widgetBackground() -> some View {
+        if #available(iOSApplicationExtension 17.0, *) {
+            return containerBackground(.black, for: .widget)
+        }
+        return self
+    }
 }
 
 struct TeamEntry: TimelineEntry {
@@ -293,6 +303,7 @@ struct TeamWidgetSystemSmall: View {
         }
         .foregroundColor(.white)
         .font(.system(size: 16, weight: .heavy, design: .rounded).lowercaseSmallCaps())
+        .widgetBackground()
         
     }
 }
@@ -337,6 +348,7 @@ struct TeamWidgetViewAccessoryRectangular: View {
         }
         .foregroundColor(.white)
         .font(.system(size: 12, weight: .bold, design: .rounded).lowercaseSmallCaps())
+        .widgetBackground()
 
     }
 }
@@ -346,6 +358,7 @@ struct TeamWidgetViewAccessoryCircular: View {
     
     var body: some View {
         WidgetTeamLogo(code: entry.teamCode, size: 46)
+            .widgetBackground()
     }
 }
 
@@ -354,7 +367,7 @@ struct TeamWidgetViewAccessoryInline: View {
     
     var body: some View {
         if let g = entry.game {
-            Text("\(entry.getTimeText(game: g).lowercased()): ") +
+            Text("\(entry.getTimeText(game: g).capitalized) - ") +
             Text("\(g.home_team_code) vs \(g.away_team_code)")
         }
     }
@@ -393,6 +406,10 @@ struct ShlWidget_Previews: PreviewProvider {
             TeamWidgetView(entry: entry)
                 .previewContext(WidgetPreviewContext(family: .accessoryCircular))
                 .previewDisplayName("Team Widget - Lock Small")
+            
+                TeamWidgetView(entry: entry)
+                    .previewContext(WidgetPreviewContext(family: .accessoryInline))
+                    .previewDisplayName("Team Widget - Lock Inline")
             TeamWidgetView(entry: entry)
                 .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
                 .previewDisplayName("Team Widget - Lock Big")

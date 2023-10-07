@@ -9,7 +9,7 @@ import Foundation
 import WidgetKit
 
 #if DEBUG
-let baseUrl = "http://192.168.141.229:8080"
+let baseUrl = "https://palsserver.com/shl-api/v2" //"http://192.168.141.229:8080"
 #else
 let baseUrl = "https://palsserver.com/shl-api/v2"
 #endif
