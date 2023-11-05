@@ -120,39 +120,39 @@ struct LiveGame: View {
             HStack(spacing: 18) {
                 TeamAvatar(game.home_team_code, alignment: .trailing)
                 GameScore(s1: game.home_team_result, s2: game.away_team_result)
+                    .opacity(game.getStatus() == .coming ? 0.1 : 1.0)
                 TeamAvatar(game.away_team_code, alignment: .leading)
             }
             HStack {
                 PickedLabel(picked: pick?.pickedTeam == game.home_team_code)
-                /*
-                VStack(alignment: .trailing) {
-                    Text("SOG").rounded(size: 12, weight: .semibold) +
-                    Text(" 12").rounded(size: 12, weight: .heavy)
-                    Text("PIM").rounded(size: 12, weight: .semibold) +
-                    Text(" 12").rounded(size: 12, weight: .heavy)
-                }.monospacedDigit()
-                 */
 
                 HStack(spacing: 2) {
-                    if let s = game.status {
+                    if game.getStatus() == .coming {
+                        Text(LocalizedStringKey(game.start_date_time.getFormattedDate()))
+                            .scaledToFit()
+                            .minimumScaleFactor(0.6)
+                        Text("•")
+                        Text("\(game.start_date_time.getFormattedTime())")
+                    } else if let s = game.status {
                         Text(LocalizedStringKey(s))
                     }
+                    
                     if let s = game.gametime, game.getStatus()?.isGameTimeApplicable() ?? false {
                         Text("•")
                         Text(s)
+                    } else if game.getStatus() == .finished {
+                        if game.shootout {
+                            Text("•")
+                            Text("Shootout")
+                        } else if game.overtime {
+                            Text("•")
+                            Text("Overtime")
+                        }
                     }
                 }
                 .padding(.leading, 20).padding(.trailing, 20)
 
                 PickedLabel(picked: pick?.pickedTeam == game.away_team_code)
-/*                VStack(alignment: .leading) {
-                    Text("12 ").rounded(size: 12, weight: .heavy) +
-                    Text("SOG").rounded(size: 12, weight: .semibold)
-                    
-                    Text("12 ").rounded(size: 12, weight: .heavy) +
-                    Text("PIM").rounded(size: 12, weight: .semibold)
-                }.monospacedDigit()
- */
             }
             .foregroundColor(Color(uiColor: .secondaryLabel))
             .font(.system(size: 14, weight: .bold, design: .rounded))
@@ -212,14 +212,14 @@ struct PlayedGame: View {
                 PickedLabel(picked: pick?.pickedTeam == game.home_team_code)
                 
                 HStack(spacing: 4) {
-                    if game.shootout {
-                        Text("Shootout")
-                        Text("•")
-                    } else if game.overtime {
-                        Text("Overtime")
-                        Text("•")
-                    }
                     Text(LocalizedStringKey(game.start_date_time.getFormattedDate()))
+                    if game.shootout {
+                        Text("•")
+                        Text("Shootout")
+                    } else if game.overtime {
+                        Text("•")
+                        Text("Overtime")
+                    }
                 }
                 
                 PickedLabel(picked: pick?.pickedTeam == game.away_team_code)
@@ -323,14 +323,17 @@ struct SeasonView: View {
     @EnvironmentObject var settings: Settings
     
     @State var status: Status?
+    @State var showAllPlayed: Bool = false
     
     var provider: DataProvider?
     
     var body: some View {
         let teamCodes = settings.onlyStarred ? starredTeams.starredTeams : []
-        let liveGames = gamesData.getLiveGames(teamCodes: teamCodes, starred: starredTeams.starredTeams)
-        let futureGames = gamesData.getFutureGames(teamCodes: teamCodes, starred: starredTeams.starredTeams)
-        let playedGames = gamesData.getPlayedGames(teamCodes: teamCodes)
+        let liveGames = gamesData.getGamesToday(teamCodes: teamCodes, starred: starredTeams.starredTeams)
+        let futureGames = gamesData.getFutureGames(teamCodes: teamCodes, starred: starredTeams.starredTeams, includeToday: false)
+        let playedGames = Array(gamesData.getPlayedGames(teamCodes: teamCodes)
+            .filter({ !Calendar.current.isDateInToday($0.start_date_time) })
+            .prefix(showAllPlayed ? 10000 : 30))
         NavigationView {
             
             ScrollView {
@@ -348,7 +351,7 @@ struct SeasonView: View {
                     StatusView(status: status)
                 }
                 if (!liveGames.isEmpty) {
-                    GroupedView(title: "Live", cornerRadius: 20) {
+                    GroupedView(title: "Today", cornerRadius: 20) {
                         ForEach(liveGames) { (item) in
                             NavigationLink(destination: GamesStatsView(game: item)) {
                                 LiveGame(game: item)
@@ -403,10 +406,21 @@ struct SeasonView: View {
                             }
                         }
                     }
+                    Spacer(minLength: 20)
+                    HStack {
+                        Button(self.showAllPlayed ? "SHOW LESS" : "SHOW ALL") {
+                            withAnimation {
+                                self.showAllPlayed.toggle()
+                            }
+                        }
+                        .font(.system(size: 16, weight: .bold, design: .rounded))
+                        .tint(Color(uiColor: .secondaryLabel))
+                    }
                 }
                 Spacer(minLength: 40)
             }
             .refreshable {
+                debugPrint("[SEASONVIEW] refreshable")
                 await self.reloadData(5)
             }
             .coordinateSpace(name: "season_scrollview")
@@ -432,11 +446,9 @@ struct SeasonView: View {
                 TeamSelectView(selectedTeams: $selectedTeams, description: "Select teams to see")
             }
         }*/
-        .onReceive(settings.$season) { _ in
-            Task {
-                debugPrint("[SEASONVIEW] settings.$season")
-                let _ = await self.reloadData(1)
-            }
+        .task(id: settings.season) {
+            debugPrint("[SEASONVIEW] task")
+            await self.reloadData(60)
         }
         .onReceive(NotificationCenter.default.publisher(for: .onGameNotification)) { _ in
             Task {
@@ -454,7 +466,7 @@ struct SeasonView: View {
 
     func reloadData(_ throttling: TimeInterval) async {
 
-        let maxAge = self.gamesData.getLiveGames(teamCodes: []).count > 0 ? 2 : throttling
+        let maxAge = self.gamesData.live_games.count > 0 ? 5 : throttling
         
         async let gamesDataReq = provider?.getGames(season: settings.season, fetchType: .throttled, maxAge: maxAge)
         async let statusReq = provider?.getStatus()

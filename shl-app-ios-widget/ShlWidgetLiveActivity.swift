@@ -62,6 +62,7 @@ struct LiveActivityReportView: View {
                         .contentTransition(.numericText())
                 }
                 .font(.system(size: 34, weight: .heavy, design: .rounded))
+                .opacity(context.state.getStatus() == GameStatus.coming ? 0.1 : 1)
                 
                 HStack(spacing: 3) {
                     if context.state.getStatus() == .coming {
@@ -72,6 +73,7 @@ struct LiveActivityReportView: View {
                     if let s = context.state.report.gametime, context.state.getStatus()?.isGameTimeApplicable() ?? false {
                         Text("•")
                         Text(s)
+                            .contentTransition(.numericText())
                     }
                 }
                 .font(.system(size: 14, weight: .heavy, design: .rounded))

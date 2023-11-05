@@ -272,7 +272,7 @@ struct TeamView: View {
         let team = self.teams.getTeam(teamCode)
         let starred = starredTeams.isStarred(teamCode: teamCode)
         let liveGames = games.getLiveGames(teamCodes: [teamCode])
-        let futureGames = games.getFutureGames(teamCodes: [teamCode])
+        let futureGames = games.getFutureGames(teamCodes: [teamCode], includeToday: true)
         let playedGames = games.getPlayedGames(teamCodes: [teamCode]).prefix(showingAllPlayedGames ? 1000 : 5)
         ScrollView {
             VStack(alignment: .center, spacing: 0) {
@@ -466,18 +466,8 @@ struct TeamView: View {
     func reloadPlayers() async {
         if let players = await self.provider?.getPlayers(for: settings.season, code: self.teamCode) {
 
-            let gks = Array(players
-                .filter({p in p.hasPlayed()})
-                .filter({ p in p.position == "GK" })
-                .sorted(by: { p1, p2 in p1.jersey >= p2.jersey })
-                .sorted(by: { p1, p2 in p1.getGkScore() >= p2.getGkScore() }))
-            
-            self.topPlayers = Array(players
-                .filter({p in p.hasPlayed()})
-                .filter({ p in p.position != "GK" })
-                .sorted(by: { p1, p2 in p1.jersey >= p2.jersey })
-                .sorted(by: { p1, p2 in p1.getScore() >= p2.getScore() })
-                .prefix(3))
+            let gks = players.getTopGoalKeepers()
+            self.topPlayers = Array(players.getTopPlayers().prefix(3))
             
             if gks.count > 0 {
                 self.topPlayers?.insert(gks[0], at: 0)

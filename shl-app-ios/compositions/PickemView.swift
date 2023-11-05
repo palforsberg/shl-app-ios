@@ -215,10 +215,12 @@ struct PickemView: View {
     
     func resetFrom(picks: [String:Pick]) {
         let teamCodes = settings.onlyStarred ? starredTeams.starredTeams : []
-        self.gamesToVote = games
-            .getFutureGames(teamCodes: teamCodes, starred: starredTeams.starredTeams)
+        let applicableGames = (games.getGamesToday(teamCodes: teamCodes, starred: starredTeams.starredTeams) +
+            games.getFutureGames(teamCodes: teamCodes, starred: starredTeams.starredTeams, includeToday: false))
             .filter { PickemData.isPickable(game: $0) }
             .filter { picks[$0.game_uuid] == nil }
+        
+        self.gamesToVote = applicableGames
     }
 }
 

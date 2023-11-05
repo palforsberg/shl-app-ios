@@ -102,18 +102,25 @@ enum GameStatus: String, Codable {
 
 class GamesData: ObservableObject {
     var data: [Game]
+    var live_games: [Game]
     
     init(data: [Game]) {
         self.data = data
+        self.live_games = data.filter({ $0.isLive() })
     }
     
     func set(data: [Game]) {
         self.data = data
+        self.live_games = data.filter({ $0.isLive() })
         self.objectWillChange.send()
     }
     
     func getGames() -> [Game] {
         return data.sorted { (a, b) in a.start_date_time < b.start_date_time }
+    }
+    
+    func getNrLive(league: League) -> Int {
+        self.live_games.filter { $0.league == league }.count
     }
 
     func getLiveGames(teamCodes: [String], starred: [String] = []) -> [Game] {
@@ -127,20 +134,35 @@ class GamesData: ObservableObject {
                 return false
             }
     }
+    
+    func getGamesToday(teamCodes: [String], starred: [String] = []) -> [Game] {
+        return data
+            .filter(getTeamFilter(teamCodes: teamCodes))
+            .filter({ Calendar.current.isDateInToday($0.start_date_time) })
+            .sorted { a, b in
+                if a.start_date_time == b.start_date_time {
+                    if a.includesTeams(starred) {
+                        return true
+                    }
+                }
+                return a.start_date_time < b.start_date_time
+            }
+    }
 
     func getPlayedGames(teamCodes: [String]) -> [Game] {
-        return getGames()
+        return data
+            .filter({ $0.isPlayed() })
+            .filter(getTeamFilter(teamCodes: teamCodes))
             .sorted { (a, b) -> Bool in
                 return a.start_date_time > b.start_date_time
             }
-            .filter({ $0.isPlayed() })
-            .filter(getTeamFilter(teamCodes: teamCodes))
     }
     
-    func getFutureGames(teamCodes: [String], starred: [String] = []) -> [Game] {
+    func getFutureGames(teamCodes: [String], starred: [String] = [], includeToday: Bool) -> [Game] {
         let games = data
             .filter({ $0.isFuture() })
             .filter(getTeamFilter(teamCodes: teamCodes))
+            .filter { includeToday ? true : !Calendar.current.isDateInToday($0.start_date_time) }
             .sorted { a, b in
                 if a.start_date_time == b.start_date_time {
                     if a.includesTeams(starred) {
@@ -381,9 +403,35 @@ struct Game: Codable, Identifiable, Equatable  {
         return didWin(team) ? 3 : 0
     }
     
+    func getLivePoints(for team: String) -> Int {
+        guard (team == home_team_code || team == away_team_code)
+        else {
+            return 0
+        }
+        
+        if home_team_result == away_team_result {
+            return 1
+        } else if home_team_result > away_team_result {
+            return home_team_code == team ? 3 : 0
+        } else {
+            return away_team_code == team ? 3 : 0
+        }
+    }
+    
     func getDiff(for team: String) -> Int {
         guard isPlayed(),
               (team == home_team_code || team == away_team_code)
+        else {
+            return 0
+        }
+        if team == home_team_code {
+            return home_team_result - away_team_result
+        } else {
+            return away_team_result - home_team_result
+        }
+    }
+    func getLiveDiff(for team: String) -> Int {
+        guard (team == home_team_code || team == away_team_code)
         else {
             return 0
         }
@@ -418,6 +466,40 @@ class StandingsData: ObservableObject {
     func getFor(team: String) -> Standing? {
         return self.data.getAll().first(where: { $0.team_code == team })
     }
+    
+    func addLiveGames(league: League, live_games: [Game]) -> [Standing] {
+        return self.data.get(league)
+            .map { s in
+                if let game = live_games.first(where: { g in g.hasTeam(s.team_code) }) {
+                    return Standing(team_code: s.team_code,
+                                    gp: s.gp + 1,
+                                    rank: s.rank,
+                                    points: s.points + game.getLivePoints(for: s.team_code),
+                                    diff: s.diff + game.getLiveDiff(for: s.team_code),
+                                    league: s.league)
+                }
+                return s
+            }
+            .sorted(by: StandingsData.getStandingSorter())
+            .enumerated()
+            .map { (e, s) in
+                return Standing(team_code: s.team_code, gp: s.gp, rank: e + 1, points: s.points, diff: s.diff, league: s.league)
+            }
+            
+    }
+    
+    static func getStandingSorter() -> (Standing, Standing) -> Bool {
+        { (a: Standing, b: Standing) -> Bool in
+            if a.points == b.points {
+                if a.diff == b.diff {
+                    return a.team_code < b.team_code
+                }
+                return a.diff > b.diff
+            }
+            return a.points > b.points
+        }
+    }
+    
 }
 
 enum League : String, Codable {
@@ -431,6 +513,13 @@ struct StandingRsp: Codable {
     
     func getAll() -> [Standing] {
         SHL + HA
+    }
+    
+    func get(_ league: League) -> [Standing] {
+        switch league {
+        case .ha: return HA
+        case .shl: return SHL
+        }
     }
 }
 
@@ -603,6 +692,23 @@ struct Player: Codable, Identifiable {
     }
 }
 
+extension [Player] {
+    func getTopGoalKeepers() -> [Player] {
+        self
+            .filter({p in p.hasPlayed()})
+            .filter({ p in p.position == "GK" })
+            .sorted(by: { p1, p2 in p1.jersey >= p2.jersey })
+            .sorted(by: { p1, p2 in p1.getGkScore() >= p2.getGkScore() })
+    }
+    
+    func getTopPlayers() -> [Player] {
+        self
+            .filter({p in p.hasPlayed()})
+            .filter({ p in p.position != "GK" })
+            .sorted(by: { p1, p2 in p1.jersey >= p2.jersey })
+            .sorted(by: { p1, p2 in p1.getScore() >= p2.getScore() })
+    }
+}
 
 struct PlusMinus: Codable {
     var d: Int

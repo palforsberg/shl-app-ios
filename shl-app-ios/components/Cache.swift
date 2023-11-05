@@ -36,8 +36,8 @@ class Cache {
     }
     
     static func clearOld() {
-        print("[CACHE] Clear old")
         let currentKey = Cache.getKey("")
+        print("[CACHE] Clear old, new key \(currentKey)")
         Cache.storage.dictionaryRepresentation().keys
             .filter { $0.starts(with: "http") && !$0.contains(currentKey) }
             .forEach { cacheKey in

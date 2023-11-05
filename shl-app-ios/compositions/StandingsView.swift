@@ -288,10 +288,13 @@ struct StandingsView: View {
     var provider: DataProvider?
     
     @State var selectedPlayoff: PlayoffEntry?
+    @State var overwriteStandings: [Standing]?
+    
     @AppStorage("standing.league") var league = League.shl
     
     var body: some View {
-        let standings = self.standings.get(for: self.league)
+        let standings = overwriteStandings ?? self.standings.get(for: self.league)
+        
         NavigationView {
             ScrollView {
                 if let po = self.playoffs.get(for: self.league) {
@@ -310,10 +313,23 @@ struct StandingsView: View {
                 .padding(EdgeInsets(top: 0, leading: 10, bottom: -2, trailing: 10))
                 GroupedView(cornerRadius: 15) {
                     ForEach(standings, id: \.team_code) { item in
+                        let orig = self.getOriginal(team_code: item.team_code)
                         NavigationLink(destination: TeamView(teamCode: item.team_code, standing: item)) {
                             VStack(spacing: 0) {
                                 HStack() {
                                     PointsLabel(val: "\(item.rank)", nrDigits: 2)
+                                        .overlay {
+                                            if let o = orig, o.rank != item.rank {
+                                                HStack(spacing: 2) {
+                                                    Text(o.rank - item.rank > 0 ? "▴" : "▾")
+                                                        .rounded(size: 12, weight: .black) +
+                                                    Text("\(abs(o.rank - item.rank))")
+                                                        .rounded(size: 12, weight: .black)
+                                                }
+                                                .offset(x: 2, y: 14)
+                                                .foregroundColor(Color(o.rank - item.rank > 0 ? UIColor.systemYellow : UIColor.systemRed))
+                                            }
+                                        }
                                     TeamEntry(code: item.team_code, display_code: teams.getDisplayCode(item.team_code))
                                         .id("team-\(item.team_code)")
                                     Spacer()
@@ -321,6 +337,14 @@ struct StandingsView: View {
                                         .frame(width: 30, alignment: .center)
                                     PointsLabel(val: "\(item.points)")
                                         .frame(width: 34, alignment: .center)
+                                        .overlay {
+                                            if let o = orig, o.points != item.points {
+                                                Text("+\(item.points - o.points)")
+                                                    .rounded(size: 12, weight: .black)
+                                                    .foregroundColor(Color(UIColor.systemYellow))
+                                                    .offset(x: 6, y: 14)
+                                            }
+                                        }
                                 }
                                 .font(.system(size: 15, weight: .heavy, design: .rounded))
                                 .zIndex(starredTeams.isStarred(teamCode: item.team_code) ? 1000 : 1)
@@ -343,7 +367,8 @@ struct StandingsView: View {
                 Spacer(minLength: 40)
             }
             .refreshable {
-                await self.reloadData()
+                debugPrint("[STANDING] refreshable")
+                await self.reloadData(5)
             }
             .id(settings.season) // makes sure list is recreated when rerendered. To take care of reuse cell issues
             .navigationBarTitle(Text(self.league == .shl ? "SHL" : "HA").rounded(size: 16))
@@ -357,20 +382,52 @@ struct StandingsView: View {
                 Text(self.league == .ha ? "SHL" : "HA")
                     .rounded(size: 16, weight: .semibold)
             }.frame(height: 44))
+            
+            .overlay(alignment: .bottomTrailing) {
+                HStack {
+                    Spacer()
+                    Button {
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "arrow.up.arrow.down").font(.system(size: 10, weight: .bold, design: .rounded))
+                            Text("Live Rank")
+                                .rounded(size: 14, weight: .heavy)
+                        }
+                    }
+                    .simultaneousGesture(DragGesture(minimumDistance: 0, coordinateSpace: .local).onChanged({_ in
+                        guard self.overwriteStandings == nil else { return }
+                        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+                        withAnimation(.spring) {
+                            self.overwriteStandings = self.standings
+                                .addLiveGames(league: self.league, live_games: self.games.live_games)
+                        }
+                    }).onEnded({_ in
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        withAnimation(.spring) {
+                            self.overwriteStandings = nil
+                        }
+                    }))
+                    .padding(EdgeInsets(top: 15, leading: 15, bottom: 15, trailing: 15))
+                    .accentColor(Color(uiColor: .label))
+                    .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    .overlay { RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(.gray.opacity(0.3)) }
+                    .shadow(color: Color(uiColor: .black).opacity(0.2), radius: 4, x: 0, y: 0)
+                }
+                .opacity(self.games.getNrLive(league: self.league) > 0 ? 1 : 0)
+                .padding(.trailing, 30)
+                .padding(.bottom, 20)
+            }
         }
-        /*.safeAreaInset(edge: .bottom) {
-            VStack(spacing: 0) {
-                Divider()
-                ScrollPicker(index: $scrollIndex.animation(), numberOfCells: self.standingTimeline.gp)
-                    .background(.ultraThinMaterial)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-        }*/
-        .onReceive(settings.$season, perform: { _ in
+        .task(id: settings.season) {
+            debugPrint("[STANDINGS] task")
+            await self.reloadData(60)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            debugPrint("[STANDINGS] applicationWillEnterForeground")
             Task {
-                await self.reloadData()
+                await self.reloadData(15 * 60)
             }
-        })
+        }
         .sheet(item: $selectedPlayoff, onDismiss: {
             self.selectedPlayoff = nil
         }) { p in
@@ -383,9 +440,9 @@ struct StandingsView: View {
         }
     }
     
-    func reloadData() async {
-        async let standings = provider?.getStandings(season: settings.season, maxAge: 10)
-        async let playoffs = provider?.getPlayoffs(season: settings.season, maxAge: 10)
+    func reloadData(_ maxAge: TimeInterval = 10) async {
+        async let standings = provider?.getStandings(season: settings.season, maxAge: maxAge)
+        async let playoffs = provider?.getPlayoffs(season: settings.season, maxAge: maxAge)
         
         let (result_standings, result_playoffs) = await (standings, playoffs)
         
@@ -411,6 +468,14 @@ struct StandingsView: View {
             return
         }
         self.selectedPlayoff = playoff
+    }
+    
+    func getOriginal(team_code: String) -> Standing? {
+        guard self.overwriteStandings != nil else {
+            return nil
+        }
+        return self.standings.get(for: self.league)
+            .first { s in s.team_code == team_code }
     }
 }
 
