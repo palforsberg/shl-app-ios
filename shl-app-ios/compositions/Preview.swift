@@ -71,11 +71,11 @@ func getPlayersWithZeroScore() -> [String: TeamPlayers] {
 }
 
 func getPlayer(id: Int, g: Int, a: Int, pim: Int) -> Player {
-    Player(id: id, team_code: "LHF", first_name: "Lars", family_name: "Larsson", jersey: 69, position: "LD", season: "Season2022", gp: 1, toi_s: 1337, g: g, a: a, pim: pim)
+    Player(id: id, team_code: "LHF", first_name: "Lars", family_name: "Larsson", jersey: 69, position: "LD", season: "Season2022", league: .shl, gp: 1, toi_s: 1337, g: g, a: a, pim: pim)
 }
 
 func getPlayerStats(id: Int, g: Int, a: Int, pim: Int) -> Player {
-    Player(id: id, team_code: "LHF", first_name: "Lars", family_name: "Larsson", jersey: 69, position: "LD", season: "Season2022", gp: 1, toi_s: 1337, g: g, a: a, pim: pim)
+    Player(id: id, team_code: "LHF", first_name: "Lars", family_name: "Larsson", jersey: 69, position: "LD", season: "Season2022", league: .shl, gp: 1, toi_s: 1337, g: g, a: a, pim: pim)
 }
 
 func getEventPlayer() -> EventPlayer {

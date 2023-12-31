@@ -123,3 +123,17 @@
 "PICKEM.SWIPE" = "Dra för att tippa vinnare";
 "PICKEM.NO_GAMES_LEFT" = "Inga matcher kvar just nu.\nTryck för att göra om.";
 "PICKEM.SYNCERROR" = "Kunde inte skicka pick till server.";
+
+// Player View
+"PV.Points" = "Poäng";
+"PV.Goals" = "Mål";
+"PV.Assists" = "Assist";
+"PV.Plus Minus" = "+/-";
+"PV.Penalty Minutes" = "Straffminuter";
+
+"PV.Goals Against Per Game" = "Insläppta per Match";
+"PV.Saves" = "Räddningar";
+"PV.Save %" = "Räddningar %";
+
+"Search player" = "Sök spelare";
+"No result" = "Inga träffar";

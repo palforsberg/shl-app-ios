@@ -119,9 +119,11 @@ struct LiveGame: View {
         VStack(alignment: .center, spacing: 4) {
             HStack(spacing: 18) {
                 TeamAvatar(game.home_team_code, alignment: .trailing)
+                    .opacity(getOpacity(team_code: game.home_team_code))
                 GameScore(s1: game.home_team_result, s2: game.away_team_result)
                     .opacity(game.getStatus() == .coming ? 0.1 : 1.0)
                 TeamAvatar(game.away_team_code, alignment: .leading)
+                    .opacity(getOpacity(team_code: game.away_team_code))
             }
             HStack {
                 PickedLabel(picked: pick?.pickedTeam == game.home_team_code)
@@ -157,6 +159,13 @@ struct LiveGame: View {
             .foregroundColor(Color(uiColor: .secondaryLabel))
             .font(.system(size: 14, weight: .bold, design: .rounded))
         }.frame(maxWidth: .infinity)
+    }
+    
+    func getOpacity(team_code: String) -> CGFloat {
+        guard game.isPlayed() else {
+            return 1.0
+        }
+        return game.didWin(team_code) ? 1.0 : 0.6
     }
 }
 

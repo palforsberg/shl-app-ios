@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/pal/Code/shl-client-ios/shl-app-ios.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>

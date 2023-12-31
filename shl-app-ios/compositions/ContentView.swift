@@ -62,6 +62,7 @@ struct ContentView: View {
     @ObservedObject var playoffs = PlayoffData()
     @ObservedObject var pickemData: PickemData
     @ObservedObject var errorHandler = ErrorHandler()
+    @ObservedObject var playersData = PlayersData(data: [])
     
     var provider: DataProvider? = DataProvider()
     
@@ -87,6 +88,9 @@ struct ContentView: View {
         if let teams = provider?.getCachedTeams() {
             self.teams.setTeams(teams: teams)
         }
+        if let players = provider?.getCachedPlayers(for: settings.season) {
+            self.playersData.set(data: players)
+        }
         
         self.pickemData.errorHandler = errorHandler
         debugPrint("[ContentView] Init")
@@ -95,8 +99,17 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             TabView {
-                SeasonView(provider: provider).tabItem { Label("Home", systemImage: getImageForGamesView()).environment(\.symbolVariants, .none) }
-                StandingsView(provider: provider).tabItem { Label("Standings", systemImage: getImageForStandingsView()).environment(\.symbolVariants, .none) }
+                SeasonView(provider: provider)
+                    .tabItem { Label("Home", systemImage: getImageForGamesView())
+                        .environment(\.symbolVariants, .none) }
+                StandingsView(provider: provider)
+                    .tabItem { Label("Standings", systemImage: getImageForStandingsView())
+                        .environment(\.symbolVariants, .none) }
+                PlayerView(provider: provider)
+                    .tabItem {
+                        Image("figure.hockey.circle").renderingMode(.template)
+                        Text("Players")
+                    }
             }
             VStack {
                 GameAlert(alert: alert)
@@ -123,6 +136,7 @@ struct ContentView: View {
         .environmentObject(playoffs)
         .environmentObject(pickemData)
         .environmentObject(errorHandler)
+        .environmentObject(playersData)
         .onReceive(NotificationCenter.default.publisher(for: .onGameNotification)) { data in
             // self.alert = data.object as? GameNofitication
         }
@@ -147,6 +161,7 @@ struct ContentView: View {
             return "list.bullet.circle"
         }
     }
+
 }
 
 

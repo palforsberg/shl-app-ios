@@ -405,6 +405,11 @@ struct GamesStatsView: View {
     var body: some View {
         let game = details?.game ?? game
             ScrollView {
+                #if DEBUG
+                NavigationLink("Update Report") {
+                    UpdateReportView(game: game)
+                }
+                #endif
                 if #available(iOS 16.0, *) {
                 } else {
                     PullToRefresh(coordinateSpaceName: "game_stats_scrollview") {
@@ -691,7 +696,7 @@ struct GamesStatsView_Previews: PreviewProvider {
         starredTeams.addTeam(teamCode: "SAIK")
         let game = getLiveGame(t1: "SAIK", score1: 4, t2: "IKO", score2: 2, status: "Overtime")
         PickemData.updateStored(key: "picks.\(Settings.currentSeason)", picks: [Pick(gameUuid: game.game_uuid, pickedTeam: "SAIK")])
-        return GamesStatsView(details: GameDetails(game: game, events: events, stats: stats, players: []),
+        return GamesStatsView(details: GameDetails(game: game, events: events, stats: stats, players: [getPlayer(id: 5434, g: 2, a: 3, pim: 2)]),
                               provider: nil,
                               game: game)
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))

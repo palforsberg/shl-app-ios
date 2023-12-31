@@ -179,9 +179,9 @@ struct PlayerStatsSheet: View {
                             Spacer()
                             VStat(stat: "Home", nr: "\(player.gp)")
                             Spacer()
-                            VStat(stat: "Points/Game", nr: String(format: "%.2f", player.getPointsPerGame()))
+                            VStat(stat: "+/-", nr: player.getPlusMinus())
                             Spacer()
-                            VStat(stat: "Time/Game", nr: player.getToiPerGameFormatted())
+                            VStat(stat: "Points/Game", nr: String(format: "%.2f", player.getPointsPerGame()))
                             Spacer()
                         }.padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
                     }.fixedSize(horizontal: false, vertical: true)
@@ -200,6 +200,8 @@ struct PlayerStatsSheet: View {
                     
                     GroupedView {
                         HStack {
+                            Spacer()
+                            VStat(stat: "Time/Game", nr: player.getToiPerGameFormatted())
                             Spacer()
                             VStat(stat: "Time On Ice", nr: player.getToiFormatted())
                             Spacer()

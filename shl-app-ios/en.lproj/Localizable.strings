@@ -126,3 +126,18 @@
 "PICKEM.SWIPE" = "Swipe to pick winner";
 "PICKEM.NO_GAMES_LEFT" = "No games left to pick.\nTap to redo.";
 "PICKEM.SYNCERROR" = "Error occured when sending pick to server.";
+
+
+// Player View
+"PV.Points" = "Points";
+"PV.Goals" = "Goals";
+"PV.Assists" = "Assists";
+"PV.Plus Minus" = "+/-";
+"PV.Penalty Minutes" = "Penalty Minutes";
+
+"PV.Goals Against Per Game" = "Goals Against Per Game";
+"PV.Saves" = "Saves";
+"PV.Save %" = "Saves %";
+
+"No result" = "No result";
+"Search player" = "Search player";

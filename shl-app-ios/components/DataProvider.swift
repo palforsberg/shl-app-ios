@@ -21,7 +21,8 @@ let userUrl = "\(baseUrl)/user"
 let liveActivityStartUrl = "\(baseUrl)/live-activity/start"
 let liveActivityEndUrl = "\(baseUrl)/live-activity/end"
 let gameDetailsUrl = { (game_uuid: String) -> String in return "\(baseUrl)/game/\(game_uuid)" }
-let playersUrl = { (season: Int, code: String) -> String in "\(baseUrl)/players/\(season)/\(code)" }
+let teamPlayersUrl = { (season: Int, code: String) -> String in "\(baseUrl)/players/\(season)/\(code)" }
+let playersUrl = { (season: Int) -> String in "\(baseUrl)/players/\(season)" }
 let picksUrl = "\(baseUrl)/vote"
 
 enum GetType {
@@ -89,7 +90,15 @@ class DataProvider {
     }
     
     func getPlayers(for season: Int, code: String) async -> [Player]? {
-        return await getThrottledData(url: playersUrl(season, code), type: [Player].self, maxAge: 10).entries
+        return await getThrottledData(url: teamPlayersUrl(season, code), type: [Player].self, maxAge: 10).entries
+    }
+    
+    func getPlayers(for season: Int, maxAge: TimeInterval) async -> (entries: [Player]?, type: GetType) {
+        return await getThrottledData(url: playersUrl(season), type: [Player].self, maxAge: maxAge)
+    }
+    
+    func getCachedPlayers(for season: Int) -> [Player]? {
+        Cache.retrieve(key: playersUrl(season), type: [Player].self)
     }
     
     func getStatus() async -> Status? {

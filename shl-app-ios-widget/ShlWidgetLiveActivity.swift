@@ -62,11 +62,12 @@ struct LiveActivityReportView: View {
                         .contentTransition(.numericText())
                 }
                 .font(.system(size: 34, weight: .heavy, design: .rounded))
-                .opacity(context.state.getStatus() == GameStatus.coming ? 0.1 : 1)
+                .opacity(context.state.getStatus() == GameStatus.coming ? 0.4 : 1)
                 
                 HStack(spacing: 3) {
                     if context.state.getStatus() == .coming {
                         Text("\(context.attributes.startDateTime.getFormattedDate()) \(context.attributes.startDateTime.getFormattedTime())")
+                            .opacity(0.6)
                     } else if let s = context.state.report.status {
                         Text(LocalizedStringKey(s))
                     }
@@ -117,9 +118,10 @@ struct ShlWidgetLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: ShlWidgetAttributes.self) { context in
             // Lock screen/banner UI goes here
+            let hasEvent = context.state.event?.body != nil
             LiveActivityReportView(context: context)
-                .padding(EdgeInsets(top: 20, leading: 0, bottom: context.state.event == nil ? 20 : 0, trailing: 0))
-            if let e = context.state.event {
+                .padding(EdgeInsets(top: 20, leading: 0, bottom: hasEvent ? 0 : 20, trailing: 0))
+            if let e = context.state.event, hasEvent {
                 LiveActivityEventView(event: e)
             }
         } dynamicIsland: { context in

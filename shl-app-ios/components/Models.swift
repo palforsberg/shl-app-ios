@@ -63,7 +63,7 @@ enum GameType: String, Codable {
     case season = "Season"
     case kvalmatch = "Demotion"
 }
-enum GameStatus: String, Codable {
+enum GameStatus: String, Codable, CaseIterable {
     case coming = "Coming"
     case period1 = "Period1"
     case period2 = "Period2"
@@ -619,11 +619,13 @@ struct Player: Codable, Identifiable {
     var jersey: Int
     var position: String
     var season: String
+    var league: League
     
     let gp: Int
     
     // Player stats
     var toi_s: Int?
+    var d: Int?
     var g: Int?
     var a: Int?
     var pim: Int?
@@ -647,6 +649,11 @@ struct Player: Codable, Identifiable {
         return getPoints()
     }
     
+    func getPlusMinus() -> String {
+        let val = self.d ?? 0
+        return val >= 0 ? "+\(val)" : "\(val)"
+    }
+    
     func getPoints() -> Int {
         (g ?? 0) + (a ?? 0)
     }
@@ -660,11 +667,15 @@ struct Player: Codable, Identifiable {
     }
     
     func getSavesPercentage() -> Float {
-        return ((Float)(svs ?? 0) / (Float)(soga ?? 1)) * 100
+        return (Float(svs ?? 0) / Float(denom(soga))) * 100
+    }
+    
+    func getGoalsAgainsPerGame() -> Float {
+        return Float(ga ?? 0) / Float(gp != 0 ? gp : 1)
     }
     
     func getGoalsPerShotPercentage() -> Float {
-        return (Float(g ?? 0) / Float(max(sog ?? 1, 1))) * 100
+        return (Float(g ?? 0) / Float(denom(sog))) * 100
     }
     
     func getPointsPerGame() -> Float {
@@ -690,6 +701,10 @@ struct Player: Codable, Identifiable {
         }
         return String(format: "%02d:%02d", m, s)
     }
+    
+    func denom(_ val: Int?) -> Int {
+        val == nil || val == 0 ? 1 : val!
+    }
 }
 
 extension [Player] {
@@ -705,8 +720,27 @@ extension [Player] {
         self
             .filter({p in p.hasPlayed()})
             .filter({ p in p.position != "GK" })
-            .sorted(by: { p1, p2 in p1.jersey >= p2.jersey })
-            .sorted(by: { p1, p2 in p1.getScore() >= p2.getScore() })
+            .sorted(by: { p1, p2 in
+                if p1.getScore() == p2.getScore() {
+                    if p1.g ?? 0 == p2.g ?? 0 {
+                        return p1.jersey >= p2.jersey
+                    }
+                    return p1.g ?? 0 >= p2.g ?? 0
+                }
+                return p1.getScore() >= p2.getScore()
+            })
+    }
+}
+
+class PlayersData: ObservableObject {
+    var data: [Player]
+    init(data: [Player]) {
+        self.data = data
+    }
+    
+    func set(data: [Player]) {
+        self.data = data
+        self.objectWillChange.send()
     }
 }
 

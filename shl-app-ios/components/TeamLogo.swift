@@ -74,13 +74,13 @@ struct TightTeamLogo: View {
 struct PlayerImage: View {
     var player: Int
     var size: CGFloat = 30.0
+    var cornerRadius: CGFloat?
 
     var body: some View {
-        URLImage(
-            url: "https://palsserver.com/shl-server/player/\(player).jpg?v=\(Cache.getBuildVersionNumber() ?? "unknown")",
-            placeholder: Image(systemName: "person.fill"))
+        let url = "https://palsserver.com/shl-server/player/\(player).jpg"
+        URLImage(url: url, placeholder: Image(systemName: "person.fill"))
             .frame(width: size, height: size * 1.2, alignment: .center)
-            .cornerRadius(size / 6)
+            .cornerRadius(cornerRadius ?? size / 6)
             .scaledToFit()
             .clipped()
     }
@@ -93,7 +93,7 @@ struct TeamLogo_Previews: PreviewProvider {
             TeamLogo(code: "MODO", size: 110)
             TeamLogo(code: "HV71", size: 110)
             TeamLogo(code: "TBD", size: 110)
-            PlayerImage(player: 206, size: 110)
+            PlayerImage(player: 3524, size: 110)
             PlayerImage(player: 666, size: 110)
         }
     }
