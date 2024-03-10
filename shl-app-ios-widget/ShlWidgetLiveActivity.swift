@@ -14,7 +14,10 @@ struct WidgetTeamLogo: View {
     var size: CGFloat = 40.0
 
     var body: some View {
-        if let teamImage = UIImage(named: self.getImageName()) {
+        if code == "TBD" {
+          Text(code)
+                .rounded(size: 14, weight: .heavy)
+        } else if let teamImage = UIImage(named: self.getImageName()) {
             Image(uiImage: teamImage)
                 .resizable()
                 .scaledToFit()

@@ -92,9 +92,7 @@ class PickemData: ObservableObject {
     
     static func isPickable(game: Game) -> Bool {
         game.isFuture() &&
-        !game.isTbd() &&
-        !game.isPlayoff() &&
-        !game.isDemotion()
+        !game.isTbd()
     }
     
     private static let STORAGE = UserDefaults.shared

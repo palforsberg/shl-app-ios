@@ -399,7 +399,7 @@ struct StandingsView: View {
                         UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
                         withAnimation(.spring) {
                             self.overwriteStandings = self.standings
-                                .addLiveGames(league: self.league, live_games: self.games.live_games)
+                                .addLiveGames(league: self.league, live_games: self.games.live_games.filter { $0.isSeasonGame() })
                         }
                     }).onEnded({_ in
                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
@@ -413,7 +413,10 @@ struct StandingsView: View {
                     .overlay { RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(.gray.opacity(0.3)) }
                     .shadow(color: Color(uiColor: .black).opacity(0.2), radius: 4, x: 0, y: 0)
                 }
-                .opacity(self.games.getNrLive(league: self.league) > 0 ? 1 : 0)
+                .opacity(self.games.live_games
+                    .filter { $0.league == self.league }
+                    .filter { $0.isSeasonGame() }
+                    .count > 0 ? 1 : 0)
                 .padding(.trailing, 30)
                 .padding(.bottom, 20)
             }

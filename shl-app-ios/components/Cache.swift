@@ -7,28 +7,36 @@
 
 import Foundation
 
+extension String {
+    var sanitizedFileName: String {
+        return components(separatedBy: .init(charactersIn: "/\\:\\?%*|\"<>")).joined()
+    }
+}
+
 class Cache {
-    static var storage = UserDefaults.shared
     static var encoder = JSONEncoder()
     static var decoder = JSONDecoder()
     
     static func store<T : Codable>(key: String, data: T) {
+        let keyPath = getKey(key).sanitizedFileName
         do {
             let json = try encoder.encode(data)
-            storage.set(json, forKey: getKey(key))
-            storage.synchronize()
+            let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.palforsberg.shl-app-ios")?.appendingPathComponent(keyPath)
+            try json.write(to: url!)
         } catch {
-            print("[DATA] failed to encode cache \(error)")
+            print("[DATA] failed to encode cache \(keyPath) \(error)")
         }
     }
     
     static func retrieve<T: Codable>(key: String, type: T.Type) -> T? {
-        if let archived = storage.object(forKey: getKey(key)) as? Data {
-            print("[CACHE] GET cached \(type) from \(getKey(key))")
+        let keyPath = getKey(key).sanitizedFileName
+        let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.palforsberg.shl-app-ios")?.appendingPathComponent(keyPath)
+        if let archived = try? Data(contentsOf: url!){
+            print("[CACHE] GET cached \(type) from \(keyPath)")
             do {
                 return try decoder.decode(type.self, from: archived)
             } catch {
-                print("[DATA] failed to decode cache \(error)")
+                print("[DATA] failed to decode cache \(keyPath) \(error)")
                 return nil
             }
         }
@@ -38,11 +46,11 @@ class Cache {
     static func clearOld() {
         let currentKey = Cache.getKey("")
         print("[CACHE] Clear old, new key \(currentKey)")
-        Cache.storage.dictionaryRepresentation().keys
+        UserDefaults.shared.dictionaryRepresentation().keys
             .filter { $0.starts(with: "http") && !$0.contains(currentKey) }
             .forEach { cacheKey in
                 print("[CACHE] Remove key \(cacheKey)")
-                Cache.storage.removeObject(forKey: cacheKey)
+                UserDefaults.shared.removeObject(forKey: cacheKey)
             }
     }
     

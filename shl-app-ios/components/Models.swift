@@ -35,6 +35,23 @@ struct ShlWidgetAttributes: ActivityAttributes {
             return nil
         }
         
+        func getShortStatus() -> String? {
+            switch getStatus() {
+            case .period1: return "P1"
+            case .period2: return "P2"
+            case .period3: return "P3"
+            case .overtime: return "OT"
+            case .shootout: return "SO"
+            case .intermission: return "||"
+            default: return nil
+            }
+        }
+        func getShortGameTime() -> String? {
+            guard getStatus()?.isGameTimeApplicable() ?? false else {
+                return nil
+            }
+            return report.gametime
+        }
         static func from(_ game: Game) -> ContentState {
             ContentState(report: LiveActivityReport(homeScore: game.home_team_result, awayScore: game.away_team_result, status: game.status, gametime: game.gametime))
         }
@@ -339,7 +356,7 @@ struct Game: Codable, Identifiable, Equatable  {
         }
         return !homeWon()
     }
-
+    
     func isPlayed() -> Bool {
         return getStatus() == .finished
     }
@@ -355,7 +372,7 @@ struct Game: Codable, Identifiable, Equatable  {
     func getGameType() -> GameType? {
         return GameType.init(rawValue: self.game_type)
     }
-
+    
     func getStatus() -> GameStatus? {
         return self.status != nil ? GameStatus.init(rawValue: self.status!) : nil
     }
@@ -366,13 +383,17 @@ struct Game: Codable, Identifiable, Equatable  {
         }
         return didWin(home_team_code) ? home_team_code : away_team_code
     }
-
+    
     func isPlayoff() -> Bool {
         self.game_type == "PlayOff"
     }
     
     func isDemotion() -> Bool {
         self.game_type == "Demotion"
+    }
+    
+    func isSeasonGame() -> Bool {
+        !isPlayoff() && !isDemotion()
     }
     
     func includesTeams(_ teams: [String]) -> Bool {

@@ -35,7 +35,7 @@ struct Provider: IntentTimelineProvider {
             
             let (games, standings, playoffs, teams) = await (async_games, async_standings, async_playoffs, async_teams)
             
-            print("[WIDGET] fetched games")
+            print("[WIDGET] fetched games for \(teamCode)")
             var entry = getEntry(teamCode, games.entries, standings.entries, playoffs.entries, TeamsData(teams: teams ?? []))
             entry.fetched = games.type == .api ? .timeline_api : .timeline_cache
             
@@ -261,6 +261,8 @@ struct TeamWidgetSystemSmall: View {
                     Text(LocalizedStringKey(s)).padding(.top, 3)
                         .font(.system(size: 14, weight: .heavy, design: .rounded))
                         .textCase(.uppercase)
+                        .scaledToFit()
+                        .minimumScaleFactor(0.7)
                 } else if let s = entry.standing {
                     HStack {
                         Text("#").font(.system(size: 14, weight: .semibold, design: .rounded)) +
