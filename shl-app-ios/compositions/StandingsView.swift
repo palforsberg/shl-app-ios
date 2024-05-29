@@ -162,6 +162,37 @@ struct PlayoffView: View {
     }
 }
 
+
+struct PlayoffHistoryView: View {
+    @EnvironmentObject var playoffs: PlayoffData
+    @EnvironmentObject var games: GamesData
+    
+    var entry: PlayoffEntry
+    
+    @State var winners: [String] = []
+    
+    var body: some View {
+        HStack(spacing: 10) {
+            ForEach(Array(self.winners.enumerated()), id: \.offset) { o, e in
+                TeamLogo(code: e)
+            }
+            ForEach(values: 0..<((entry.nr_games ?? 7) - self.winners.count)) { e in
+                Circle()
+                    .fill(Color(uiColor: .systemGray2))
+                    .frame(width: 10, height: 10)
+                    .padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5))
+            }
+        }
+        .fixedSize(horizontal: false, vertical: true)
+        .task {
+            self.winners = games.getPlayoffGamesBetween(t1: entry.team1, t2: entry.team2)
+                .filter { $0.isPlayed() }
+                .sorted { $0.start_date_time < $1.start_date_time }
+                .map { $0.didWin(entry.team1) ? entry.team1 : entry.team2 }
+        }
+    }
+}
+
 struct PlayoffSheet: View {
     @EnvironmentObject var playoffs: PlayoffData
     @EnvironmentObject var teams: TeamsData
@@ -169,9 +200,6 @@ struct PlayoffSheet: View {
     
     var entry: PlayoffEntry
     
-    @State var winners: [String] = []
-    @State var team1Score = 0
-    @State var team2Score = 0
     @State var futureGames: [Game] = []
     
     var body: some View {
@@ -191,7 +219,7 @@ struct PlayoffSheet: View {
                             TeamLogo(code: entry.team1)
                             Text(teams.getName(entry.team1))
                             Spacer()
-                            Text("\(self.team1Score)").fontWeight(.bold).monospacedDigit()
+                            Text("\(entry.score1)").fontWeight(.bold).monospacedDigit()
                         }
                         .padding(EdgeInsets(top: 12, leading: 20, bottom: 3, trailing: 20))
                         .opacity(entry.team1 == entry.eliminated ? 0.4 : 1.0)
@@ -201,7 +229,7 @@ struct PlayoffSheet: View {
                             TeamLogo(code: entry.team2)
                             Text(teams.getName(entry.team2))
                             Spacer()
-                            Text("\(self.team2Score)").fontWeight(.bold).monospacedDigit()
+                            Text("\(entry.score2)").fontWeight(.bold).monospacedDigit()
                         }
                         .padding(EdgeInsets(top: 3, leading: 20, bottom: 12, trailing: 20))
                         .opacity(entry.team2 == entry.eliminated ? 0.4 : 1.0)
@@ -213,20 +241,8 @@ struct PlayoffSheet: View {
                 .padding(.bottom, 30)
                 
                 
-                HStack(spacing: 10) {
-                    ForEach(Array(self.winners.enumerated()), id: \.offset) { o, e in
-                        TeamLogo(code: e)
-                    }
-                    ForEach(values: 0..<((entry.nr_games ?? 7) - self.winners.count)) { e in
-                        Circle()
-                            .fill(Color(uiColor: .systemGray2))
-                            .frame(width: 10, height: 10)
-                            .padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5))
-                    }
-                }
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.bottom, 30)
-                
+                PlayoffHistoryView(entry: entry)
+                    .padding(.bottom, 30)
                 
                 if self.futureGames.count > 0 {
                     GroupedView(title: "Coming", cornerRadius: 15) {
@@ -245,19 +261,11 @@ struct PlayoffSheet: View {
             .edgesIgnoringSafeArea(.all))
         .ignoresSafeArea(edges: .all)
         .task {
-            self.winners = games.getPlayoffGamesBetween(t1: entry.team1, t2: entry.team2)
-                .filter { $0.isPlayed() }
-                .sorted { $0.start_date_time < $1.start_date_time }
-                .map { $0.didWin(entry.team1) ? entry.team1 : entry.team2 }
-            self.team1Score = self.winners.filter { $0 == entry.team1 }.count
-            self.team2Score = self.winners.filter { $0 == entry.team2 }.count
-            
             if entry.team1 != "TBD",
                entry.team2 != "TBD" {
                 self.futureGames = games
                     .getPlayoffGamesBetween(t1: entry.team1, t2: entry.team2)
                     .filter { !$0.isPlayed() }
-                    .reversed()
             }
         }
     }

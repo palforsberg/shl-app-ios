@@ -386,6 +386,59 @@ struct PuckText: View {
     }
 }
 
+struct PlayoffPreviewView: View {
+    @EnvironmentObject var playoffs: PlayoffData
+    
+    var game: Game
+    
+    var body: some View {
+        if let entry = playoffs.getEntry(team1: game.home_team_code, team2: game.away_team_code) {
+            PlayoffHistoryView(entry: entry)
+            if let stage = playoffs.getStage(entry: entry) {
+                Spacer(minLength: 10)
+                Text(LocalizedStringKey(stage))
+                    .rounded(size: 18, weight: .heavy)
+                    .textCase(.uppercase)
+                Text(LocalizedStringKey("First to \(entry.getBestTo())"))
+                    .rounded(size: 12, weight: .bold)
+                    .foregroundColor(Color(uiColor: .secondaryLabel))
+                Spacer(minLength: 10)
+            }
+        }
+    }
+}
+
+struct SeasonPreviewView: View {
+    @EnvironmentObject var standings: StandingsData
+    
+    let game: Game
+    
+    var body: some View {
+        if let homeRank = standings.getFor(team: game.home_team_code),
+           let awayRank = standings.getFor(team: game.away_team_code) {
+            GroupedView(title: "GamePreview") {
+                VStack {
+                    StatsRow(left: "#\(homeRank.rank)", center: "Rank", right: "#\(awayRank.rank)")
+                    StatsRow(left: "\(homeRank.diff)", center: "Goal Diff", right: "\(awayRank.diff)")
+                    StatsRow(left: "\(homeRank.getPointsPerGame())", center: "Points/Game", right: "\(awayRank.getPointsPerGame())")
+                    HStack(alignment: .bottom) {
+                        FormGraph(teamCode: game.home_team_code)
+                        Spacer()
+                        Text(LocalizedStringKey("Form"))
+                            .font(.system(size: 18, design: .rounded))
+                            .fontWeight(.bold)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .scaledToFit()
+                            .minimumScaleFactor(0.8)
+                        Spacer()
+                        FormGraph(teamCode: game.away_team_code)
+                    }.padding(EdgeInsets(top: 3, leading: 0, bottom: 3, trailing: 0))
+                }.padding(EdgeInsets(top: 16, leading: 30, bottom: 16, trailing: 30))
+            }
+        }
+    }
+}
+
 struct GamesStatsView: View {
     @State var details: GameDetails?
     @State var previousGames: [Game] = []
@@ -396,7 +449,6 @@ struct GamesStatsView: View {
     @EnvironmentObject var starredTeams: StarredTeams
     @EnvironmentObject var teamsData: TeamsData
     @EnvironmentObject var settings: Settings
-    @EnvironmentObject var standings: StandingsData
     
     var provider: DataProvider? = DataProvider()
 
@@ -524,30 +576,15 @@ struct GamesStatsView: View {
                 if let stats = details?.stats {
                     StatsView(title: "Match Detail", stats: stats)
                     Spacer(minLength: 25)
-                } else if game.isFuture(),
-                          let homeRank = standings.getFor(team: game.home_team_code),
-                          let awayRank = standings.getFor(team: game.away_team_code) {
-                      GroupedView(title: "GamePreview") {
-                          VStack {
-                              StatsRow(left: "#\(homeRank.rank)", center: "Rank", right: "#\(awayRank.rank)")
-                              StatsRow(left: "\(homeRank.diff)", center: "Goal Diff", right: "\(awayRank.diff)")
-                              StatsRow(left: "\(homeRank.getPointsPerGame())", center: "Points/Game", right: "\(awayRank.getPointsPerGame())")
-                              HStack(alignment: .bottom) {
-                                  FormGraph(teamCode: game.home_team_code)
-                                  Spacer()
-                                  Text(LocalizedStringKey("Form"))
-                                      .font(.system(size: 18, design: .rounded))
-                                      .fontWeight(.bold)
-                                      .frame(maxWidth: .infinity, alignment: .center)
-                                      .scaledToFit()
-                                      .minimumScaleFactor(0.8)
-                                  Spacer()
-                                  FormGraph(teamCode: game.away_team_code)
-                              }.padding(EdgeInsets(top: 3, leading: 0, bottom: 3, trailing: 0))
-                          }.padding(EdgeInsets(top: 16, leading: 30, bottom: 16, trailing: 30))
-                      }
-                      Spacer(minLength: 30)
-                    
+                } else if game.isFuture() {
+                    if game.isDemotion() || game.isPlayoff() {
+                        Spacer(minLength: 16)
+                        PlayoffPreviewView(game: game)
+                        Spacer(minLength: 46)
+                    } else {
+                        SeasonPreviewView(game: game)
+                        Spacer(minLength: 30)
+                    }
                 }
                 if game.votes != nil || PickemData.isPickable(game: game) {
                     Group {
@@ -780,6 +817,30 @@ struct GamesStatsView_Future_Game_Previews: PreviewProvider {
             .environmentObject(getPickemData())
             .environmentObject(starred)
             .environmentObject(getStandingsData())
+            .environment(\.locale, .init(identifier: "sv"))
+    }
+}
+
+struct GamesStatsView_Future_Playoff_Game_Previews: PreviewProvider {
+    static var previews: some View {
+        let teams = getTeamsData()
+        
+        let playoffs = PlayoffData()
+        playoffs.set(data: getPlayoffs())
+        let starred = StarredTeams()
+        starred.addTeam(teamCode: "LHF")
+        let game = getPlayoffGame(t1: "LHF", s1: 0, t2: "OHK", s2: 0, status: "Coming")
+        
+        return GamesStatsView(details: GameDetails(game: game, events: [], stats: nil, players: []),
+                              provider: nil,
+                              game: game)
+            .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
+            .environmentObject(teams)
+            .environmentObject(Settings())
+            .environmentObject(getPickemData())
+            .environmentObject(starred)
+            .environmentObject(getStandingsData())
+            .environmentObject(playoffs)
             .environment(\.locale, .init(identifier: "sv"))
     }
 }

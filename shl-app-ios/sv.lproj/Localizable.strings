@@ -71,6 +71,7 @@
 "Eightfinal" = "Åttondelsfinal";
 "Demotion" = "Nedflyttning";
 "Best of %lld • First to %lld" = "Bäst av %lld • Först till %lld";
+"First to %lld" = "Först till %lld";
 
 // Team
 "Players" = "Spelare";

@@ -908,6 +908,20 @@ struct Playoffs: Codable {
         
         return entries.first(where: { $0.has(t1: team) })
     }
+    
+    func getEntry(team1: String, team2: String) -> PlayoffEntry? {
+        func getArr(entry: PlayoffEntry?) -> [PlayoffEntry] {
+            entry != nil ? [entry!] : []
+        }
+        
+        var entries = getArr(entry: self.final)
+        entries += (self.semi ?? [])
+        entries += (self.quarter ?? [])
+        entries += (self.eight ?? [])
+        entries += getArr(entry: self.demotion)
+        
+        return entries.first(where: { $0.has(t1: team1, t2: team2) })
+    }
 }
 
 class PlayoffData: ObservableObject {
@@ -935,6 +949,10 @@ class PlayoffData: ObservableObject {
     
     func getEntry(team: String) -> PlayoffEntry? {
         data?.SHL?.getEntry(team: team) ?? data?.HA?.getEntry(team: team)
+    }
+    
+    func getEntry(team1: String, team2: String) -> PlayoffEntry? {
+        data?.SHL?.getEntry(team1: team1, team2: team2) ?? data?.HA?.getEntry(team1: team1, team2: team2)
     }
 }
 

@@ -71,6 +71,7 @@
 "Eightfinal" = "Eightfinal";
 "Demotion" = "Demotion";
 "Best of %lld • First to %lld" = "Best of %lld • First to %lld";
+"First to %lld" = "First to %lld";
 
 // Team
 "SHOW ALL" = "SHOW ALL";
