@@ -22,7 +22,7 @@ extension KeyPath where Root == Settings {
     
 class Settings: ObservableObject {
     
-    static let currentSeason = 2023
+    static let currentSeason = 2024
     @Published var season: Int
 
     @Published var apnToken: String? {

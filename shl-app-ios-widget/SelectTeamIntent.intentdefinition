@@ -315,6 +315,16 @@
 					<key>INEnumValueName</key>
 					<string>KHC</string>
 				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Vimmerby Hockey</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>9ayBoV</string>
+					<key>INEnumValueIndex</key>
+					<integer>30</integer>
+					<key>INEnumValueName</key>
+					<string>VH</string>
+				</dict>
 			</array>
 		</dict>
 	</array>
@@ -323,11 +333,11 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>OUgdJD</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>22G91</string>
+	<string>23B74</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>15A240d</string>
+	<string>15F31d</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>15.0</string>
+	<string>15.4</string>
 	<key>INIntents</key>
 	<array>
 		<dict>

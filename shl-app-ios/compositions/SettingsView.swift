@@ -57,7 +57,7 @@ struct GeneralPicker<T: Equatable, Content: View>: View {
 
 struct SeasonPicker: View {
 
-    static var seasons = [2023, 2022, 2021, 2020, 2019, 2018]
+    static var seasons = [2024, 2023, 2022, 2021, 2020, 2019, 2018]
     
     @Binding var currentSeason: Int
 

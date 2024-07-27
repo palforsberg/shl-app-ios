@@ -134,6 +134,7 @@ struct Provider: IntentTimelineProvider {
         case .iFB: return "IFB"
         case .sSK: return "SSK"
         case .oSIK: return "OSIK"
+        case .vH: return "VH"
         case .unknown: return getStarredTeam() ?? getTopTeam() ?? "FBK"
         }
     }
