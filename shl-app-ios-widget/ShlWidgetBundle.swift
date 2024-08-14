@@ -12,8 +12,6 @@ import SwiftUI
 struct ShlWidgetBundle: WidgetBundle {
     var body: some Widget {
         TeamWidget()
-        if #available(iOSApplicationExtension 16.1, *) {
-            ShlWidgetLiveActivity()
-        }
+        ShlWidgetLiveActivity()
     }
 }

@@ -462,14 +462,6 @@ struct GamesStatsView: View {
                     UpdateReportView(game: game)
                 }
                 #endif
-                if #available(iOS 16.0, *) {
-                } else {
-                    PullToRefresh(coordinateSpaceName: "game_stats_scrollview") {
-                        Task {
-                            await self.reloadData()
-                        }
-                    }
-                }
                 Spacer(minLength: 10)
                 Group {
                     Text("\(game.league.rawValue) • \(settings.getFormattedSeason())")
@@ -538,8 +530,7 @@ struct GamesStatsView: View {
                 }
                 
                 
-                if #available(iOS 16.1, *),
-                   LiveActivity.shared?.isGameApplicable(game: game) ?? false,
+                if LiveActivity.shared?.isGameApplicable(game: game) ?? false,
                    ActivityAuthorizationInfo().areActivitiesEnabled
                 {
                     Group {
@@ -680,14 +671,12 @@ struct GamesStatsView: View {
         }
     }
     
-    @available(iOS 16.1, *)
     func startLiveActivity(for game: Game) {
         Task {
             await LiveActivity.shared?.startLiveActivity(for: game, teamsData: teamsData)
         }
     }
     
-    @available(iOS 16.1, *)
     func endLiveActivity(for game: Game) {
         Task {
             await LiveActivity.shared?.endLiveActivity(for: game)

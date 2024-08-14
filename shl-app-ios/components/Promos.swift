@@ -10,7 +10,7 @@ import SwiftUI
 
 
 struct WidgetPromo: View {
-    @AppStorage("widget.promo.2023.removed.7")
+    @AppStorage("icons.promo.2024.removed.2")
     var removed = false
     
     var body: some View {
@@ -24,21 +24,22 @@ struct WidgetPromo: View {
                             Puck(geo: geo, scale: 0.15).pos(0.95, 0.8)
                         }
                     }
-                    HStack(spacing: 15) {
-                        Image(uiImage: UIImage(named: "TeamWidget")!)
+                    HStack(spacing: 10) {
+                        Image(uiImage: UIImage(named: "NewIcons")!)
+                            .antialiased(false)
                             .resizable()
                             .scaledToFit()
                             .rotation3DEffect(.degrees(10), axis: (x: 0.0, y: 1.0, z: 0.0))
                             .frame(width: 80)
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("Pucken Widgets!")
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("PROMO.HEADER")
                                 .font(.system(size: 18, weight: .heavy, design: .rounded))
-                            Text("WIDGETPROMO.BODY")
+                            Text("PROMO.BODY")
                                 .font(.system(size: 14, weight: .heavy, design: .rounded))
                         }
                         Spacer()
                         Button(action: {
-                            print("Remove WidgetPromo")
+                            print("Remove Promo")
                             withAnimation {
                                 removed = true
                             }
@@ -47,7 +48,7 @@ struct WidgetPromo: View {
                                 .font(.system(size: 18, weight: .heavy))
                         }).foregroundColor(Color(uiColor: .label))
                     }
-                    .padding(.vertical, 20)
+                    .padding(.vertical, 10)
                     .padding(.horizontal, 20)
                 }
             }

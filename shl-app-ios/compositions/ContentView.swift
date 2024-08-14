@@ -147,19 +147,11 @@ struct ContentView: View {
     }
     
     func getImageForGamesView() -> String {
-        if #available(iOS 16.0, *) {
-            return "hockey.puck.circle"
-        } else {
-            return "house.circle"
-        }
+        return "hockey.puck.circle"
     }
     
     func getImageForStandingsView() -> String {
-        if #available(iOS 16.0, *) {
-            return "trophy.circle"
-        } else {
-            return "list.bullet.circle"
-        }
+        return "trophy.circle"
     }
 
 }

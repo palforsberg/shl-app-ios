@@ -238,13 +238,9 @@ struct PickemViewWrapper: View {
             }
         }
         .sheet(isPresented: $isPresented) {
-            if #available(iOS 16.0, *) {
-                PickemView(isPresent: $isPresented)
-                    .presentationDragIndicator(.visible)
-                    .presentationDetents([.height(280)])
-            } else {
-                PickemView(isPresent: $isPresented)
-            }
+            PickemView(isPresent: $isPresented)
+                .presentationDragIndicator(.visible)
+                .presentationDetents([.height(280)])
         }
     }
 }

@@ -145,16 +145,19 @@ struct SupporterView: View {
     @State
     var errorMsg: String? = nil
     
+    @State
+    var didShow: Bool = false
+    
     var body: some View {
         let canMakePayments = Purchases.shared?.canMakePayments() ?? false
         ZStack {
             Group {
                 GeometryReader { geo in
-                    Puck(geo: geo).pos(0.25, 0.11).animation(.easeOut(duration: 0.2))
-                    Puck(geo: geo).pos(0.65, 0.08).animation(.easeOut(duration: 0.3))
-                    Puck(geo: geo).pos(0.2, 0.64).animation(.easeOut(duration: 0.4))
-                    Puck(geo: geo).pos(0.7, 0.6).animation(.easeOut(duration: 0.5))
-                    Puck(geo: geo).pos(0.75, 0.85).animation(.easeOut(duration: 0.6))
+                    Puck(geo: geo).pos(0.25, 0.11).animation(.easeOut(duration: 0.2), value: didShow)
+                    Puck(geo: geo).pos(0.65, 0.08).animation(.easeOut(duration: 0.3), value: didShow)
+                    Puck(geo: geo).pos(0.2, 0.64).animation(.easeOut(duration: 0.4), value: didShow)
+                    Puck(geo: geo).pos(0.7, 0.6).animation(.easeOut(duration: 0.5), value: didShow)
+                    Puck(geo: geo).pos(0.75, 0.85).animation(.easeOut(duration: 0.6), value: didShow)
                 }
             }
             VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 0) {
@@ -180,7 +183,6 @@ struct SupporterView: View {
                 .frame(maxWidth: 300)
                 VStack {
                     Group {
-                        Text("App Icons")
                         Text("More Seasons")
                         Text("Match filter")
                     }
@@ -217,7 +219,10 @@ struct SupporterView: View {
             }
         }))
         .alert(isPresented: $showAlert) { Alert(title: Text(errorMsg ?? "Purchase Restored")) }
-        .onAppear { loadProducts() }
+        .onAppear {
+            loadProducts()
+            didShow = true
+        }
     }
     
     func loadProducts() {
@@ -276,6 +281,17 @@ struct SettingsView: View {
                     }
                 }
             }
+            Section(header: Text("")) {
+                NavigationLink {
+                    IconSelectView(currentIcon: $currentIcon)
+                } label: {
+                    HStack {
+                        IconLabel(text: "App Icon", color: .green, systemName: "app")
+                        Spacer()
+                        AppIconImage(code: currentIcon, size: 30)
+                    }
+                }
+            }
             Section(header: Text(""), footer: Text("SUPPORTER_BODY")
                 .padding(.leading, 0).padding(.trailing, 20).padding(.top, 0)) {
                     NavigationLink {
@@ -284,15 +300,6 @@ struct SettingsView: View {
                         IconLabel(text: "Supporter", color: .pink, systemName: settings.supporter ? "heart.fill" : "heart")
                     }
                 Group {
-                    NavigationLink {
-                        IconSelectView(currentIcon: $currentIcon)
-                    } label: {
-                        HStack {
-                            IconLabel(text: "App Icon", color: .green, systemName: "app")
-                            Spacer()
-                            AppIconImage(code: currentIcon, size: 30)
-                        }
-                    }
                     SeasonPicker(currentSeason: $settings.season)
                     HStack {
                         IconLabel(text: "Game Filter", color: .purple, systemName: "loupe")

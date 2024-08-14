@@ -221,11 +221,7 @@ struct TeamWidget: Widget {
     }
     
     func getFamilies() -> [WidgetFamily] {
-        if #available(iOSApplicationExtension 16.0, *) {
-            return  [.systemSmall, .accessoryCircular, .accessoryRectangular]
-        } else {
-            return  [.systemSmall]
-        }
+        return  [.systemSmall, .accessoryCircular, .accessoryRectangular]
     }
 }
 
@@ -405,23 +401,21 @@ struct ShlWidget_Previews: PreviewProvider {
             .previewDisplayName("Team Widget - Playoff")
             .environment(\.locale, .init(identifier: "sv"))
         
-        if #available(iOSApplicationExtension 16.0, *) {
+        TeamWidgetView(entry: entry)
+            .previewContext(WidgetPreviewContext(family: .accessoryCircular))
+            .previewDisplayName("Team Widget - Lock Small")
+        
             TeamWidgetView(entry: entry)
-                .previewContext(WidgetPreviewContext(family: .accessoryCircular))
-                .previewDisplayName("Team Widget - Lock Small")
-            
-                TeamWidgetView(entry: entry)
-                    .previewContext(WidgetPreviewContext(family: .accessoryInline))
-                    .previewDisplayName("Team Widget - Lock Inline")
-            TeamWidgetView(entry: entry)
-                .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
-                .previewDisplayName("Team Widget - Lock Big")
-            
-            TeamWidgetView(entry: playoffTeamEntry)
-                .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
-                .previewDisplayName("Team Widget - Lock Big - Playoff")
-                .environment(\.locale, .init(identifier: "sv"))
-        }
+                .previewContext(WidgetPreviewContext(family: .accessoryInline))
+                .previewDisplayName("Team Widget - Lock Inline")
+        TeamWidgetView(entry: entry)
+            .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
+            .previewDisplayName("Team Widget - Lock Big")
+        
+        TeamWidgetView(entry: playoffTeamEntry)
+            .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
+            .previewDisplayName("Team Widget - Lock Big - Playoff")
+            .environment(\.locale, .init(identifier: "sv"))
         /*
         StandingWidgetView(entry: entry)
             .previewContext(WidgetPreviewContext(family: .systemSmall))

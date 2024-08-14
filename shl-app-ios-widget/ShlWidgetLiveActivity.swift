@@ -49,7 +49,6 @@ struct WidgetTeamAvatar: View {
     }
 }
 
-@available(iOSApplicationExtension 16.1, *)
 struct LiveActivityReportView: View {
     var context: ActivityViewContext<ShlWidgetAttributes>
     
@@ -88,7 +87,6 @@ struct LiveActivityReportView: View {
     }
 }
 
-@available(iOSApplicationExtension 16.1, *)
 struct LiveActivityEventView: View {
     var event: LiveActivityEvent
     
@@ -116,7 +114,6 @@ struct LiveActivityEventView: View {
     }
 }
 
-@available(iOSApplicationExtension 16.1, *)
 struct ShlWidgetLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: ShlWidgetAttributes.self) { context in

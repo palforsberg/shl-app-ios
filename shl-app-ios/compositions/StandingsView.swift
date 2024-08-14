@@ -442,12 +442,8 @@ struct StandingsView: View {
         .sheet(item: $selectedPlayoff, onDismiss: {
             self.selectedPlayoff = nil
         }) { p in
-            if #available(iOS 16.0, *) {
-                PlayoffSheet(entry: p)
-                    .presentationDetents([.medium, .large])
-            } else {
-                PlayoffSheet(entry: p)
-            }
+            PlayoffSheet(entry: p)
+                .presentationDetents([.medium, .large])
         }
     }
     

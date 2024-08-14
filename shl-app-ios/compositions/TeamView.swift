@@ -444,12 +444,8 @@ struct TeamView: View {
         .sheet(item: $selectedPlayer, onDismiss: {
             self.selectedPlayer = nil
         }) { p in
-            if #available(iOS 16.0, *) {
-                PlayerStatsSheet(player: p)
-                    .presentationDetents([.medium, .large])
-            } else {
-                PlayerStatsSheet(player: p)
-            }
+            PlayerStatsSheet(player: p)
+                .presentationDetents([.medium, .large])
         }
         .task { // runs before view appears
             await self.reloadPlayers()

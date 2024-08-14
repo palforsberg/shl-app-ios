@@ -279,22 +279,14 @@ struct PickemSectionView: View {
         }
         .padding(.horizontal, 36)
         .sheet(isPresented: $showPickems){
-            if #available(iOS 16.0, *) {
-                PickemView(isPresent: $showPickems)
-                    .presentationDragIndicator(.visible)
-                    .presentationDetents([.height(280)])
-            } else {
-                PickemView(isPresent: $showPickems)
-            }
+            PickemView(isPresent: $showPickems)
+                .presentationDragIndicator(.visible)
+                .presentationDetents([.height(280)])
         }
         .sheet(isPresented: $showStats){
-            if #available(iOS 16.0, *) {
-                PickemStatsView()
-                    .presentationDragIndicator(.visible)
-                    .presentationDetents([.medium, .large])
-            } else {
-                PickemStatsView()
-            }
+            PickemStatsView()
+                .presentationDragIndicator(.visible)
+                .presentationDetents([.medium, .large])
         }
         .onReceive(self.games.objectWillChange) { _ in self.updateNrCorrects() }
     }
@@ -346,15 +338,6 @@ struct SeasonView: View {
         NavigationView {
             
             ScrollView {
-                if #available(iOS 16.0, *) {
-                } else {
-                    PullToRefresh(coordinateSpaceName: "season_scrollview") {
-                        Task {
-                            await self.reloadData(5)
-                        }
-                    }
-                    Spacer(minLength: 10)
-                }
                 WidgetPromo()
                 if let status = self.status {
                     StatusView(status: status)
@@ -448,12 +431,8 @@ struct SeasonView: View {
         }
         .accentColor(Color(uiColor: .label))
         /*.sheet(isPresented: $teamSelectSheetVisible) {
-            if #available(iOS 16.0, *) {
-                TeamSelectView(selectedTeams: $selectedTeams, description: "Select teams to see")
-                    .presentationDragIndicator(.visible)
-            } else {
-                TeamSelectView(selectedTeams: $selectedTeams, description: "Select teams to see")
-            }
+            TeamSelectView(selectedTeams: $selectedTeams, description: "Select teams to see")
+                .presentationDragIndicator(.visible)
         }*/
         .task(id: settings.season) {
             debugPrint("[SEASONVIEW] task")

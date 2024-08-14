@@ -102,7 +102,7 @@
 "All" = "Alla";
 "TEAM_BODY"="Välj dina lag att följa under säsongen";
 "NOTIF_BODY"="Få notifikationer när dina lag börjar spela eller gör mål.";
-"SUPPORTER_BODY"="Bli supporter och få tillgång till olika ikoner, redan spelade säsonger o match filter.";
+"SUPPORTER_BODY"="Bli supporter och få tillgång till redan spelade säsonger o match filter.";
 
 // Supporter
 "App Icons" = "App ikoner";
@@ -110,13 +110,13 @@
 "Restore Purchase" = "Återställ köp";
 "Purchase Restored" = "Köpet har blivit återställt";
 "Support" = "Supporta";
-"Unlocked Premium" = "Du har låst upp premium features för säsongen 2023/2024, tack för ditt stöd!";
-"Unlock Premium %@" = "Lås upp premium features för säsongen 2023/2024 för %@";
+"Unlocked Premium" = "Du har låst upp premium features för säsongen 2024/2025, tack för ditt stöd!";
+"Unlock Premium %@" = "Lås upp premium features för säsongen 2024/2025 för %@";
 "Thanks" = "Tack ❤️🏒";
 
 // PROMO
-"WIDGETPROMO.HEADER" = "Widgets är här!";
-"WIDGETPROMO.BODY" = "Följ ditt lag på både lås- och hemskärmen";
+"PROMO.HEADER" = "Nya app ikoner!";
+"PROMO.BODY" = "Finns i inställningar";
 
 // Pickem
 "PICKED" = "PICKED";

@@ -21,9 +21,7 @@ class LiveActivity {
         self.provider = provider
         self.settings = settings
         
-        if #available(iOS 16.1, *) {
-            self.listenToAllPastAcitivities()
-        }
+        self.listenToAllPastAcitivities()
     }
     
     func setListener(game_uuid: String, listener: @escaping (Bool) -> ()) {
@@ -31,13 +29,9 @@ class LiveActivity {
     }
     
     func isEnabled(gameUuid: String) -> Bool {
-        if #available(iOS 16.1, *) {
-            let activity = Activity<ShlWidgetAttributes>.activities
-                .first(where: { a in a.attributes.gameUuid == gameUuid })
-            return activity != nil
-        } else {
-            return false
-        }
+        let activity = Activity<ShlWidgetAttributes>.activities
+            .first(where: { a in a.attributes.gameUuid == gameUuid })
+        return activity != nil
     }
     
     func isGameApplicable(game: Game) -> Bool {
@@ -52,33 +46,28 @@ class LiveActivity {
     }
     
     func startLiveActivity(for game: Game, teamsData: TeamsData) async {
-        if #available(iOS 16.1, *) {
-            do {
-                await self.endLiveActivity(for: game)
-                
-                let result = try Activity.request(attributes: ShlWidgetAttributes.from(game, teamsData: teamsData), contentState: ShlWidgetAttributes.ContentState.from(game), pushType: .token)
-                print("[LIVE] Start \(game.home_team_code) - \(game.away_team_code)")
+        do {
+            await self.endLiveActivity(for: game)
+            
+            let result = try Activity.request(attributes: ShlWidgetAttributes.from(game, teamsData: teamsData), contentState: ShlWidgetAttributes.ContentState.from(game), pushType: .token)
+            print("[LIVE] Start \(game.home_team_code) - \(game.away_team_code)")
 
-                self.listenToPushTokenUpdates(result)
-                self.listenToStateUpdates(result)
-            } catch (let error) {
-                print("[LIVE] Error starting \(error.localizedDescription).")
-            }
+            self.listenToPushTokenUpdates(result)
+            self.listenToStateUpdates(result)
+        } catch (let error) {
+            print("[LIVE] Error starting \(error.localizedDescription).")
         }
     }
     
     func endLiveActivity(for game: Game) async {
-        if #available(iOS 16.1, *) {
-            guard let a = Activity<ShlWidgetAttributes>.activities.first(where: {a in a.attributes.gameUuid == game.game_uuid }) else {
-                return
-            }
-            await a.end(using: a.contentState, dismissalPolicy: .immediate)
-            print("[LIVE] Manually End Live Activity \(a.attributes.homeTeam) \(a.attributes.awayTeam)")
+        guard let a = Activity<ShlWidgetAttributes>.activities.first(where: {a in a.attributes.gameUuid == game.game_uuid }) else {
+            return
         }
+        await a.end(using: a.contentState, dismissalPolicy: .immediate)
+        print("[LIVE] Manually End Live Activity \(a.attributes.homeTeam) \(a.attributes.awayTeam)")
     }
     
 
-    @available(iOS 16.1, *)
     private func listenToAllPastAcitivities() {
         Activity<ShlWidgetAttributes>.activities.forEach { a in
             print("[LIVE] Listen to \(a.attributes.homeTeam) - \(a.attributes.awayTeam)")
@@ -87,7 +76,6 @@ class LiveActivity {
         }
     }
     
-    @available(iOS 16.1, *)
     private func listenToPushTokenUpdates(_ activity: Activity<ShlWidgetAttributes>) {
         Task {
             for await data in activity.pushTokenUpdates {
@@ -98,7 +86,6 @@ class LiveActivity {
         }
     }
     
-    @available(iOS 16.1, *)
     private func listenToStateUpdates(_ activity: Activity<ShlWidgetAttributes>) {
         Task {
             for await a in activity.activityStateUpdates {
@@ -120,7 +107,6 @@ class LiveActivity {
         }
     }
     
-    @available(iOS 16.1, *)
     private func isStale(_ state: ActivityState) -> Bool {
         if #available(iOS 16.2, *),
             state == .stale {

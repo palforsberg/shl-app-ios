@@ -133,13 +133,9 @@ struct SearchGamesView: View {
             selectedTeams = settings.onlyStarred ? starredTeams.starredTeams : []
         }
         .sheet(isPresented: $showTeamSelectView) {
-            if #available(iOS 16.0, *) {
-                TeamSelectView(selectedTeams: $selectedTeams)
-                    .presentationDragIndicator(.visible)
-                    .presentationDetents([.medium])
-            } else {
-                TeamSelectView(selectedTeams: $selectedTeams)
-            }
+            TeamSelectView(selectedTeams: $selectedTeams)
+                .presentationDragIndicator(.visible)
+                .presentationDetents([.medium])
         }
     }
 }
