@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TipKit
 
 struct ErrorView: View {
     @EnvironmentObject var errorHandler: ErrorHandler
@@ -126,6 +127,17 @@ struct ContentView: View {
             userService = UserService(provider: provider, settings: settings, starredTeams: starredTeams)
             Purchases.shared = Purchases(settings: settings)
             LiveActivity.shared = LiveActivity(provider: self.provider!, settings: self.settings)
+            
+            if #available(iOS 17.0, *) {
+                do {
+                    // Configure and load your tips at app launch.
+                    try Tips.configure()
+                }
+                catch {
+                    // Handle TipKit errors
+                    print("Error initializing TipKit \(error.localizedDescription)")
+                }
+            }
         }
         .navigationViewStyle(.stack) // To fix Views being popped when updating @EnvironmentObject
         .environmentObject(starredTeams)

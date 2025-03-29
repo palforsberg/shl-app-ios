@@ -72,7 +72,7 @@ struct TightTeamLogo: View {
 }
 
 struct PlayerImage: View {
-    var player: Int
+    var player: String
     var size: CGFloat = 30.0
     var cornerRadius: CGFloat?
 
@@ -93,8 +93,8 @@ struct TeamLogo_Previews: PreviewProvider {
             TeamLogo(code: "MODO", size: 110)
             TeamLogo(code: "HV71", size: 110)
             TeamLogo(code: "TBD", size: 110)
-            PlayerImage(player: 3524, size: 110)
-            PlayerImage(player: 666, size: 110)
+            PlayerImage(player: "3524", size: 110)
+            PlayerImage(player: "666", size: 110)
         }
     }
 }

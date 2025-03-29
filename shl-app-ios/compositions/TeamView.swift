@@ -34,7 +34,7 @@ struct TopPlayerEntry: View {
         Button(action: action) {
             VStack(alignment: .center, spacing: 10) {
                 HStack(alignment: .center) {
-                    PlayerImage(player: player.id, size: 50)
+                    PlayerImage(player: "\(player.id)", size: 50)
                     VStack(alignment: .center) {
                         Text("\(player.first_name)").minimumScaleFactor(0.6).scaledToFit()
                         Text("\(player.family_name)").minimumScaleFactor(0.6).scaledToFit()
@@ -68,7 +68,7 @@ struct PlayerEntry: View {
 
     var body: some View {
         HStack(spacing: 16) {
-            PlayerImage(player: player.id, size: 36)
+            PlayerImage(player: "\(player.id)", size: 36)
             VStack {
                 HStack {
                     Text("\(player.first_name) \(player.family_name)")
@@ -123,7 +123,7 @@ struct PlayerStatsSheet: View {
             VStack {
                 Spacer(minLength: 20)
                 HStack(alignment: .center, spacing: 20) {
-                    PlayerImage(player: player.id, size: 90)
+                    PlayerImage(player: "\(player.id)", size: 90)
                     VStack(alignment: .leading) {
                         Text("\(player.first_name) \(player.family_name)")
                             .minimumScaleFactor(0.6).scaledToFit()

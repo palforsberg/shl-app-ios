@@ -31,7 +31,7 @@ struct PlayerCard: View {
                 .scaleEffect(1.6)
                 
             ZStack(alignment: .top) {
-                PlayerImage(player: player.id, size: 100, cornerRadius: 5)
+                PlayerImage(player: "\(player.id)", size: 100, cornerRadius: 5)
                     .padding(.top, 5)
                 VStack {
                     Spacer()

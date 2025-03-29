@@ -30,6 +30,7 @@ struct IconSelectView: View {
                         Icon(name: "Puck Inverterad", code: "puck-icon-inverted"),
                         Icon(name: "Puck Natt", code: "puck-icon-night"),
                         Icon(name: "Puck Sträckad", code: "puck-line"),
+                        Icon(name: "Puck GPT", code: "puck-real"),
                         Icon(name: "Brynäs", code: "bif-icon"),
                         Icon(name: "Frölunda", code: "fhc-icon"),
                         Icon(name: "Färjestad", code: "fbk-icon"),

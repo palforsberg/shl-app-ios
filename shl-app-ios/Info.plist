@@ -12,29 +12,11 @@
 	<dict>
 		<key>CFBundleAlternateIcons</key>
 		<dict>
-			<key>modo-icon</key>
+			<key>puck-real</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>modo-icon</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<false/>
-			</dict>
-			<key>iko2-icon</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>iko2-icon</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<false/>
-			</dict>
-			<key>vik-icon</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>vik-icon</string>
+					<string>puck-real</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<false/>
@@ -48,92 +30,11 @@
 				<key>UIPrerenderedIcon</key>
 				<false/>
 			</dict>
-			<key>vvik-icon</key>
+			<key>ais-icon</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>vvik-icon</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<false/>
-			</dict>
-			<key>vh-icon</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>vh-icon</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<false/>
-			</dict>
-			<key>taif-icon</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>taif-icon</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<false/>
-			</dict>
-			<key>ssk-icon</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>ssk-icon</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<false/>
-			</dict>
-			<key>ohik-icon</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>ohik-icon</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<false/>
-			</dict>
-			<key>nvif-icon</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>nvif-icon</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<false/>
-			</dict>
-			<key>mik-icon</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>mik-icon</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<false/>
-			</dict>
-			<key>khc-icon</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>khc-icon</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<false/>
-			</dict>
-			<key>ifb-icon</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>ifb-icon</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<false/>
-			</dict>
-			<key>bik-icon</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>bik-icon</string>
+					<string>ais-icon</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<false/>
@@ -147,11 +48,11 @@
 				<key>UIPrerenderedIcon</key>
 				<false/>
 			</dict>
-			<key>ais-icon</key>
+			<key>bik-icon</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>ais-icon</string>
+					<string>bik-icon</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<false/>
@@ -192,6 +93,33 @@
 				<key>UIPrerenderedIcon</key>
 				<false/>
 			</dict>
+			<key>ifb-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>ifb-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>iko2-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>iko2-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>khc-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>khc-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
 			<key>lhc-icon</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -224,6 +152,42 @@
 				<key>CFBundleIconFiles</key>
 				<array>
 					<string>mif-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>mik-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>mik-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>modo-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>modo-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>nvif-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>nvif-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>ohik-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>ohik-icon</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<false/>
@@ -300,6 +264,24 @@
 				<key>UIPrerenderedIcon</key>
 				<false/>
 			</dict>
+			<key>ssk-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>ssk-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>taif-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>taif-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
 			<key>tik-icon</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -309,11 +291,38 @@
 				<key>UIPrerenderedIcon</key>
 				<false/>
 			</dict>
+			<key>vh-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>vh-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>vik-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>vik-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
 			<key>vlh-icon</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
 				<array>
 					<string>vlh-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>vvik-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>vvik-icon</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<false/>

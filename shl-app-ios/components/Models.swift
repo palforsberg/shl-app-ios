@@ -614,6 +614,14 @@ struct GameDetails: Codable {
     var events: [GameEvent]
     let stats: ApiGameStats?
     let players: [Player]
+    
+    func findPlayer(_ id: String?) -> Player? {
+        guard id != nil, let idInt = Int(id!) else {
+            return nil
+        }
+        return players.first { $0.id == idInt }
+    }
+    
 }
 
 struct ApiGameStats: Codable {
@@ -769,7 +777,8 @@ struct PlusMinus: Codable {
     var d: Int
 }
 
-struct EventPlayer: Codable {
+struct EventPlayer: Codable, Identifiable {
+    var id: String?
     var first_name: String
     var family_name: String
     var jersey: Int
@@ -799,6 +808,7 @@ struct GameEvent: Codable, Identifiable {
     let reason: String?
     let player: EventPlayer?
     let penalty: String?
+    let assists: EventAssists?
     
     let home_team_result: Int?
     let away_team_result: Int?
@@ -813,6 +823,18 @@ struct GameEvent: Codable, Identifiable {
         }
         return self.team_advantage ?? ""
     }
+    func getAssists() -> [EventPlayer]? {
+        guard assists != nil, assists?.first != nil, assists?.second != nil else {
+            return nil
+        }
+        
+        return [assists?.first, assists?.second].compactMap { $0 }
+    }
+}
+
+struct EventAssists: Codable {
+    let first: EventPlayer?
+    let second: EventPlayer?
 }
 
 struct AddUser: Codable, Equatable {

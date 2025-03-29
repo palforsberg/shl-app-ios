@@ -64,6 +64,15 @@
 "Start Live" = "Starta Live";
 "End Live" = "Avsluta Live";
 
+"Position_LD" = "Vänster Back";
+"Position_RD" = "Höger Back";
+"Position_LW" = "Vänster Forward";
+"Position_RW" = "Höger Forward";
+"Position_CE" = "Center";
+
+"tap-event-tip-title" = "Se mer";
+"tap-event-tip-message" = "Klicka på mål o utvisningar för att se mer";
+
 // Standings
 "Final" = "Final";
 "Semifinal" = "Semifinal";

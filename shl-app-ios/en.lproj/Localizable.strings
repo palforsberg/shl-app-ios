@@ -64,6 +64,15 @@
 "Start Live" = "Start Live";
 "End Live" = "End Live";
 
+"Position_LD" = "Left Defense";
+"Position_RD" = "Right Defense";
+"Position_LW" = "Left Wing";
+"Position_RW" = "Right Wing";
+"Position_CE" = "Center";
+
+"tap-event-tip-title" = "See more";
+"tap-event-tip-message" = "Tap goals and penalties to see more";
+
 // Standings
 "Final" = "Final";
 "Semifinal" = "Semifinal";

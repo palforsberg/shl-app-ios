@@ -26,6 +26,7 @@
 		231C056E299E3F4900BEB846 /* Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23537ED126B3FE6D00C9B6ED /* Preview.swift */; };
 		231C057029A207C900BEB846 /* SelectTeamIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 231C056F29A207C900BEB846 /* SelectTeamIntent.intentdefinition */; };
 		231C057129A207C900BEB846 /* SelectTeamIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 231C056F29A207C900BEB846 /* SelectTeamIntent.intentdefinition */; };
+		2324E25F2D93F70600919679 /* GameEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2324E25E2D93F70600919679 /* GameEventView.swift */; };
 		2339F66B26B6862A006DE5F0 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F66A26B6862A006DE5F0 /* TimerView.swift */; };
 		2339F66E26B857E7006DE5F0 /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F66D26B857E7006DE5F0 /* Debouncer.swift */; };
 		2339F6B226C0FB2B006DE5F0 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F6B126C0FB2B006DE5F0 /* Settings.swift */; };
@@ -136,6 +137,8 @@
 		23A376712997CC6000FEA997 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D1AFF8C725A88CF700E50ADE /* Localizable.strings */; };
 		23A6EE132B08BDF000A14EE7 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A6EE122B08BDF000A14EE7 /* PlayerView.swift */; };
 		23A6EE152B1906F100A14EE7 /* UpdateReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A6EE142B1906F100A14EE7 /* UpdateReportView.swift */; };
+		23D383BD2D96B7F60016F591 /* puck-real@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 23D383BB2D96B7F60016F591 /* puck-real@3x.png */; };
+		23D383BE2D96B7F60016F591 /* puck-real@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 23D383BC2D96B7F60016F591 /* puck-real@2x.png */; };
 		23E405372705DCEA00C516F6 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E405352705DCEA00C516F6 /* ImageLoader.swift */; };
 		23E405382705DCEA00C516F6 /* URLImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E405362705DCEA00C516F6 /* URLImage.swift */; };
 		D1AAF86225AB10BF008D3D62 /* TeamLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1AAF86125AB10BF008D3D62 /* TeamLogo.swift */; };
@@ -195,6 +198,7 @@
 		231C0563299B9F3100BEB846 /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		231C056B299E3DB900BEB846 /* FormGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormGraph.swift; sourceTree = "<group>"; };
 		231C056F29A207C900BEB846 /* SelectTeamIntent.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = SelectTeamIntent.intentdefinition; sourceTree = "<group>"; };
+		2324E25E2D93F70600919679 /* GameEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEventView.swift; sourceTree = "<group>"; };
 		2339F66A26B6862A006DE5F0 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
 		2339F66C26B844E6006DE5F0 /* shl-app-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "shl-app-ios.entitlements"; sourceTree = "<group>"; };
 		2339F66D26B857E7006DE5F0 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
@@ -302,6 +306,8 @@
 		23A376592997AEB000FEA997 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23A6EE122B08BDF000A14EE7 /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PlayerView.swift; sourceTree = "<group>"; };
 		23A6EE142B1906F100A14EE7 /* UpdateReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateReportView.swift; sourceTree = "<group>"; };
+		23D383BB2D96B7F60016F591 /* puck-real@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "puck-real@3x.png"; sourceTree = "<group>"; };
+		23D383BC2D96B7F60016F591 /* puck-real@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "puck-real@2x.png"; sourceTree = "<group>"; };
 		23E405352705DCEA00C516F6 /* ImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
 		23E405362705DCEA00C516F6 /* URLImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLImage.swift; sourceTree = "<group>"; };
 		D1AAF86125AB10BF008D3D62 /* TeamLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamLogo.swift; sourceTree = "<group>"; };
@@ -405,6 +411,8 @@
 				237440842C6C973000AD200C /* puck-icon@3x.png */,
 				237440852C6C973000AD200C /* puck-line@2x.png */,
 				237440862C6C973000AD200C /* puck-line@3x.png */,
+				23D383BC2D96B7F60016F591 /* puck-real@2x.png */,
+				23D383BB2D96B7F60016F591 /* puck-real@3x.png */,
 				237440872C6C973000AD200C /* rbk-icon@2x.png */,
 				237440882C6C973000AD200C /* rbk-icon@3x.png */,
 				237440892C6C973000AD200C /* saik-icon@2x.png */,
@@ -519,6 +527,7 @@
 				D1AFC2A325B07E8100490FCE /* TeamView.swift */,
 				2344E36529C5C9430069F4F5 /* TeamStatsView.swift */,
 				23537ECF26B1D30200C9B6ED /* GamesStatsView.swift */,
+				2324E25E2D93F70600919679 /* GameEventView.swift */,
 				23537ED526B57B9C00C9B6ED /* SettingsView.swift */,
 				2308A23A29C47DD7004EC1F0 /* IconSelectView.swift */,
 				2308A23829C47410004EC1F0 /* StarredTeamSelectView.swift */,
@@ -707,6 +716,7 @@
 				2374409C2C6C973000AD200C /* aik-icon@2x.png in Resources */,
 				2374409F2C6C973000AD200C /* ais-icon@3x.png in Resources */,
 				237440B72C6C973000AD200C /* lhf-icon@3x.png in Resources */,
+				23D383BD2D96B7F60016F591 /* puck-real@3x.png in Resources */,
 				237440CD2C6C973000AD200C /* puck-icon@3x.png in Resources */,
 				237440B92C6C973000AD200C /* lif-icon@3x.png in Resources */,
 				237440CB2C6C973000AD200C /* puck-icon-night@3x.png in Resources */,
@@ -745,6 +755,7 @@
 				237440CF2C6C973000AD200C /* puck-line@3x.png in Resources */,
 				2339F6B626C25CDE006DE5F0 /* Launch Screen.storyboard in Resources */,
 				237440AB2C6C973000AD200C /* fhc-icon@3x.png in Resources */,
+				23D383BE2D96B7F60016F591 /* puck-real@2x.png in Resources */,
 				D1AFF8C525A88CF700E50ADE /* Localizable.strings in Resources */,
 				237440C12C6C973000AD200C /* nvif-icon@3x.png in Resources */,
 				237440A12C6C973000AD200C /* bif-icon@3x.png in Resources */,
@@ -851,6 +862,7 @@
 				231C0564299B9F3100BEB846 /* Cache.swift in Sources */,
 				23A6EE152B1906F100A14EE7 /* UpdateReportView.swift in Sources */,
 				2339F76026CA3B10006DE5F0 /* Purchases.swift in Sources */,
+				2324E25F2D93F70600919679 /* GameEventView.swift in Sources */,
 				2308A23929C47410004EC1F0 /* StarredTeamSelectView.swift in Sources */,
 				2339F6B226C0FB2B006DE5F0 /* Settings.swift in Sources */,
 				23E405382705DCEA00C516F6 /* URLImage.swift in Sources */,
@@ -962,7 +974,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -992,7 +1004,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1021,7 +1033,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1050,7 +1062,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1082,7 +1094,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1114,7 +1126,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1146,7 +1158,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1298,7 +1310,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1329,7 +1341,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

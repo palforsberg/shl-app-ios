@@ -26,7 +26,7 @@ struct TopPlayerEntry2: View {
             HStack(spacing: 16) {
                 PointsLabel(val: "\(rank)", nrDigits: 2)
                     .font(.system(size: 16, weight: .heavy, design: .rounded))
-                PlayerImage(player: player.id, size: 66)
+                PlayerImage(player: "\(player.id)", size: 66)
                 VStack(spacing: 3) {
                     HStack {
                         Text("\(player.first_name) \(player.family_name)")
@@ -67,7 +67,7 @@ struct PlayerEntry2: View {
         HStack(spacing: 16) {
             PointsLabel(val: "\(rank)", nrDigits: 2)
                 .font(.system(size: 16, weight: .heavy, design: .rounded))
-            PlayerImage(player: player.id, size: 46)
+            PlayerImage(player: "\(player.id)", size: 46)
             VStack(spacing: 3) {
                 HStack {
                     Text("\(player.first_name) \(player.family_name)")
@@ -100,7 +100,7 @@ struct SearchPlayerEntry2: View {
 
     var body: some View {
         HStack(spacing: 16) {
-            PlayerImage(player: player.id, size: 46)
+            PlayerImage(player: "\(player.id)", size: 46)
             VStack(spacing: 3) {
                 HStack {
                     Text("\(player.first_name) \(player.family_name)")
@@ -130,6 +130,7 @@ struct SearchPlayerEntry2: View {
         .padding(EdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20))
     }
 }
+
 enum ListType: String, CaseIterable {
     case mostPoints = "PV.Points"
     case mostGoals = "PV.Goals"

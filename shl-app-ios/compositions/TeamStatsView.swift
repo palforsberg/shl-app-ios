@@ -138,14 +138,14 @@ struct TeamStatsView: View {
                 HStack(spacing: 20) {
                     Box {
                         Text("Bästa spelare")
-                        PlayerImage(player: 2922, size: 80)
+                        PlayerImage(player: "2922", size: 80)
                         Text("Jonathan Dahlén").mega(size: 20)
                         Text("56 poäng")
                     }
                     
                     Box {
                         Text("Bästa passare")
-                        PlayerImage(player: 999, size: 80)
+                        PlayerImage(player: "999", size: 80)
                         Text("Anton Lander").mega(size: 20)
                         Text("56 assists")
                     }
@@ -153,13 +153,13 @@ struct TeamStatsView: View {
                 HStack(spacing: 20) {
                     Box {
                         Text("Flitigast")
-                        PlayerImage(player: 3808, size: 80)
+                        PlayerImage(player: "3808", size: 80)
                         Text("Johan Walli Walterholm").mega(size: 20)
                         Text("202 timmar istid")
                     }
                     Box {
                         Text("Fulspelaren")
-                        PlayerImage(player: 3411, size: 80)
+                        PlayerImage(player: "3411", size: 80)
                         Text("Jakob Stenqvist").mega(size: 20)
                         Text("500 straffminuter")
                     }

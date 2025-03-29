@@ -8,144 +8,6 @@
 import SwiftUI
 import ActivityKit
 
-struct PenaltyEventRow: View {
-    var event: GameEvent
-    @EnvironmentObject var teamsData: TeamsData
-    var body: some View {
-        HStack(spacing: 10) {
-            TeamLogo(code: event.team ?? "", size: 28)
-            VStack (spacing: 2) {
-                HStack(spacing: 2) {
-                    Text(LocalizedStringKey("Penalty"))
-                    Image(systemName: "xmark.circle")
-                        .font(.system(size: 12, weight: .semibold, design: .rounded))
-                        .foregroundColor(Color(uiColor: .systemRed))
-                        .opacity(0.9)
-                        .offset(y: 1)
-                    Spacer()
-                    Text(event.penalty ?? "")
-                }.font(.system(size: 16, weight: .semibold, design: .rounded))
-                .cornerRadius(10)
-                HStack {
-                    if let player = event.player {
-                        Text("#\(player.jersey) \(player.first_name) \(player.family_name)").truncationMode(.tail).lineLimit(1)
-                    }
-                    Text(event.reason ?? "").truncationMode(.tail).lineLimit(1)
-                    Spacer()
-                    Text(event.gametime)
-                }.font(.system(size: 14, weight: .medium, design: .rounded))
-            }
-            
-        }.padding(EdgeInsets(top: 7, leading: 0, bottom: 7, trailing: 0))
-            .foregroundColor(Color(uiColor: .secondaryLabel))    
-    }
-}
-
-struct GoalEventRow: View {
-    var event: GameEvent
-    var game: Game
-    @EnvironmentObject var teamsData: TeamsData
-    @EnvironmentObject var starredTeams: StarredTeams
-    var body: some View {
-        let team = event.team ?? ""
-        let starred = starredTeams.isStarred(teamCode: team)
-
-        HStack(spacing: 10) {
-            TeamLogo(code: team, size: 28)
-            VStack (spacing: 2) {
-                HStack {
-                    if starred {
-                        Text(LocalizedStringKey("Goal_starred"))
-                    } else {
-                        Text(LocalizedStringKey("Goal"))
-                    }
-                    Spacer()
-                    Text("\(event.home_team_result ?? 0)").underline(team == game.home_team_code) +
-                    Text(" - ") +
-                    Text("\(event.away_team_result ?? 0)").underline(team == game.away_team_code)
-                }.font(.system(size: starred ? 20 : 20, weight: .heavy, design: .rounded))
-                HStack {
-                    if let player = event.player {
-                        Text("#\(player.jersey) \(player.first_name) \(player.family_name)")
-                    }
-                    Text(event.getTeamAdvantage())
-                    Spacer()
-                    Text(event.gametime)
-                }.font(.system(size: starred ? 14 : 14, weight: .semibold, design: .rounded))
-            }
-        }.padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
-    }
-}
-
-struct GameStartEventRow: View {
-    var event: GameEvent
-    var body: some View {
-        HStack {
-            Text(LocalizedStringKey(self.event.type))
-            Spacer()
-        }
-            .foregroundColor(Color(uiColor: UIColor.secondaryLabel))
-            .font(.system(size: 14, weight: .semibold, design: .rounded))
-            .padding(EdgeInsets(top: 2, leading: 37, bottom: 2, trailing: 0))
-    }
-}
-
-struct PeriodEventRow: View {
-    var event: GameEvent
-    var body: some View {
-        HStack {
-            Text(self.getLocalizedString())
-            Spacer()
-        }
-            .foregroundColor(Color(uiColor: UIColor.secondaryLabel))
-            .font(.system(size: 14, weight: .semibold, design: .rounded))
-            .padding(EdgeInsets(top: 2, leading: 37, bottom: 2, trailing: 0))
-    }
-    
-    private func getLocalizedString() -> LocalizedStringKey {
-        
-        switch self.event.getEventType() {
-        case .periodStart:
-            if event.status == "Shootout" {
-                return LocalizedStringKey("PenaltiesStart")
-            } else if event.status == "Overtime" {
-                return LocalizedStringKey("OvertimeStart")
-            }
-            return LocalizedStringKey("PeriodStart \(getPeriod(s: event.status))")
-        case .periodEnd:
-            if event.status == "Shootout" {
-                return LocalizedStringKey("PenaltiesEnd")
-            } else if event.status == "Overtime" {
-                return LocalizedStringKey("OvertimeEnd")
-            }
-            return LocalizedStringKey("PeriodEnd \(getPeriod(s: event.status))")
-        default: return LocalizedStringKey("")
-        }
-    }
-    
-    private func getPeriod(s: String) -> String {
-        switch s {
-        case "Period1": return "1"
-        case "Period2": return "2"
-        case "Period3": return "3"
-        default: return "1"
-        }
-    }
-}
-
-struct GameEventRow: View {
-    var event: GameEvent
-    var game: Game
-    var body: some View {
-        switch event.getEventType() {
-        case.gameStart, .gameEnd: return AnyView(GameStartEventRow(event: event))
-        case .goal: return AnyView(GoalEventRow(event: event, game: game))
-        case .periodStart, .periodEnd: return AnyView(PeriodEventRow(event: event))
-        case .penalty: return AnyView(PenaltyEventRow(event: event))
-        default: return AnyView(Text(""))
-        }
-    }
-}
 
 struct GroupedView<Content: View>: View {
     var title: LocalizedStringKey?
@@ -390,18 +252,21 @@ struct PlayoffPreviewView: View {
     @EnvironmentObject var playoffs: PlayoffData
     
     var game: Game
+    var subtitle: Bool = false
     
     var body: some View {
         if let entry = playoffs.getEntry(team1: game.home_team_code, team2: game.away_team_code) {
             PlayoffHistoryView(entry: entry)
             if let stage = playoffs.getStage(entry: entry) {
-                Spacer(minLength: 10)
+                Spacer(minLength: 8)
                 Text(LocalizedStringKey(stage))
-                    .rounded(size: 18, weight: .heavy)
+                    .rounded(size: 16, weight: .heavy)
                     .textCase(.uppercase)
-                Text(LocalizedStringKey("First to \(entry.getBestTo())"))
-                    .rounded(size: 12, weight: .bold)
-                    .foregroundColor(Color(uiColor: .secondaryLabel))
+                if subtitle {
+                    Text(LocalizedStringKey("First to \(entry.getBestTo())"))
+                        .rounded(size: 12, weight: .bold)
+                        .foregroundColor(Color(uiColor: .secondaryLabel))
+                }
                 Spacer(minLength: 10)
             }
         }
@@ -432,9 +297,89 @@ struct SeasonPreviewView: View {
                             .minimumScaleFactor(0.8)
                         Spacer()
                         FormGraph(teamCode: game.away_team_code)
-                    }.padding(EdgeInsets(top: 3, leading: 0, bottom: 3, trailing: 0))
-                }.padding(EdgeInsets(top: 16, leading: 30, bottom: 16, trailing: 30))
+                    }
+                    .padding(EdgeInsets(top: 3, leading: 0, bottom: 3, trailing: 0))
+                }
+                .padding(EdgeInsets(top: 16, leading: 30, bottom: 16, trailing: 30))
             }
+        }
+    }
+}
+
+struct GameStatsViewHeader: View {
+    
+    @EnvironmentObject var starredTeams: StarredTeams
+    @EnvironmentObject var settings: Settings
+    @EnvironmentObject var teamsData: TeamsData
+    
+    var game: Game
+    
+    var body: some View {
+        Group {
+            Text("\(game.league.rawValue) • \(settings.getFormattedSeason())")
+            Text(LocalizedStringKey(game.getGameType()?.rawValue ?? ""))
+        }
+        .font(.system(size: 14, weight: .bold, design: .rounded))
+        .foregroundColor(Color(UIColor.secondaryLabel))
+        Spacer(minLength: 15)
+        
+        Group { // Header
+            HStack(alignment: .top, spacing: 0) {
+                VStack {
+                    TeamLogo(code: game.home_team_code, size: 50.0)
+                    Text(teamsData.getShortname(game.home_team_code))
+                        .rounded(size: 17, weight: .bold)
+                        .starred(starredTeams.isStarred(teamCode: game.home_team_code))
+                        .scaledToFit()
+                        .minimumScaleFactor(0.6)
+                        
+                }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/).frame(maxWidth: 140)
+        
+                VStack(spacing: 8) {
+                    HStack(alignment: .center, spacing: 8) {
+                        Text("\(game.home_team_result)")
+                            .font(.system(size: 40, weight: .heavy, design: .rounded))
+                            .scaledToFit()
+                            .minimumScaleFactor(0.6)
+                        Text(":").rounded(size: 20, weight: .heavy).padding(.top, 2)
+                        Text("\(game.away_team_result)")
+                            .font(.system(size: 40, weight: .heavy, design: .rounded))
+                            .scaledToFit()
+                            .minimumScaleFactor(0.6)
+                    }
+                    .padding(EdgeInsets(top: 3, leading: 5, bottom: 0, trailing: 5))
+                    .opacity(game.isFuture() ? 0.2 : 1.0)
+                    HStack(spacing: 3) {
+                        if (game.isFuture()) {
+                            Text("\(game.start_date_time.getFormattedDate()) • \(game.start_date_time.getFormattedTime())")
+                                .foregroundColor(Color(uiColor: .secondaryLabel))
+                        } else {
+                            if let statusString = game.status {
+                                Text(LocalizedStringKey(statusString))
+                            }
+                            if game.getStatus()?.isGameTimeApplicable() ?? false,
+                               let gt = game.gametime {
+                                Text("•")
+                                Text(gt)
+                            }
+                        }
+                    }
+                    .lineLimit(1)
+                    .scaledToFit()
+                    .minimumScaleFactor(0.5)
+                    .padding(EdgeInsets(top: 2, leading: 5, bottom: 2, trailing: 5))
+                    .font(.system(size: 16, weight: .bold, design: .rounded))
+                }
+                
+                VStack {
+                    TeamLogo(code: game.away_team_code, size: 50)
+                    Text(teamsData.getShortname(game.away_team_code))
+                        .rounded(size: 16, weight: .bold)
+                        .starred(starredTeams.isStarred(teamCode: game.away_team_code))
+                        .scaledToFit()
+                        .minimumScaleFactor(0.6)
+                }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/).frame(maxWidth: 140)
+            }.frame(maxWidth: .infinity)
         }
     }
 }
@@ -442,13 +387,12 @@ struct SeasonPreviewView: View {
 struct GamesStatsView: View {
     @State var details: GameDetails?
     @State var previousGames: [Game] = []
+    @State var selectedEvent: GameEvent?
     @State var hasFetched = false
     @State var liveActivityEnabled = false
     
     @EnvironmentObject var gamesData: GamesData
-    @EnvironmentObject var starredTeams: StarredTeams
     @EnvironmentObject var teamsData: TeamsData
-    @EnvironmentObject var settings: Settings
     
     var provider: DataProvider? = DataProvider()
 
@@ -463,72 +407,8 @@ struct GamesStatsView: View {
                 }
                 #endif
                 Spacer(minLength: 10)
-                Group {
-                    Text("\(game.league.rawValue) • \(settings.getFormattedSeason())")
-                    Text(LocalizedStringKey(game.getGameType()?.rawValue ?? ""))
-                }
-                .font(.system(size: 14, weight: .bold, design: .rounded))
-                .foregroundColor(Color(UIColor.secondaryLabel))
-                Spacer(minLength: 15)
-                Group { // Header
-                    HStack(alignment: .top, spacing: 0) {
-                        VStack {
-                            TeamLogo(code: game.home_team_code, size: 50.0)
-                            Text(teamsData.getShortname(game.home_team_code))
-                                .rounded(size: 17, weight: .bold)
-                                .starred(starredTeams.isStarred(teamCode: game.home_team_code))
-                                .scaledToFit()
-                                .minimumScaleFactor(0.6)
-                                
-                        }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/).frame(maxWidth: 140)
-                
-                        VStack(spacing: 8) {
-                            HStack(alignment: .center, spacing: 8) {
-                                Text("\(game.home_team_result)")
-                                    .font(.system(size: 40, weight: .heavy, design: .rounded))
-                                    .scaledToFit()
-                                    .minimumScaleFactor(0.6)
-                                Text(":").rounded(size: 20, weight: .heavy).padding(.top, 2)
-                                Text("\(game.away_team_result)")
-                                    .font(.system(size: 40, weight: .heavy, design: .rounded))
-                                    .scaledToFit()
-                                    .minimumScaleFactor(0.6)
-                            }
-                            .padding(EdgeInsets(top: 3, leading: 5, bottom: 0, trailing: 5))
-                            .opacity(game.isFuture() ? 0.2 : 1.0)
-                            HStack(spacing: 3) {
-                                if (game.isFuture()) {
-                                    Text("\(game.start_date_time.getFormattedDate()) • \(game.start_date_time.getFormattedTime())")
-                                        .foregroundColor(Color(uiColor: .secondaryLabel))
-                                } else {
-                                    if let statusString = game.status {
-                                        Text(LocalizedStringKey(statusString))
-                                    }
-                                    if game.getStatus()?.isGameTimeApplicable() ?? false,
-                                       let gt = game.gametime {
-                                        Text("•")
-                                        Text(gt)
-                                    }
-                                }
-                            }
-                            .lineLimit(1)
-                            .scaledToFit()
-                            .minimumScaleFactor(0.5)
-                            .padding(EdgeInsets(top: 2, leading: 5, bottom: 2, trailing: 5))
-                            .font(.system(size: 16, weight: .bold, design: .rounded))
-                        }
-                        
-                        VStack {
-                            TeamLogo(code: game.away_team_code, size: 50)
-                            Text(teamsData.getShortname(game.away_team_code))
-                                .rounded(size: 16, weight: .bold)
-                                .starred(starredTeams.isStarred(teamCode: game.away_team_code))
-                                .scaledToFit()
-                                .minimumScaleFactor(0.6)
-                        }.frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/).frame(maxWidth: 140)
-                    }.frame(maxWidth: .infinity)
-                }
-                
+
+                GameStatsViewHeader(game: game)
                 
                 if LiveActivity.shared?.isGameApplicable(game: game) ?? false,
                    ActivityAuthorizationInfo().areActivitiesEnabled
@@ -566,12 +446,19 @@ struct GamesStatsView: View {
                 
                 if let stats = details?.stats {
                     StatsView(title: "Match Detail", stats: stats)
-                    Spacer(minLength: 25)
+                    if game.isLive(), (game.isDemotion() || game.isPlayoff()) {
+                        Spacer(minLength: 30)
+                        PlayoffPreviewView(game: game, subtitle: false)
+                        Spacer(minLength: 16)
+                    } else {
+                        Spacer(minLength: 25)
+                    }
+                    
                 } else if game.isFuture() {
                     if game.isDemotion() || game.isPlayoff() {
-                        Spacer(minLength: 16)
+                        Spacer(minLength: 10)
                         PlayoffPreviewView(game: game)
-                        Spacer(minLength: 46)
+                        Spacer(minLength: 30)
                     } else {
                         SeasonPreviewView(game: game)
                         Spacer(minLength: 30)
@@ -583,17 +470,13 @@ struct GamesStatsView: View {
                             .padding(.bottom, -3)
                         PickemSliderView(game: game, onVote: self.updateVote)
                             .padding(.leading, 15).padding(.trailing, 15)
-                        Spacer(minLength: 40)
+                        Spacer(minLength: 30)
                     }
                 }
                 if hasFetched { // hide until all data has been fetched to avoid jumping UI
                     if !(details?.events.isEmpty ?? false) {
                         Spacer(minLength: 0)
-                        Group {
-                            ForEach(details?.events ?? []) { p in
-                                GameEventRow(event: p, game: game)
-                            }
-                        }.padding(EdgeInsets(top: 0, leading: 30, bottom: 0, trailing: 35))
+                        GameEventView(game: game, details: details)
                         Spacer(minLength: 30)
                         Divider()
                         Spacer(minLength: 20)
@@ -682,6 +565,7 @@ struct GamesStatsView: View {
             await LiveActivity.shared?.endLiveActivity(for: game)
         }
     }
+    
     
     static func handleEvents(_ events: [GameEvent]?) -> [GameEvent] {
         guard events != nil else {
