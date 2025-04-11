@@ -246,7 +246,7 @@ struct PlayerView: View {
                                 .opacity(0.3)
                                 .padding(.vertical, 60)
                         }
-                        ForEach(players, id: \.element.id) { (i, p) in
+                        ForEach(players, id: \.element.team_code_id) { (i, p) in
                             if searching {
                                 Button {
                                     self.selectedPlayer = p

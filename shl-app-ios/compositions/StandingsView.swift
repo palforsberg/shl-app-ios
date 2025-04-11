@@ -167,28 +167,32 @@ struct PlayoffHistoryView: View {
     @EnvironmentObject var playoffs: PlayoffData
     @EnvironmentObject var games: GamesData
     
-    var entry: PlayoffEntry
+    @State var playoffGames: [Game] = []
     
-    @State var winners: [String] = []
+    var entry: PlayoffEntry
+    var currentGameId: String?
     
     var body: some View {
         HStack(spacing: 10) {
-            ForEach(Array(self.winners.enumerated()), id: \.offset) { o, e in
-                TeamLogo(code: e)
-            }
-            ForEach(values: 0..<((entry.nr_games ?? 7) - self.winners.count)) { e in
-                Circle()
-                    .fill(Color(uiColor: .systemGray2))
-                    .frame(width: 10, height: 10)
-                    .padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5))
+            ForEach(self.playoffGames) { g in
+                if g.isPlayed() {
+                    TeamLogo(code: g.getWinner())
+                        .flashing(enabled: g.game_uuid == currentGameId)
+                } else {
+                    Circle()
+                        .fill(Color(uiColor: .systemGray2))
+                        .frame(width: 10, height: 10)
+                        .padding(EdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5))
+                        .flashing(enabled: g.game_uuid == currentGameId)
+                }
             }
         }
         .fixedSize(horizontal: false, vertical: true)
         .task {
-            self.winners = games.getPlayoffGamesBetween(t1: entry.team1, t2: entry.team2)
-                .filter { $0.isPlayed() }
+            self.playoffGames = Array(games
+                .getPlayoffGamesBetween(t1: entry.team1, t2: entry.team2)
                 .sorted { $0.start_date_time < $1.start_date_time }
-                .map { $0.didWin(entry.team1) ? entry.team1 : entry.team2 }
+                .prefix(entry.nr_games ?? 7))
         }
     }
 }

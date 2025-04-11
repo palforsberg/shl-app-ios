@@ -256,7 +256,7 @@ struct PlayoffPreviewView: View {
     
     var body: some View {
         if let entry = playoffs.getEntry(team1: game.home_team_code, team2: game.away_team_code) {
-            PlayoffHistoryView(entry: entry)
+            PlayoffHistoryView(entry: entry, currentGameId: game.game_uuid)
             if let stage = playoffs.getStage(entry: entry) {
                 Spacer(minLength: 8)
                 Text(LocalizedStringKey(stage))
@@ -446,24 +446,18 @@ struct GamesStatsView: View {
                 
                 if let stats = details?.stats {
                     StatsView(title: "Match Detail", stats: stats)
-                    if game.isLive(), (game.isDemotion() || game.isPlayoff()) {
-                        Spacer(minLength: 30)
-                        PlayoffPreviewView(game: game, subtitle: false)
-                        Spacer(minLength: 16)
-                    } else {
-                        Spacer(minLength: 25)
-                    }
+                    Spacer(minLength: 25)
                     
-                } else if game.isFuture() {
-                    if game.isDemotion() || game.isPlayoff() {
-                        Spacer(minLength: 10)
-                        PlayoffPreviewView(game: game)
-                        Spacer(minLength: 30)
-                    } else {
-                        SeasonPreviewView(game: game)
-                        Spacer(minLength: 30)
-                    }
+                } else if game.isFuture(), game.isSeasonGame() {
+                    SeasonPreviewView(game: game)
+                    Spacer(minLength: 30)
                 }
+                
+                if game.isPlayoff() || game.isDemotion() {
+                    PlayoffPreviewView(game: game, subtitle: false)
+                    Spacer(minLength: 20)
+                }
+                
                 if game.votes != nil || PickemData.isPickable(game: game) {
                     Group {
                         Text("Pick'em").listHeader()
@@ -474,6 +468,14 @@ struct GamesStatsView: View {
                     }
                 }
                 if hasFetched { // hide until all data has been fetched to avoid jumping UI
+                    #if DEBUG
+                    if #available(iOS 19.0, *) {
+                        if !(details?.players.isEmpty ?? false) {
+                            GameStatsPlayerView(players: details?.players ?? [])
+                            Spacer(minLength: 20)
+                        }
+                    }
+                    #endif
                     if !(details?.events.isEmpty ?? false) {
                         Spacer(minLength: 0)
                         GameEventView(game: game, details: details)
@@ -606,7 +608,7 @@ struct GamesStatsView_Previews: PreviewProvider {
         starredTeams.addTeam(teamCode: "SAIK")
         let game = getLiveGame(t1: "SAIK", score1: 4, t2: "IKO", score2: 2, status: "Overtime")
         PickemData.updateStored(key: "picks.\(Settings.currentSeason)", picks: [Pick(gameUuid: game.game_uuid, pickedTeam: "SAIK")])
-        return GamesStatsView(details: GameDetails(game: game, events: events, stats: stats, players: [getPlayer(id: 5434, g: 2, a: 3, pim: 2)]),
+        return GamesStatsView(details: GameDetails(game: game, events: events, stats: stats, players: getPlayers()),
                               provider: nil,
                               game: game)
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
@@ -641,7 +643,7 @@ struct GamesStatsView_Played_Previews: PreviewProvider {
         let starredTeams = StarredTeams()
         starredTeams.addTeam(teamCode: "LHF")
         
-        return GamesStatsView(details: GameDetails(game: getLiveGame(), events: events, stats: stats, players: []),
+        return GamesStatsView(details: GameDetails(game: getLiveGame(), events: events, stats: stats, players: getPlayers()),
                               provider: nil,
                               game: getPlayedGame(t1: "LHF", s1: 3, t2: "FHC", s2: 0, overtime: false, date: Date().addingTimeInterval(TimeInterval(-2_000_000))))
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
@@ -661,7 +663,7 @@ struct GamesStatsView_No_Events_Previews: PreviewProvider {
         
         let starredTeams = StarredTeams()
         starredTeams.addTeam(teamCode: "LHF")
-        return GamesStatsView(details: GameDetails(game: getLiveGame(), events: [], stats: nil, players: []),
+        return GamesStatsView(details: GameDetails(game: getLiveGame(), events: [], stats: nil, players: getPlayers()),
                               provider: nil,
                               game: getLiveGame())
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
@@ -681,7 +683,7 @@ struct GamesStatsView_Future_Game_Previews: PreviewProvider {
         
         let starred = StarredTeams()
         starred.addTeam(teamCode: "LHF")
-        return GamesStatsView(details: GameDetails(game: getFutureGame(), events: [], stats: nil, players: []),
+        return GamesStatsView(details: GameDetails(game: getFutureGame(), events: [], stats: nil, players: getPlayers()),
                               provider: nil,
                               game: getFutureGame())
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
@@ -704,7 +706,7 @@ struct GamesStatsView_Future_Playoff_Game_Previews: PreviewProvider {
         starred.addTeam(teamCode: "LHF")
         let game = getPlayoffGame(t1: "LHF", s1: 0, t2: "OHK", s2: 0, status: "Coming")
         
-        return GamesStatsView(details: GameDetails(game: game, events: [], stats: nil, players: []),
+        return GamesStatsView(details: GameDetails(game: game, events: [], stats: nil, players: getPlayers()),
                               provider: nil,
                               game: game)
             .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
@@ -722,7 +724,7 @@ struct GamesStatsView_Future_No_Prev_Game_Previews: PreviewProvider {
     static var previews: some View {
         let teams = getTeamsData()
         
-        return GamesStatsView(details: GameDetails(game: getFutureGame(), events: [], stats: nil, players: []),
+        return GamesStatsView(details: GameDetails(game: getFutureGame(), events: [], stats: nil, players: getPlayers()),
                               provider: nil,
                               game: getFutureGame())
             .environmentObject(GamesData(data: []))

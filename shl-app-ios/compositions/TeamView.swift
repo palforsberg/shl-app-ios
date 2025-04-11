@@ -124,14 +124,17 @@ struct PlayerStatsSheet: View {
                 Spacer(minLength: 20)
                 HStack(alignment: .center, spacing: 20) {
                     PlayerImage(player: "\(player.id)", size: 90)
-                    VStack(alignment: .leading) {
+                    VStack(alignment: .leading, spacing: 5) {
                         Text("\(player.first_name) \(player.family_name)")
                             .minimumScaleFactor(0.6).scaledToFit()
                             .font(.system(size: 25, weight: .bold, design: .rounded))
-                        Text("#\(player.jersey) ")
-                            .font(.system(size: 20, weight: .bold, design: .rounded))
-                        + Text("\(player.position)").fontWeight(.medium)
-                            .font(.system(size: 20, weight: .semibold, design: .rounded))
+                        HStack(spacing: 10) {
+                            TeamLogo(code: player.team_code, size: 24)
+                            Text("#\(player.jersey)")
+                                .font(.system(size: 20, weight: .bold, design: .rounded))
+                            Text("\(player.position)")
+                                .font(.system(size: 20, weight: .semibold, design: .rounded))
+                        }
                         
                     }.font(.system(size: 25, weight: .bold, design: .rounded))
                 }

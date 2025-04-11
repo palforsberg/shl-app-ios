@@ -74,6 +74,14 @@ func getPlayer(id: Int, g: Int, a: Int, pim: Int) -> Player {
     Player(id: id, team_code: "LHF", first_name: "Lars", family_name: "Larsson", jersey: 69, position: "LD", season: "Season2022", league: .shl, gp: 1, toi_s: 1337, g: g, a: a, pim: pim)
 }
 
+func getPlayers() -> [Player] {
+    [
+        getPlayer(id: 524, g: 2, a: 0, pim: 10),
+        getPlayer(id: 525, g: 0, a: 2, pim: 1),
+        getPlayer(id: 526, g: 1, a: 0, pim: 0)
+    ]
+}
+
 func getPlayerStats(id: Int, g: Int, a: Int, pim: Int) -> Player {
     Player(id: id, team_code: "LHF", first_name: "Lars", family_name: "Larsson", jersey: 69, position: "LD", season: "Season2022", league: .shl, gp: 1, toi_s: 1337, g: g, a: a, pim: pim)
 }

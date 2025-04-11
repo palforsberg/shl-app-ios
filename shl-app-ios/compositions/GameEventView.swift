@@ -174,7 +174,7 @@ struct GoalEventExpandedView: View {
             Text(LocalizedStringKey(starred ? "Goal_starred" : "Goal"))
                 .font(.system(size: 26, weight: .heavy, design: .rounded).smallCaps())
             
-            Spacer(minLength: 20)
+            Spacer(minLength: 16)
             HStack(alignment: .center, spacing: 2) {
                 Spacer()
                 TeamAvatar(game.home_team_code, alignment: .leading)

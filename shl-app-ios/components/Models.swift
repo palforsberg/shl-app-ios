@@ -243,7 +243,7 @@ class GamesData: ObservableObject {
     func getPlayoffGamesBetween(t1: String, t2: String) -> [Game] {
         self.data
             .filter { $0.isPlayoff() || $0.isDemotion() }
-            .filter { $0.includesOnly(teams: [t1, t2])}
+            .filter { $0.includesOnly(team1: t1, team2: t2)}
     }
 
 
@@ -400,8 +400,14 @@ struct Game: Codable, Identifiable, Equatable  {
         teams.contains(self.home_team_code) || teams.contains(self.away_team_code)
     }
     
-    func includesOnly(teams: [String]) -> Bool {
-        teams.contains(self.home_team_code) && teams.contains(self.away_team_code)
+    func includesOnly(team1: String, team2: String) -> Bool {
+        if self.home_team_code == team1 {
+            return self.away_team_code == team2
+        }
+        if self.home_team_code == team2 {
+            return self.away_team_code == team1
+        }
+        return false
     }
     
     func getOpponent(team: String) -> String? {
@@ -640,8 +646,13 @@ struct TeamPlayers: Codable {
     var players: [Player]?
 }
 
-struct Player: Codable, Identifiable {
+struct Player: Codable, Identifiable, Hashable {
     let id: Int
+    var team_code_id: String {
+        get {
+           return "\(id)-\(team_code)"
+        }
+    }
     var team_code: String
     var first_name: String
     var family_name: String
@@ -882,8 +893,13 @@ struct PlayoffEntry: Codable, Identifiable, Equatable {
     }
     
     func has(t1: String, t2: String) -> Bool {
-        let ts = [t1, t2]
-        return ts.contains(team1) && ts.contains(team2)
+        if t1 == team1 {
+            return t2 == team2
+        }
+        if t1 == team2 {
+            return t2 == team1
+        }
+        return false
     }
     
     func has(t1: String) -> Bool {
