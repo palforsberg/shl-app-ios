@@ -125,6 +125,7 @@
 		237440E22C6C973000AD200C /* vvik-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 237440992C6C973000AD200C /* vvik-icon@2x.png */; };
 		237440E32C6C973000AD200C /* vvik-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2374409A2C6C973000AD200C /* vvik-icon@3x.png */; };
 		237EFCBF2C67D3A400C6AA9E /* NewIcons.png in Resources */ = {isa = PBXBuildFile; fileRef = 237EFCBE2C67D3A400C6AA9E /* NewIcons.png */; };
+		238EABDB2DAB930500375D07 /* penalties.plist in Resources */ = {isa = PBXBuildFile; fileRef = 238EABDA2DAB930500375D07 /* penalties.plist */; };
 		23A373C1299115D100FEA997 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A373C0299115D100FEA997 /* NotificationService.swift */; };
 		23A373C5299115D100FEA997 /* shl-app-ios-notification-service.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 23A373BE299115D100FEA997 /* shl-app-ios-notification-service.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		23A3764D2997AEAE00FEA997 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1AFF8D525A898AD00E50ADE /* WidgetKit.framework */; };
@@ -295,6 +296,7 @@
 		237440992C6C973000AD200C /* vvik-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "vvik-icon@2x.png"; sourceTree = "<group>"; };
 		2374409A2C6C973000AD200C /* vvik-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "vvik-icon@3x.png"; sourceTree = "<group>"; };
 		237EFCBE2C67D3A400C6AA9E /* NewIcons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NewIcons.png; sourceTree = "<group>"; };
+		238EABDA2DAB930500375D07 /* penalties.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = penalties.plist; sourceTree = "<group>"; };
 		23A373BE299115D100FEA997 /* shl-app-ios-notification-service.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "shl-app-ios-notification-service.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23A373C0299115D100FEA997 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		23A373C2299115D100FEA997 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -450,6 +452,7 @@
 		23A373CA2991183700FEA997 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				238EABDA2DAB930500375D07 /* penalties.plist */,
 				237EFCBE2C67D3A400C6AA9E /* NewIcons.png */,
 			);
 			path = Images;
@@ -751,6 +754,7 @@
 				237440B22C6C973000AD200C /* khc-icon@2x.png in Resources */,
 				237440E32C6C973000AD200C /* vvik-icon@3x.png in Resources */,
 				237440E12C6C973000AD200C /* vlh-icon@3x.png in Resources */,
+				238EABDB2DAB930500375D07 /* penalties.plist in Resources */,
 				237440B02C6C973000AD200C /* iko2-icon@2x.png in Resources */,
 				237440CF2C6C973000AD200C /* puck-line@3x.png in Resources */,
 				2339F6B626C25CDE006DE5F0 /* Launch Screen.storyboard in Resources */,
@@ -974,7 +978,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1004,7 +1008,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1033,7 +1037,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1062,7 +1066,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1094,7 +1098,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1126,7 +1130,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1158,7 +1162,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1310,7 +1314,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1341,7 +1345,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

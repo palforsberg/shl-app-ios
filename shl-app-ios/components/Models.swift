@@ -646,11 +646,42 @@ struct TeamPlayers: Codable {
     var players: [Player]?
 }
 
+enum Season: String, Codable {
+    case Season2025 = "Season2025"
+    case Season2024 = "Season2024"
+    case Season2023 = "Season2023"
+    case Season2022 = "Season2022"
+    case Season2021 = "Season2021"
+    case Season2020 = "Season2020"
+    case Season2019 = "Season2019"
+    case Season2018 = "Season2018"
+    case unknown
+    
+    func getString() -> String {
+        switch self {
+        case .Season2018: "2018/19"
+        case .Season2019: "2019/20"
+        case .Season2020: "2020/21"
+        case .Season2021: "2021/22"
+        case .Season2022: "2022/23"
+        case .Season2023: "2023/24"
+        case .Season2024: "2024/25"
+        case .Season2025: "2025/26"
+        case .unknown: "20??/??"
+        }
+    }
+}
+
 struct Player: Codable, Identifiable, Hashable {
     let id: Int
     var team_code_id: String {
         get {
            return "\(id)-\(team_code)"
+        }
+    }
+    var team_season_id: String {
+        get {
+            return "\(season)-\(team_code)-\(id)"
         }
     }
     var team_code: String
@@ -687,6 +718,10 @@ struct Player: Codable, Identifiable, Hashable {
             return getGkScore()
         }
         return getPoints()
+    }
+    
+    func getSeason() -> Season {
+        Season(rawValue: season) ?? .unknown
     }
     
     func getPlusMinus() -> String {

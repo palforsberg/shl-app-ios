@@ -65,6 +65,8 @@ struct PenaltyEventExpandedView: View {
     var event: GameEvent
     var details: GameDetails?
     
+    @State var penaltyRuleString: String?
+    
     @EnvironmentObject var teamsData: TeamsData
     
     var body: some View {
@@ -105,10 +107,33 @@ struct PenaltyEventExpandedView: View {
                 }
             }
             .padding(EdgeInsets(top: 0, leading: 40, bottom: 0, trailing: 40))
+            
+            if let rule = penaltyRuleString {
+                Spacer(minLength: 20)
+                Text("•••••")
+                    .rounded(size: 14, weight: .bold)
+                    .foregroundStyle(Color(uiColor: .tertiaryLabel))
+                Spacer(minLength: 20)
+                Text(rule)
+                    .rounded(size: 14, weight: .semibold)
+                    .foregroundStyle(Color(uiColor: .tertiaryLabel))
+                    .lineSpacing(4)
+                    .padding(.horizontal, 40)
+            }
             Spacer()
         }
         .font(.system(size: 16, weight: .semibold, design: .rounded))
         .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+        .task {
+            guard
+                let path = Bundle.main.path(forResource: "penalties", ofType: "plist"),
+                let dict = NSDictionary(contentsOfFile: path) else {
+                print("Could not open penalties.plist")
+                return
+            }
+            let normalizedReason = (event.reason ?? "").lowercased().replacingOccurrences(of: " ", with: "-")
+            self.penaltyRuleString = dict[normalizedReason] as? String
+        }
     }
 }
 
@@ -141,7 +166,7 @@ struct GoalEventRow: View {
                     }.font(.system(size: starred ? 20 : 20, weight: .heavy, design: .rounded))
                     HStack {
                         if let player = event.player {
-                            Text("#\(player.jersey) \(player.first_name) \(player.family_name)")
+                            Text("#\(player.jersey) \(player.first_name) \(player.family_name)").truncationMode(.tail).lineLimit(1)
                         }
                         Text(event.getTeamAdvantage())
                         Spacer()
@@ -469,7 +494,7 @@ struct GameEventView: View {
 
 #Preview {
     PenaltyEventExpandedView(
-        event: getEvent(type: .penalty),
+        event: getEvent(type: .penalty, reason: "Boarding"),
         details: GameDetails(game: getPlayedGame(), events: [], stats: nil, players: [getPlayer(id: 524, g: 2, a: 1, pim: 20)])
     )
     .environmentObject(GamesData(data: []))

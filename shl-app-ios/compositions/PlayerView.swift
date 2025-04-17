@@ -298,7 +298,7 @@ struct PlayerView: View {
         .sheet(item: $selectedPlayer, onDismiss: {
             self.selectedPlayer = nil
         }) { p in
-            PlayerStatsSheet(player: p)
+            PlayerStatsSheet(player: p, provider: provider)
                 .presentationDetents([.medium, .large])
         }
         .task(id: settings.season) {

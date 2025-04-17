@@ -111,17 +111,71 @@ struct VStat: View {
                 .monospacedDigit()
                 .scaledToFit()
                 .minimumScaleFactor(0.6)
+                .contentTransition(.numericText())
         }
     }
 }
 struct PlayerStatsSheet: View {
     @EnvironmentObject var settings: Settings
     
-    var player: Player
+    var initPlayer: Player
+    var provider: DataProvider?
+    
+    @Namespace var ns
+    
+    @State var player: Player
+    @State var fetchedPlayerInfo: [Player]?
+    
+    init(player: Player, provider: DataProvider? = nil) {
+        self.initPlayer = player
+        self.player = player
+        self.provider = provider
+    }
+    
     var body: some View {
         ScrollView([]) {
             VStack {
                 Spacer(minLength: 20)
+                
+                if #available(iOS 17.0, *) {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            Spacer(minLength: 20)
+                            ForEach(values: fetchedPlayerInfo ?? []) { p in
+                                Button {
+                                    withAnimation(.spring(duration: 0.5, bounce: 0.4)) {
+                                        self.player = p
+                                    }
+                                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                } label: {
+                                    TeamLogo(code: p.team_code, size: 20)
+                                    Text(p.getSeason().getString())
+                                        .foregroundColor(Color(uiColor: .label))
+                                }
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 10)
+                                .background {
+                                    if player.team_season_id == p.team_season_id {
+                                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                            .fill(Color(uiColor: .tertiarySystemFill))
+                                            .matchedGeometryEffect(id: "selected", in: ns)
+                                    }
+                                }
+                                .font(.system(size: 18, weight: .bold, design: .rounded))
+                                .disabled(player.team_season_id == p.team_season_id)
+                                .opacity(player.team_season_id == p.team_season_id ? 1 : 0.5)
+                            }
+                            Spacer(minLength: 20)
+                        }
+                        
+                        .frame(minWidth: UIScreen.main.bounds.width)
+                    }
+                    .contentMargins(.horizontal, 0, for: .scrollContent)
+                    .defaultScrollAnchor(.trailing)
+                    .padding(.top, 20)
+                    .padding(.bottom, 20)
+                }
+                
                 HStack(alignment: .center, spacing: 20) {
                     PlayerImage(player: "\(player.id)", size: 90)
                     VStack(alignment: .leading, spacing: 5) {
@@ -140,7 +194,17 @@ struct PlayerStatsSheet: View {
                 }
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.bottom, 20)
-                if player.position == "GK" {
+                
+                if !isAllowed() {
+                        Image(systemName: "heart")
+                            .font(.system(size: 30))
+                            .foregroundStyle(Color(uiColor: .secondaryLabel))
+                            .padding(.bottom, 10)
+                        Text("Bli supporter för att få tillgång till statistik från tidigare säsonger")
+                            .rounded(size: 14, weight: .bold)
+                            .foregroundStyle(Color(uiColor: .secondaryLabel))
+                            .multilineTextAlignment(.center)
+                } else  if player.position == "GK" {
                     GroupedView {
                         HStack {
                             Spacer()
@@ -153,6 +217,7 @@ struct PlayerStatsSheet: View {
                         }.padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
                     }.fixedSize(horizontal: false, vertical: true)
                         .padding(.bottom, 10)
+                    
                     GroupedView {
                         HStack {
                             Spacer()
@@ -174,8 +239,9 @@ struct PlayerStatsSheet: View {
                             VStat(stat: "Assist", nr: "\(player.a ?? 0)", statSize: 26)
                             Spacer()
                         }.padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
-                    }.fixedSize(horizontal: false, vertical: true)
-                        .padding(.bottom, 10)
+                    }
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.bottom, 10)
                     
                     GroupedView {
                         HStack {
@@ -220,6 +286,20 @@ struct PlayerStatsSheet: View {
         .background(Color(UIColor.systemGroupedBackground)
             .edgesIgnoringSafeArea(.all))
         .ignoresSafeArea(edges: .all)
+        .task {
+            await self.fetchPlayerData()
+        }
+    }
+    
+    func fetchPlayerData() async {
+        self.fetchedPlayerInfo = await provider?.getPlayer(player: player.id)?.sorted { $0.team_season_id < $1.team_season_id }
+    }
+    
+    func isAllowed() -> Bool {
+        if !settings.supporter, let actualSeason = Season(rawValue: "Season\(Settings.currentSeason)") {
+            return player.getSeason() == actualSeason
+        }
+        return true
     }
 }
 
@@ -447,7 +527,7 @@ struct TeamView: View {
         .sheet(item: $selectedPlayer, onDismiss: {
             self.selectedPlayer = nil
         }) { p in
-            PlayerStatsSheet(player: p)
+            PlayerStatsSheet(player: p, provider: provider)
                 .presentationDetents([.medium, .large])
         }
         .task { // runs before view appears
@@ -529,6 +609,7 @@ struct TeamView_Previews: PreviewProvider {
                                                     getPlayedGame(t1: "LHF", s1: 2, t2: "TIK", s2: 4, overtime: true),
                                                     getFutureGame(), getFutureGame()]))
                 .environmentObject(Settings())
+                .environmentObject(getPickemData())
                 .environment(\.locale, .init(identifier: "sv"))
         }
     }
@@ -537,8 +618,12 @@ struct TeamView_Previews: PreviewProvider {
 struct PlayerSheet_Previews: PreviewProvider {
     static var previews: some View {
 
-        return PlayerStatsSheet(player: getPlayerStats(id: 206, g: 2, a: 3, pim: 41))
+        return PlayerStatsSheet(
+            player: getPlayerStats(id: 2922, g: 2, a: 3, pim: 41),
+            provider: DataProvider()
+        )
                 .environmentObject(Settings())
+                .environmentObject(getPickemData())
                 .environment(\.locale, .init(identifier: "sv"))
                 .frame(height: 500, alignment: .top)
                 .clipped()

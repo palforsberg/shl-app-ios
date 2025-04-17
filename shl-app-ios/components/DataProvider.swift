@@ -23,6 +23,7 @@ let liveActivityEndUrl = "\(baseUrl)/live-activity/end"
 let gameDetailsUrl = { (game_uuid: String) -> String in return "\(baseUrl)/game/\(game_uuid)" }
 let teamPlayersUrl = { (season: Int, code: String) -> String in "\(baseUrl)/players/\(season)/\(code)" }
 let playersUrl = { (season: Int) -> String in "\(baseUrl)/players/\(season)" }
+let playerUrl = { (playerId: Int) -> String in "\(baseUrl)/player/\(playerId)" }
 let picksUrl = "\(baseUrl)/vote"
 
 enum GetType {
@@ -87,6 +88,10 @@ class DataProvider {
     
     func getCachedPlayoffs(season: Int) -> PlayoffRsp? {
         return Cache.retrieve(key: playoffUrl(season), type: PlayoffRsp.self)
+    }
+    
+    func getPlayer(player: Int) async -> [Player]? {
+        return await getThrottledData(url: playerUrl(player), type: [Player].self, maxAge: 10).entries
     }
     
     func getPlayers(for season: Int, code: String) async -> [Player]? {
