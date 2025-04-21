@@ -978,7 +978,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1008,7 +1008,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1037,7 +1037,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1066,7 +1066,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1098,7 +1098,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1130,7 +1130,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1162,7 +1162,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1314,7 +1314,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1345,7 +1345,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

@@ -329,10 +329,9 @@ struct SeasonView: View {
     var provider: DataProvider?
     
     var body: some View {
-        let teamCodes = settings.onlyStarred ? starredTeams.starredTeams : []
-        let liveGames = gamesData.getGamesToday(teamCodes: teamCodes, starred: starredTeams.starredTeams)
-        let futureGames = gamesData.getFutureGames(teamCodes: teamCodes, starred: starredTeams.starredTeams, includeToday: false)
-        let playedGames = Array(gamesData.getPlayedGames(teamCodes: teamCodes)
+        let liveGames = gamesData.getGamesToday(filter: settings.gameFilter.filterValue, starred: starredTeams.starredTeams)
+        let futureGames = gamesData.getFutureGames(filter: settings.gameFilter.filterValue, starred: starredTeams.starredTeams, includeToday: false)
+        let playedGames = Array(gamesData.getPlayedGames(filter: settings.gameFilter.filterValue, starred: starredTeams.starredTeams)
             .filter({ !Calendar.current.isDateInToday($0.start_date_time) })
             .prefix(showAllPlayed ? 10000 : 30))
         NavigationView {
@@ -419,21 +418,30 @@ struct SeasonView: View {
             .id(settings.season) // makes sure list is recreated when rerendered. To take care of reuse cell issues
             .listStyle(InsetGroupedListStyle())
             .navigationBarTitle(Text("Matches"))
-            .navigationBarItems(trailing: NavigationLink(destination: SettingsView()) {
-                Label("Settings", systemImage: "gearshape")
-            })
-            /*.navigationBarItems(trailing: Button {
-                self.teamSelectSheetVisible.toggle()
-            } label: {
-                Label("Team Select", systemImage: "ellipsis")
-            })*/
+            .toolbar {
+                /*
+                ToolbarItem(placement: .topBarLeading) {
+                    Picker(selection: $settings.gameFilter) {
+                        Text("All").tag(StoredGameFilter.all)
+                        Text("SHL").tag(StoredGameFilter.shl)
+                        Text("HA").tag(StoredGameFilter.ha)
+                        Text("Your Teams").tag(StoredGameFilter.starred)
+                    } label: {
+                        Text("Game Filter")
+                    }
+                    .font(.system(size: 15, weight: .bold, design: .rounded))
+                }
+                 */
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink(destination: SettingsView()) {
+                        Label("Settings", systemImage: "gearshape")
+                    }
+                }
+            }
             .background(Color(uiColor: .systemGroupedBackground))
         }
         .accentColor(Color(uiColor: .label))
-        /*.sheet(isPresented: $teamSelectSheetVisible) {
-            TeamSelectView(selectedTeams: $selectedTeams, description: "Select teams to see")
-                .presentationDragIndicator(.visible)
-        }*/
         .task(id: settings.season) {
             debugPrint("[SEASONVIEW] task")
             await self.reloadData(60)

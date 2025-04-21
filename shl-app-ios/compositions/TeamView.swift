@@ -356,9 +356,9 @@ struct TeamView: View {
     var body: some View {
         let team = self.teams.getTeam(teamCode)
         let starred = starredTeams.isStarred(teamCode: teamCode)
-        let liveGames = games.getLiveGames(teamCodes: [teamCode])
-        let futureGames = games.getFutureGames(teamCodes: [teamCode], includeToday: true)
-        let playedGames = games.getPlayedGames(teamCodes: [teamCode]).prefix(showingAllPlayedGames ? 1000 : 5)
+        let liveGames = games.getLiveGames(filter: .teams([teamCode]))
+        let futureGames = games.getFutureGames(filter: .teams([teamCode]), starred: starredTeams.starredTeams, includeToday: true)
+        let playedGames = games.getPlayedGames(filter: .teams([teamCode]), starred: starredTeams.starredTeams, ).prefix(showingAllPlayedGames ? 1000 : 5)
         ScrollView {
             VStack(alignment: .center, spacing: 0) {
                 VStack(spacing: 10) {

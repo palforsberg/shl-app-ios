@@ -15,7 +15,26 @@ extension KeyPath where Root == Settings {
             case \Settings.supporter: return "supporter"
             case \Settings.apnToken: return "apnToken"
             case \Settings.uuid: return "uuid"
+            case \Settings.gameFilter.rawValue: return "gameFilter"
             default: return "unknown"
+        }
+    }
+}
+
+enum StoredGameFilter: String, Hashable {
+    case all = "all"
+    case starred = "starred"
+    case shl = "shl"
+    case ha = "ha"
+    
+    var filterValue: GameFilter {
+        get {
+            switch self {
+            case .all: .all
+            case .shl: .shl
+            case .ha: .ha
+            case .starred: .starred
+            }
         }
     }
 }
@@ -47,6 +66,13 @@ class Settings: ObservableObject {
             store(\.supporter)
         }
     }
+    
+    @Published var gameFilter: StoredGameFilter {
+        didSet {
+            store(\.gameFilter.rawValue)
+        }
+    }
+    
     var uuid: String {
         didSet {
             store(\.uuid)
@@ -56,9 +82,12 @@ class Settings: ObservableObject {
     init() {
         season = Settings.currentSeason
         apnToken = UserDefaults.standard.object(forKey: Settings.getkey(\.apnToken)) as? String
-        onlyStarred = Settings.read(\.onlyStarred, orDefault: true)
+        let _onlyStarred = Settings.read(\.onlyStarred, orDefault: true)
+        onlyStarred = _onlyStarred
         notificationsEnabled = Settings.read(\.notificationsEnabled, orDefault: false)
         supporter = Settings.read(\.supporter, orDefault: false)
+        let stringFilter = Settings.read(\.gameFilter.rawValue, orDefault: "")
+        gameFilter = StoredGameFilter(rawValue: stringFilter) ?? (_onlyStarred ? .starred : .all)
         if let _uuid = UserDefaults.standard.object(forKey: Settings.getkey(\.uuid)) as? String {
             uuid = _uuid
         } else {

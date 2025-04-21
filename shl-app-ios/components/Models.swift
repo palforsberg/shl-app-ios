@@ -117,6 +117,14 @@ enum GameStatus: String, Codable, CaseIterable {
     }
 }
 
+enum GameFilter {
+    case all
+    case shl
+    case ha
+    case starred
+    case teams([String])
+}
+
 class GamesData: ObservableObject {
     var data: [Game]
     var live_games: [Game]
@@ -140,10 +148,10 @@ class GamesData: ObservableObject {
         self.live_games.filter { $0.league == league }.count
     }
 
-    func getLiveGames(teamCodes: [String], starred: [String] = []) -> [Game] {
+    func getLiveGames(filter: GameFilter, starred: [String] = []) -> [Game] {
         return getGames()
             .filter({ $0.isLive() })
-            .filter(getTeamFilter(teamCodes: teamCodes))
+            .filter(getGameFilter(filter: filter, starredTeams: starred))
             .sorted { a, b in
                 if a.includesTeams(starred) {
                     return true
@@ -152,9 +160,10 @@ class GamesData: ObservableObject {
             }
     }
     
-    func getGamesToday(teamCodes: [String], starred: [String] = []) -> [Game] {
+    func getGamesToday(filter: GameFilter, starred: [String] = []) -> [Game] {
+        
         return data
-            .filter(getTeamFilter(teamCodes: teamCodes))
+            .filter(getGameFilter(filter: filter, starredTeams: starred))
             .filter({ Calendar.current.isDateInToday($0.start_date_time) })
             .sorted { a, b in
                 if a.start_date_time == b.start_date_time {
@@ -166,19 +175,19 @@ class GamesData: ObservableObject {
             }
     }
 
-    func getPlayedGames(teamCodes: [String]) -> [Game] {
+    func getPlayedGames(filter: GameFilter, starred: [String]) -> [Game] {
         return data
             .filter({ $0.isPlayed() })
-            .filter(getTeamFilter(teamCodes: teamCodes))
+            .filter(getGameFilter(filter: filter, starredTeams: starred))
             .sorted { (a, b) -> Bool in
                 return a.start_date_time > b.start_date_time
             }
     }
     
-    func getFutureGames(teamCodes: [String], starred: [String] = [], includeToday: Bool) -> [Game] {
+    func getFutureGames(filter: GameFilter, starred: [String] = [], includeToday: Bool) -> [Game] {
         let games = data
             .filter({ $0.isFuture() })
-            .filter(getTeamFilter(teamCodes: teamCodes))
+            .filter(getGameFilter(filter: filter, starredTeams: starred))
             .filter { includeToday ? true : !Calendar.current.isDateInToday($0.start_date_time) }
             .sorted { a, b in
                 if a.start_date_time == b.start_date_time {
@@ -216,8 +225,18 @@ class GamesData: ObservableObject {
         return { game in teamCodes.contains { game.hasTeam($0) } }
     }
     
+    func getGameFilter(filter: GameFilter, starredTeams: [String]) -> (Game) -> Bool {
+        switch filter {
+        case .all: return { game in return true }
+        case .shl: return { game in return game.league == .shl }
+        case .ha: return { game in return game.league == .ha }
+        case .starred: return getTeamFilter(teamCodes: starredTeams)
+        case let .teams(teams): return getTeamFilter(teamCodes: teams)
+        }
+    }
+    
     func getGamesBetween(team1: String, team2: String) -> [Game] {
-        return getPlayedGames(teamCodes: []).filter { g in
+        return getPlayedGames(filter: .all, starred: []).filter { g in
             return g.hasTeam(team1) && g.hasTeam(team2)
         }
     }

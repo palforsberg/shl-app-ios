@@ -112,7 +112,7 @@ struct Puck: View {
     var scale = CGFloat(0.1)
     
     var body: some View {
-        Image(uiImage: UIImage(named: colorScheme == .light ? "launch-puck-2" : "launch-puck-light-2") ?? UIImage())
+        Image("puck")
             .resizable()
             .scaleEffect(scale)
             .scaledToFit()
@@ -301,17 +301,14 @@ struct SettingsView: View {
                     }
                 Group {
                     SeasonPicker(currentSeason: $settings.season)
-                    HStack {
+                    Picker(selection: $settings.gameFilter) {
+                        Text("All").tag(StoredGameFilter.all)
+                        Text("SHL").tag(StoredGameFilter.shl)
+                        Text("HockeyAllsvenskan").tag(StoredGameFilter.ha)
+                        Text("Your Teams").tag(StoredGameFilter.starred)
+                    } label: {
                         IconLabel(text: "Game Filter", color: .purple, systemName: "loupe")
-                        Spacer()
-                        Picker("", selection: $settings.onlyStarred) {
-                            Text("⭐️").tag(true)
-                            Text("All").tag(false)
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .frame(maxWidth: 130)
                     }
-                    
                 }
                 #if DEBUG
                 .disabled(false)
