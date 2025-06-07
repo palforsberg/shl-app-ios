@@ -41,7 +41,7 @@ enum StoredGameFilter: String, Hashable {
     
 class Settings: ObservableObject {
     
-    static let currentSeason = 2024
+    static let currentSeason = 2025
     @Published var season: Int
 
     @Published var apnToken: String? {
@@ -105,6 +105,10 @@ class Settings: ObservableObject {
             return ""
         }
         return getFormattedSeason()
+    }
+    
+    func getPrevSeason() -> Int {
+        return season - 1
     }
 
     static func getFormatted(season: Int) -> String {

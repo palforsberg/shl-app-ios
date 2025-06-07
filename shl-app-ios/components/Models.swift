@@ -666,6 +666,7 @@ struct TeamPlayers: Codable {
 }
 
 enum Season: String, Codable {
+    case Season2026 = "Season2026"
     case Season2025 = "Season2025"
     case Season2024 = "Season2024"
     case Season2023 = "Season2023"
@@ -686,6 +687,7 @@ enum Season: String, Codable {
         case .Season2023: "2023/24"
         case .Season2024: "2024/25"
         case .Season2025: "2025/26"
+        case .Season2026: "2026/27"
         case .unknown: "20??/??"
         }
     }

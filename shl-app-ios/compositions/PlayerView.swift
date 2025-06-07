@@ -307,8 +307,11 @@ struct PlayerView: View {
         }
     }
     
-func reloadData(_ maxAge: TimeInterval = 60 * 3) async {
-        if let players = await provider?.getPlayers(for: settings.season, maxAge: maxAge).entries {
+    func reloadData(_ maxAge: TimeInterval = 60 * 3) async {
+        if let players = await provider?.getPlayers(for: settings.season, maxAge: maxAge).entries, players.count > 0 {
+                self.players.set(data: players)
+        }
+        else if let players = await provider?.getPlayers(for: settings.getPrevSeason(), maxAge: maxAge).entries, players.count > 0 {
             self.players.set(data: players)
         }
     }

@@ -143,3 +143,26 @@ extension Text {
         self.font(.system(size: size, weight: weight, design: .rounded))
     }
 }
+
+public extension TimeInterval {
+
+    /// `TimeInterval` representing *n* whole or fractional **days**.
+    static func days(_ n: Double) -> TimeInterval {
+        n * 86_400          // 24 × 3 600
+    }
+
+    /// `TimeInterval` representing *n* whole or fractional **hours**.
+    static func hours(_ n: Double) -> TimeInterval {
+        n * 3_600           // 60 × 60
+    }
+
+    /// `TimeInterval` representing *n* whole or fractional **minutes**.
+    static func minutes(_ n: Double) -> TimeInterval {
+        n * 60
+    }
+
+    /// (Optional) straight-through helper for seconds, for completeness.
+    static func seconds(_ n: Double) -> TimeInterval {
+        n
+    }
+}

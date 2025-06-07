@@ -124,6 +124,7 @@ struct PlayerStatsSheet: View {
     @Namespace var ns
     
     @State var player: Player
+    @State var summary: PlayerSummary?
     @State var fetchedPlayerInfo: [Player]?
     
     init(player: Player, provider: DataProvider? = nil) {
@@ -189,6 +190,17 @@ struct PlayerStatsSheet: View {
                             Text("\(player.position)")
                                 .font(.system(size: 20, weight: .semibold, design: .rounded))
                         }
+                        
+                        HStack(spacing: 10) {
+                            Text("\(summary?.getFlag() ?? "-")")
+                            Text("\(summary?.weight.map { "\($0)" } ?? "- ")kg")
+                            Text("\(summary?.height.map { "\($0)" } ?? "- ")cm")
+                            Text("\(summary?.getAge().map { "\($0)" } ?? "- ")år")
+                        }
+                        .font(.system(size: 16, weight: .semibold, design: .rounded)
+                            .lowercaseSmallCaps())
+                        .frame(minHeight: 18)
+                        .padding(.top, 2)
                         
                     }.font(.system(size: 25, weight: .bold, design: .rounded))
                 }
@@ -292,7 +304,16 @@ struct PlayerStatsSheet: View {
     }
     
     func fetchPlayerData() async {
-        self.fetchedPlayerInfo = await provider?.getPlayer(player: player.id)?.sorted { $0.team_season_id < $1.team_season_id }
+        let (sum, pi) = await (
+            provider?.getPlayerSummary(player: player.id),
+            provider?.getPlayer(player: player.id)?.sorted { $0.team_season_id < $1.team_season_id }
+        )
+        self.summary = sum
+        self.fetchedPlayerInfo = pi
+        
+        withAnimation(.easeOut) {
+            
+        }
     }
     
     func isAllowed() -> Bool {
@@ -545,20 +566,25 @@ struct TeamView: View {
     }
     
     func reloadPlayers() async {
-        if let players = await self.provider?.getPlayers(for: settings.season, code: self.teamCode) {
-
-            let gks = players.getTopGoalKeepers()
-            self.topPlayers = Array(players.getTopPlayers().prefix(3))
-            
-            if gks.count > 0 {
-                self.topPlayers?.insert(gks[0], at: 0)
-            }
-            
-            self.allPlayers = players
-                .filter({p in p.hasPlayed()})
-                .filter({ p in !(self.topPlayers?.contains(where: { a in a.id == p.id }) ?? true) })
-                .sorted(by: { p1, p2 in p1.getScore() >= p2.getScore() })
+        var players = await self.provider?.getPlayers(for: settings.season, code: self.teamCode);
+        if players == nil || players?.count == 0 {
+            players = await self.provider?.getPlayers(for: settings.getPrevSeason(), code: self.teamCode);
         }
+        guard let players = players else {
+            return
+        }
+
+        let gks = players.getTopGoalKeepers()
+        self.topPlayers = Array(players.getTopPlayers().prefix(3))
+        
+        if gks.count > 0 {
+            self.topPlayers?.insert(gks[0], at: 0)
+        }
+        
+        self.allPlayers = players
+            .filter({p in p.hasPlayed()})
+            .filter({ p in !(self.topPlayers?.contains(where: { a in a.id == p.id }) ?? true) })
+            .sorted(by: { p1, p2 in p1.getScore() >= p2.getScore() })
     }
 }
 
