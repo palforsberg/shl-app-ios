@@ -49,7 +49,7 @@ struct GeneralPicker<T: Equatable, Content: View>: View {
                             content(self.values[e])
                         }.tag(e)
                     }
-        }.onChange(of: currentIndex) { value in
+        }.onChange(of: currentIndex) { old, value in
             onChange(self.values[currentIndex])
         }
     }
@@ -275,7 +275,7 @@ struct SettingsView: View {
             Section(header: Text(""), footer: Text("NOTIF_BODY").padding(.leading, 0).padding(.trailing, 20).padding(.top, 0)) {
                 Toggle(isOn: $settings.notificationsEnabled, label: {
                     IconLabel(text: "Notifications", color: .blue, systemName: "app.badge")
-                }).onChange(of: settings.notificationsEnabled) { enabled in
+                }).onChange(of: settings.notificationsEnabled) { old, enabled in
                     if enabled {
                         AppDelegate.registerForPushNotifications()
                     }

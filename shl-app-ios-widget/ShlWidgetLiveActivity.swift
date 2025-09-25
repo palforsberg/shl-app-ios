@@ -190,7 +190,7 @@ struct ShlWidgetLiveActivity: Widget {
     }
 }
 
-@available(iOS 16.2, *)
+
 struct ShlWidgetLiveActivity_Previews: PreviewProvider {
     static let attributes = ShlWidgetAttributes(homeTeam: "LHF", awayTeam: "SAIK", homeTeamDisplayCode: "LHF", awayTeamDisplayCode: "SKE", gameUuid: "game_uuid_123", startDateTime: Date())
     static let report = LiveActivityReport(homeScore: 2, awayScore: 0, status: "Period1", gametime: "12:23")

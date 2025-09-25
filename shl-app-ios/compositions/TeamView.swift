@@ -137,45 +137,42 @@ struct PlayerStatsSheet: View {
         ScrollView([]) {
             VStack {
                 Spacer(minLength: 20)
-                
-                if #available(iOS 17.0, *) {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack {
-                            Spacer(minLength: 20)
-                            ForEach(values: fetchedPlayerInfo ?? []) { p in
-                                Button {
-                                    withAnimation(.spring(duration: 0.5, bounce: 0.4)) {
-                                        self.player = p
-                                    }
-                                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                                } label: {
-                                    TeamLogo(code: p.team_code, size: 20)
-                                    Text(p.getSeason().getString())
-                                        .foregroundColor(Color(uiColor: .label))
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        Spacer(minLength: 20)
+                        ForEach(values: fetchedPlayerInfo ?? []) { p in
+                            Button {
+                                withAnimation(.spring(duration: 0.5, bounce: 0.4)) {
+                                    self.player = p
                                 }
-                                .padding(.vertical, 8)
-                                .padding(.horizontal, 10)
-                                .background {
-                                    if player.team_season_id == p.team_season_id {
-                                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                            .fill(Color(uiColor: .tertiarySystemFill))
-                                            .matchedGeometryEffect(id: "selected", in: ns)
-                                    }
-                                }
-                                .font(.system(size: 18, weight: .bold, design: .rounded))
-                                .disabled(player.team_season_id == p.team_season_id)
-                                .opacity(player.team_season_id == p.team_season_id ? 1 : 0.5)
+                                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                            } label: {
+                                TeamLogo(code: p.team_code, size: 20)
+                                Text(p.getSeason().getString())
+                                    .foregroundColor(Color(uiColor: .label))
                             }
-                            Spacer(minLength: 20)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 10)
+                            .background {
+                                if player.team_season_id == p.team_season_id {
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                        .fill(Color(uiColor: .tertiarySystemFill))
+                                        .matchedGeometryEffect(id: "selected", in: ns)
+                                }
+                            }
+                            .font(.system(size: 18, weight: .bold, design: .rounded))
+                            .disabled(player.team_season_id == p.team_season_id)
+                            .opacity(player.team_season_id == p.team_season_id ? 1 : 0.5)
                         }
-                        
-                        .frame(minWidth: UIScreen.main.bounds.width)
+                        Spacer(minLength: 20)
                     }
-                    .contentMargins(.horizontal, 0, for: .scrollContent)
-                    .defaultScrollAnchor(.trailing)
-                    .padding(.top, 20)
-                    .padding(.bottom, 20)
+                    
+                    .frame(minWidth: UIScreen.main.bounds.width)
                 }
+                .contentMargins(.horizontal, 0, for: .scrollContent)
+                .defaultScrollAnchor(.trailing)
+                .padding(.top, 20)
+                .padding(.bottom, 20)
                 
                 HStack(alignment: .center, spacing: 20) {
                     PlayerImage(player: "\(player.id)", size: 90)

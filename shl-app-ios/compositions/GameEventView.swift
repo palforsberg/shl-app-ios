@@ -432,7 +432,7 @@ struct GameEventView: View {
         let firstGoalForTip = (events.first { $0.type == "Goal" || $0.type == "Penalty" })?.id
         Group {
             ForEach(events) { p in
-                if #available(iOS 17.0, *), p.id == firstGoalForTip {
+                if p.id == firstGoalForTip {
                     TipView(tapTip, arrowEdge: .bottom)
                 }
                 GameEventRow(event: p, game: game, selectEvent: selectEvent)

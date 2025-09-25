@@ -108,8 +108,7 @@ class LiveActivity {
     }
     
     private func isStale(_ state: ActivityState) -> Bool {
-        if #available(iOS 16.2, *),
-            state == .stale {
+        if state == .stale {
             return true
         }
         return false

@@ -159,10 +159,7 @@ enum FetchType {
 
 extension View {
     func widgetBackground() -> some View {
-        if #available(iOSApplicationExtension 17.0, *) {
-            return containerBackground(.black, for: .widget)
-        }
-        return self
+        return containerBackground(.black, for: .widget)
     }
 }
 

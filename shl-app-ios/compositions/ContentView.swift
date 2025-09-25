@@ -128,15 +128,13 @@ struct ContentView: View {
             Purchases.shared = Purchases(settings: settings)
             LiveActivity.shared = LiveActivity(provider: self.provider!, settings: self.settings)
             
-            if #available(iOS 17.0, *) {
-                do {
-                    // Configure and load your tips at app launch.
-                    try Tips.configure()
-                }
-                catch {
-                    // Handle TipKit errors
-                    print("Error initializing TipKit \(error.localizedDescription)")
-                }
+            do {
+                // Configure and load your tips at app launch.
+                try Tips.configure()
+            }
+            catch {
+                // Handle TipKit errors
+                print("Error initializing TipKit \(error.localizedDescription)")
             }
         }
         .navigationViewStyle(.stack) // To fix Views being popped when updating @EnvironmentObject

@@ -83,7 +83,7 @@ struct GameAlert: View {
                 self.visible = false
             }
         })
-        .onChange(of: alert) { newAlert in
+        .onChange(of: alert) { old, newAlert in
             withAnimation(.spring()) {
                 self.visible = true
             }
