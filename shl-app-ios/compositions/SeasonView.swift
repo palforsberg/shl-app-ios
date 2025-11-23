@@ -39,13 +39,14 @@ struct BorderShine<Content: View>: View {
 struct GameScore: View {
     var s1: Int
     var s2: Int
+    let div = ":"
     var body: some View {
         HStack(alignment: .center, spacing: 8) {
-            Text("\(s1)")
-            Text(":")
+            Text(s1, format: .number)
+            Text(div)
                 .font(.system(size: 24, weight: .heavy, design: .rounded))
                 .offset(y: -2)
-            Text("\(s2)")
+            Text(s2, format: .number)
         }
         .font(.system(size: 28, weight: .heavy, design: .rounded))
         .monospacedDigit()
@@ -130,11 +131,15 @@ struct LiveGame: View {
 
                 HStack(spacing: 2) {
                     if game.getStatus() == .coming {
-                        Text(LocalizedStringKey(game.start_date_time.getFormattedDate()))
-                            .scaledToFit()
-                            .minimumScaleFactor(0.6)
-                        Text("•")
-                        Text("\(game.start_date_time.getFormattedTime())")
+                        TimelineView(.everyMinute) { e in
+                            HStack(spacing: 2) {
+                                Text(LocalizedStringKey(game.start_date_time.getFormattedDate()))
+                                    .scaledToFit()
+                                    .minimumScaleFactor(0.6)
+                                Text("•")
+                                Text(game.start_date_time.getFormattedTime())
+                            }
+                        }
                     } else if let s = game.status {
                         Text(LocalizedStringKey(s))
                     }
@@ -185,12 +190,14 @@ struct ComingGame: View {
 
                 PickedLabel(picked: pick?.pickedTeam == game.home_team_code)
                 
-                HStack(spacing: 2) {
-                    Text(LocalizedStringKey(game.start_date_time.getFormattedDate()))
-                        .scaledToFit()
-                        .minimumScaleFactor(0.6)
-                    Text("•")
-                    Text("\(game.start_date_time.getFormattedTime())")
+                TimelineView(.everyMinute) { e in
+                    HStack(spacing: 2) {
+                        Text(LocalizedStringKey(game.start_date_time.getFormattedDate()))
+                            .scaledToFit()
+                            .minimumScaleFactor(0.6)
+                        Text("•")
+                        Text(game.start_date_time.getFormattedTime())
+                    }
                 }
                 
                 PickedLabel(picked: pick?.pickedTeam == game.away_team_code)
@@ -365,7 +372,6 @@ struct SeasonView: View {
                             NavigationLink(destination: GamesStatsView(game: item)) {
                                 ComingGame(game: item)
                                     .contentShape(Rectangle())
-                                    .id(arc4random())
                                     .padding(.vertical, 20)
                             }
                             .buttonStyle(ActiveButtonStyle())
@@ -387,7 +393,6 @@ struct SeasonView: View {
                                 NavigationLink(destination: GamesStatsView(game: item)) {
                                     PlayedGame(game: item)
                                         .contentShape(Rectangle())
-                                        .id(arc4random())
                                         .padding(.vertical, 20)
                                 }
                                 .buttonStyle(ActiveButtonStyle())

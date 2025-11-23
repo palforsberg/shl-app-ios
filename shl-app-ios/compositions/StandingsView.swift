@@ -77,7 +77,7 @@ struct PlayoffEntryView: View {
                         .minimumScaleFactor(0.6)
                         .frame(width: 45, alignment: .leading)
                 }
-                Text("\(entry.score1)").monospacedDigit()
+                Text(entry.score1, format: .number).monospacedDigit()
             }.opacity(entry.team1 == "TBD" || entry.team1 == entry.eliminated ? 0.4 : 1.0)
             HStack {
                 TeamLogo(code: entry.team2, size: UIScreen.isMini ? 20 : 30)
@@ -88,7 +88,7 @@ struct PlayoffEntryView: View {
                         .minimumScaleFactor(0.6)
                         .frame(width: 45, alignment: .leading)
                 }
-                Text("\(entry.score2)").monospacedDigit()
+                Text(entry.score2, format: .number).monospacedDigit()
             }.opacity(entry.team2 == "TBD" || entry.team2 == entry.eliminated ? 0.4 : 1.0)
         }
         .font(.system(size: 18, weight: .heavy, design: .rounded))
@@ -223,7 +223,7 @@ struct PlayoffSheet: View {
                             TeamLogo(code: entry.team1)
                             Text(teams.getName(entry.team1))
                             Spacer()
-                            Text("\(entry.score1)").fontWeight(.bold).monospacedDigit()
+                            Text(entry.score1, format: .number).fontWeight(.bold).monospacedDigit()
                         }
                         .padding(EdgeInsets(top: 12, leading: 20, bottom: 3, trailing: 20))
                         .opacity(entry.team1 == entry.eliminated ? 0.4 : 1.0)
@@ -233,7 +233,7 @@ struct PlayoffSheet: View {
                             TeamLogo(code: entry.team2)
                             Text(teams.getName(entry.team2))
                             Spacer()
-                            Text("\(entry.score2)").fontWeight(.bold).monospacedDigit()
+                            Text(entry.score2, format: .number).fontWeight(.bold).monospacedDigit()
                         }
                         .padding(EdgeInsets(top: 3, leading: 20, bottom: 12, trailing: 20))
                         .opacity(entry.team2 == entry.eliminated ? 0.4 : 1.0)
@@ -335,7 +335,7 @@ struct StandingsView: View {
                                                 HStack(spacing: 2) {
                                                     Text(o.rank - item.rank > 0 ? "▴" : "▾")
                                                         .rounded(size: 12, weight: .black) +
-                                                    Text("\(abs(o.rank - item.rank))")
+                                                    Text(abs(o.rank - item.rank), format: .number)
                                                         .rounded(size: 12, weight: .black)
                                                 }
                                                 .offset(x: 2, y: 14)

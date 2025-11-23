@@ -69,7 +69,7 @@ struct GameCard: View {
                     .scaledToFit()
                     .minimumScaleFactor(0.6)
                 Text("•")
-                Text("\(game.start_date_time.getFormattedTime())")
+                Text(game.start_date_time.getFormattedTime())
             }
             .font(.system(size: 14, weight: .bold, design: .rounded))
             .foregroundColor(Color(UIColor.secondaryLabel))

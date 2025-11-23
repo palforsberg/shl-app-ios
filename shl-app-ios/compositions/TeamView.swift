@@ -36,13 +36,13 @@ struct TopPlayerEntry: View {
                 HStack(alignment: .center) {
                     PlayerImage(player: "\(player.id)", size: 50)
                     VStack(alignment: .center) {
-                        Text("\(player.first_name)").minimumScaleFactor(0.6).scaledToFit()
-                        Text("\(player.family_name)").minimumScaleFactor(0.6).scaledToFit()
+                        Text(player.first_name).minimumScaleFactor(0.6).scaledToFit()
+                        Text(player.family_name).minimumScaleFactor(0.6).scaledToFit()
                     }.font(.system(size: 16, weight: .bold, design: .rounded))
                 }
                 HStack(spacing: 10) {
                     Text("#\(player.jersey)").fontWeight(.heavy)
-                    Text("\(player.position)")
+                    Text(player.position)
                     if player.position != "GK" {
                         Text("\(player.getPoints()) P")
                     } else {
@@ -85,7 +85,7 @@ struct PlayerEntry: View {
                 
                 HStack {
                     Text("#\(player.jersey)").fontWeight(.heavy)
-                    Text("\(player.position)")
+                    Text(player.position)
                 
                     Spacer()
                 }.font(.system(size: 16, weight: .medium, design: .rounded))
@@ -184,7 +184,7 @@ struct PlayerStatsSheet: View {
                             TeamLogo(code: player.team_code, size: 24)
                             Text("#\(player.jersey)")
                                 .font(.system(size: 20, weight: .bold, design: .rounded))
-                            Text("\(player.position)")
+                            Text(player.position)
                                 .font(.system(size: 20, weight: .semibold, design: .rounded))
                         }
                         

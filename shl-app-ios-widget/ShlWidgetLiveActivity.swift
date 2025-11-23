@@ -57,10 +57,10 @@ struct LiveActivityReportView: View {
             WidgetTeamAvatar(code: context.attributes.homeTeam, displayCode: context.attributes.homeTeamDisplayCode)
             VStack(spacing: 3) {
                 HStack(spacing: 8) {
-                    Text("\(context.state.report.homeScore)")
+                    Text(context.state.report.homeScore, format: .number)
                         .contentTransition(.numericText())
                     Text(":").font(.system(size: 22, weight: .black, design: .rounded))
-                    Text("\(context.state.report.awayScore)")
+                    Text(context.state.report.awayScore, format: .number)
                         .contentTransition(.numericText())
                 }
                 .font(.system(size: 34, weight: .heavy, design: .rounded))
@@ -131,13 +131,13 @@ struct ShlWidgetLiveActivity: Widget {
                 DynamicIslandExpandedRegion(.leading) {
                     HStack(spacing: 10) {
                         WidgetTeamLogo(code: context.attributes.homeTeam, size: 38)
-                        Text("\(context.state.report.homeScore)")
+                        Text(context.state.report.homeScore, format: .number)
                             .font(.system(size: 26, weight: .heavy, design: .rounded))
                     }
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     HStack(spacing: 10) {
-                        Text("\(context.state.report.awayScore)")
+                        Text(context.state.report.awayScore, format: .number)
                             .font(.system(size: 26, weight: .heavy, design: .rounded))
                         WidgetTeamLogo(code: context.attributes.awayTeam, size: 38)
                     }
@@ -173,12 +173,12 @@ struct ShlWidgetLiveActivity: Widget {
             } compactLeading: {
                 HStack {
                     WidgetTeamLogo(code: context.attributes.homeTeam, size: 28)
-                    Text("\(context.state.report.homeScore)")
+                    Text(context.state.report.homeScore, format: .number)
                         .font(.system(size: 20, weight: .heavy, design: .rounded))
                 }
             } compactTrailing: {
                 HStack {
-                    Text("\(context.state.report.awayScore)")
+                    Text(context.state.report.awayScore, format: .number)
                         .font(.system(size: 20, weight: .heavy, design: .rounded))
                     WidgetTeamLogo(code: context.attributes.awayTeam, size: 28)
                 }

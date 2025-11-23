@@ -75,7 +75,7 @@ struct PlayerCard: View {
                 Spacer()
                 VStack(spacing: -2) {
                     HStack {
-                        Text("\(String(player.first_name.prefix(1))). \(player.family_name)")
+                        Text(player.capital_faily_name)
                             .lineLimit(1)
                             .scaledToFit()
                             .minimumScaleFactor(0.6)
@@ -85,7 +85,7 @@ struct PlayerCard: View {
                     
                     HStack {
                         TeamLogo(code: player.team_code, size: 18)
-                        Text("\(player.position)")
+                        Text(player.position)
                             .foregroundColor(Color(uiColor: .tertiaryLabel))
                         if player.position == "GK" {
                             Text(String(format: "%.0f%%", player.getSavesPercentage()))
@@ -131,7 +131,7 @@ struct PlayerCardExpanded: View {
             VStack(spacing: 0) {
                 VStack(spacing: -2) {
                     HStack {
-                        Text("\(String(player.first_name.prefix(1))). \(player.family_name)")
+                        Text(player.capital_faily_name)
                             .lineLimit(1)
                             .scaledToFit()
                             .minimumScaleFactor(0.6)
@@ -140,7 +140,7 @@ struct PlayerCardExpanded: View {
                     
                     HStack {
                         TeamLogo(code: player.team_code, size: 18)
-                        Text("\(player.position)")
+                        Text(player.position)
                             .foregroundColor(Color(uiColor: .tertiaryLabel))
                         if player.position == "GK" {
                             Text(String(format: "%.0f%%", player.getSavesPercentage()))

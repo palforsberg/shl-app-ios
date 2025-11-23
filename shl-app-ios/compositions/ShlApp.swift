@@ -22,14 +22,12 @@ struct ShlApp: App {
     }
 }
 
-
-
-class AppDelegate: NSObject, UIApplicationDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     
     static var settings = Settings()
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        application.applicationIconBadgeNumber = 0
+        UNUserNotificationCenter.current().delegate = self
         Cache.clearOld()
         return true
     }
@@ -77,6 +75,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("[APP] Failed to register: \(error.localizedDescription)")
+    }
+    
+    // Called when a notification arrives while the app is in the foreground
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+
+        // Tell the system to show it anyway
+        completionHandler([.banner, .sound, .badge])
     }
 }
 

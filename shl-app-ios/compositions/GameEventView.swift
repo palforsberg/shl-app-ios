@@ -160,9 +160,9 @@ struct GoalEventRow: View {
                             Text(LocalizedStringKey("Goal"))
                         }
                         Spacer()
-                        Text("\(event.home_team_result ?? 0)").underline(team == game.home_team_code) +
+                        Text(event.home_team_result ?? 0, format: .number).underline(team == game.home_team_code) +
                         Text(" - ") +
-                        Text("\(event.away_team_result ?? 0)").underline(team == game.away_team_code)
+                        Text(event.away_team_result ?? 0, format: .number).underline(team == game.away_team_code)
                     }.font(.system(size: starred ? 20 : 20, weight: .heavy, design: .rounded))
                     HStack {
                         if let player = event.player {
@@ -204,10 +204,10 @@ struct GoalEventExpandedView: View {
                 Spacer()
                 TeamAvatar(game.home_team_code, alignment: .leading)
                 
-                Text("\(event.home_team_result ?? 0)")
+                Text(event.home_team_result ?? 0, format: .number)
                     .flashing(enabled: team == game.home_team_code)
                 Text(" - ")
-                Text("\(event.away_team_result ?? 0)")
+                Text(event.away_team_result ?? 0, format: .number)
                     .flashing(enabled: team == game.away_team_code)
         
                 TeamAvatar(game.away_team_code, alignment: .trailing)
@@ -304,7 +304,7 @@ struct GePlayerView: View {
                 if let bp = basePlayer {
                     HStack {
                         TeamLogo(code: bp.team_code, size: 16)
-                        Text("\(teams.getDisplayCode(bp.team_code))")
+                        Text(teams.getDisplayCode(bp.team_code))
                         Text("#\(player.jersey)")
                         Text(bp.position)
                         Spacer()

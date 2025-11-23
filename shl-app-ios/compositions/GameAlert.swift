@@ -44,11 +44,11 @@ struct TitleAlert: View {
             RoundedRectangle(cornerRadius: 0)
                 .fill(Color(UIColor.systemYellow))
             VStack {
-                Text("\(alert?.title ?? "")")
+                Text(alert?.title ?? "")
                     .font(.system(size: 18, weight: .black, design: .rounded))
                     .foregroundColor(.black)
                     .offset(x: offset)
-                Text("\(alert?.body ?? "")")
+                Text(alert?.body ?? "")
                     .font(.system(size: 16, weight: .heavy, design: .rounded))
                     .foregroundColor(.black)
                     .offset(x: -offset)
@@ -111,7 +111,7 @@ struct AlertWrapper: View {
             }
             VStack(spacing: 10) {
                 Spacer(minLength: 40)
-                Text("\(numberGoals)")
+                Text(numberGoals, format: .number)
                     .font(.system(size: 30, weight: .black, design: .rounded))
                 
                 Spacer()

@@ -243,7 +243,6 @@ struct TeamWidgetSystemSmall: View {
     
     var body: some View {
         ZStack(alignment: .center) {
-            Color(.black)
             VStack(alignment: .leading, spacing: 6) {
 
                 HStack {
@@ -260,9 +259,9 @@ struct TeamWidgetSystemSmall: View {
                 } else if let s = entry.standing {
                     HStack {
                         Text("#").font(.system(size: 14, weight: .semibold, design: .rounded)) +
-                        Text("\(s.rank)")
-                        Text("\(s.points)") + Text("p").fontWeight(.semibold)
-                        Text("\(s.gp)") + Text("gp").fontWeight(.semibold)
+                        Text(s.rank, format: .number)
+                        Text(s.points, format: .number) + Text("p").fontWeight(.semibold)
+                        Text(s.gp, format: .number) + Text("gp").fontWeight(.semibold)
                     }
                 }
                 
@@ -311,12 +310,12 @@ struct TeamWidgetViewAccessoryRectangular: View {
         VStack(alignment: .leading, spacing: 3) {
             HStack(spacing: 5) {
                 WidgetTeamLogo(code: entry.teamCode, size: 16)
-                Text("\(entry.getDisplayCode(entry.teamCode))")
+                Text(entry.getDisplayCode(entry.teamCode))
                     .font(.system(size: 14, weight: .heavy, design: .rounded).lowercaseSmallCaps())
                     
                 if let s = entry.standing {
                     (Text("#").font(.system(size: 11, weight: .semibold, design: .rounded)) +
-                    Text("\(s.rank)"))
+                    Text(s.rank, format: .number))
                         .padding(.leading, -2)
                 }
             }

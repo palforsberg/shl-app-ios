@@ -14,7 +14,7 @@ struct StarredTeamSelectView: View {
     
     var body: some View {
         List {
-            Section(header: Text("\(League.shl.rawValue)").listHeader(false)) {
+            Section(header: Text(League.shl.rawValue).listHeader(false)) {
                 ForEach(values: self.teams.getTeams(.shl).sorted(by: { a, b in a.shortname < b.shortname })) { a in
                     Button(action: { starredTeams.toggleTeam(a.code) }) {
                         HStack {
@@ -34,7 +34,7 @@ struct StarredTeamSelectView: View {
                     .accentColor(Color(uiColor: .label))
                 }
             }
-            Section(header: Text("\(League.ha.rawValue)").listHeader(false)) {
+            Section(header: Text(League.ha.rawValue).listHeader(false)) {
                 ForEach(values: self.teams.getTeams(.ha).sorted(by: { a, b in a.name < b.name })) { a in
                     Button(action: { starredTeams.toggleTeam(a.code) }) {
                         HStack {

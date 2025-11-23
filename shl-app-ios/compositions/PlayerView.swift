@@ -39,9 +39,9 @@ struct TopPlayerEntry2: View {
                     
                     HStack {
                         TeamLogo(code: player.team_code, size: 16)
-                        Text("\(teams.getDisplayCode(player.team_code))")
+                        Text(teams.getDisplayCode(player.team_code))
                         Text("#\(player.jersey)")
-                        Text("\(player.position)")
+                        Text(player.position)
                         Spacer()
                     }
                     .font(.system(size: 15, weight: .bold, design: .rounded))
@@ -80,9 +80,9 @@ struct PlayerEntry2: View {
                 
                 HStack {
                     TeamLogo(code: player.team_code, size: 16)
-                    Text("\(teams.getDisplayCode(player.team_code))")
+                    Text(teams.getDisplayCode(player.team_code))
                     Text("#\(player.jersey)")
-                    Text("\(player.position)")
+                    Text(player.position)
                     Spacer()
                 }
                 .font(.system(size: 15, weight: .bold, design: .rounded))
@@ -118,9 +118,9 @@ struct SearchPlayerEntry2: View {
                 
                 HStack {
                     TeamLogo(code: player.team_code, size: 16)
-                    Text("\(teams.getDisplayCode(player.team_code))")
+                    Text(teams.getDisplayCode(player.team_code))
                     Text("#\(player.jersey)")
-                    Text("\(player.position)")
+                    Text(player.position)
                     Spacer()
                 }
                 .font(.system(size: 15, weight: .bold, design: .rounded))

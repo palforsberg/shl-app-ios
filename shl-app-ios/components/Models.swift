@@ -708,6 +708,10 @@ struct Player: Codable, Identifiable, Hashable {
     var team_code: String
     var first_name: String
     var family_name: String
+    
+    var capital_faily_name: String {
+        "\(String(self.first_name.prefix(1))). \(self.family_name)"
+    }
     var jersey: Int
     var position: String
     var season: String

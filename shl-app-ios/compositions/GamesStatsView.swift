@@ -110,12 +110,12 @@ struct MatchHistoryView: View {
         HStack(spacing: 15) {
             TeamLogo(code: homeTeam)
             VStack(spacing: -2) {
-                Text("\(self.prevHomeWins)").font(.system(size: 20, weight: .bold, design: .rounded))
+                Text(self.prevHomeWins, format: .number).font(.system(size: 20, weight: .bold, design: .rounded))
                 Text("Wins").font(.system(size: 13, design: .rounded))
             }
             Divider()
             VStack(spacing: -2) {
-                Text("\(self.prevHomeLoss)").font(.system(size: 20, weight: .bold, design: .rounded))
+                Text(self.prevHomeLoss, format: .number).font(.system(size: 20, weight: .bold, design: .rounded))
                 Text("Wins").font(.system(size: 13, design: .rounded))
             }
             TeamLogo(code: awayTeam)
@@ -337,12 +337,12 @@ struct GameStatsViewHeader: View {
         
                 VStack(spacing: 8) {
                     HStack(alignment: .center, spacing: 8) {
-                        Text("\(game.home_team_result)")
+                        Text(game.home_team_result, format: .number)
                             .font(.system(size: 40, weight: .heavy, design: .rounded))
                             .scaledToFit()
                             .minimumScaleFactor(0.6)
                         Text(":").rounded(size: 20, weight: .heavy).padding(.top, 2)
-                        Text("\(game.away_team_result)")
+                        Text(game.away_team_result, format: .number)
                             .font(.system(size: 40, weight: .heavy, design: .rounded))
                             .scaledToFit()
                             .minimumScaleFactor(0.6)
@@ -403,7 +403,7 @@ struct GamesStatsView: View {
             ScrollView {
                 #if DEBUG
                 NavigationLink("Update Report") {
-                    UpdateReportView(game: game)
+                    // UpdateReportView(game: game)
                 }
                 #endif
                 Spacer(minLength: 10)
