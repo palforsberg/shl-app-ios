@@ -325,6 +325,16 @@
 					<key>INEnumValueName</key>
 					<string>VH</string>
 				</dict>
+				<dict>
+					<key>INEnumValueDisplayName</key>
+					<string>Visby Roma HK</string>
+					<key>INEnumValueDisplayNameID</key>
+					<string>V1sbyR</string>
+					<key>INEnumValueIndex</key>
+					<integer>31</integer>
+					<key>INEnumValueName</key>
+					<string>VIS</string>
+				</dict>
 			</array>
 		</dict>
 	</array>

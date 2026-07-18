@@ -12,6 +12,15 @@
 	<dict>
 		<key>CFBundleAlternateIcons</key>
 		<dict>
+			<key>vis-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>vis-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
 			<key>puck-real</key>
 			<dict>
 				<key>CFBundleIconFiles</key>

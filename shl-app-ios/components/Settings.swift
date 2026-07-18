@@ -41,7 +41,7 @@ enum StoredGameFilter: String, Hashable {
     
 class Settings: ObservableObject {
     
-    static let currentSeason = 2025
+    static let currentSeason = 2026
     @Published var season: Int
 
     @Published var apnToken: String? {

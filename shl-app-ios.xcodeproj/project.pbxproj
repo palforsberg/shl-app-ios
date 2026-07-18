@@ -27,6 +27,9 @@
 		231C057029A207C900BEB846 /* SelectTeamIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 231C056F29A207C900BEB846 /* SelectTeamIntent.intentdefinition */; };
 		231C057129A207C900BEB846 /* SelectTeamIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 231C056F29A207C900BEB846 /* SelectTeamIntent.intentdefinition */; };
 		2324E25F2D93F70600919679 /* GameEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2324E25E2D93F70600919679 /* GameEventView.swift */; };
+		232BFAE2300B5D6300D26E73 /* UpdateReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232BFAE1300B5D6300D26E73 /* UpdateReport.swift */; };
+		232BFAE8300B617800D26E73 /* vis-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 232BFAE7300B617800D26E73 /* vis-icon@3x.png */; };
+		232BFAEA300B618B00D26E73 /* vis-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 232BFAE9300B618B00D26E73 /* vis-icon@2x.png */; };
 		2339F66B26B6862A006DE5F0 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F66A26B6862A006DE5F0 /* TimerView.swift */; };
 		2339F66E26B857E7006DE5F0 /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F66D26B857E7006DE5F0 /* Debouncer.swift */; };
 		2339F6B226C0FB2B006DE5F0 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339F6B126C0FB2B006DE5F0 /* Settings.swift */; };
@@ -199,6 +202,9 @@
 		231C056B299E3DB900BEB846 /* FormGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormGraph.swift; sourceTree = "<group>"; };
 		231C056F29A207C900BEB846 /* SelectTeamIntent.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = SelectTeamIntent.intentdefinition; sourceTree = "<group>"; };
 		2324E25E2D93F70600919679 /* GameEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEventView.swift; sourceTree = "<group>"; };
+		232BFAE1300B5D6300D26E73 /* UpdateReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateReport.swift; sourceTree = "<group>"; };
+		232BFAE7300B617800D26E73 /* vis-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "vis-icon@3x.png"; sourceTree = "<group>"; };
+		232BFAE9300B618B00D26E73 /* vis-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "vis-icon@2x.png"; sourceTree = "<group>"; };
 		2339F66A26B6862A006DE5F0 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
 		2339F66C26B844E6006DE5F0 /* shl-app-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "shl-app-ios.entitlements"; sourceTree = "<group>"; };
 		2339F66D26B857E7006DE5F0 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
@@ -363,6 +369,8 @@
 		2374409B2C6C973000AD200C /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				232BFAE9300B618B00D26E73 /* vis-icon@2x.png */,
+				232BFAE7300B617800D26E73 /* vis-icon@3x.png */,
 				237440532C6C973000AD200C /* aik-icon@2x.png */,
 				237440542C6C973000AD200C /* aik-icon@3x.png */,
 				237440552C6C973000AD200C /* ais-icon@2x.png */,
@@ -524,6 +532,7 @@
 		D1AFF8A525A8570B00E50ADE /* compositions */ = {
 			isa = PBXGroup;
 			children = (
+				232BFAE1300B5D6300D26E73 /* UpdateReport.swift */,
 				D1AFF86825A84FCB00E50ADE /* ShlApp.swift */,
 				234AF3C7290521E100FE3AEC /* GameAlert.swift */,
 				D1AFF86A25A84FCB00E50ADE /* ContentView.swift */,
@@ -721,6 +730,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2374409D2C6C973000AD200C /* aik-icon@3x.png in Resources */,
+				232BFAE8300B617800D26E73 /* vis-icon@3x.png in Resources */,
 				237440DA2C6C973000AD200C /* tik-icon@2x.png in Resources */,
 				237440A22C6C973000AD200C /* bik-icon@2x.png in Resources */,
 				237440DB2C6C973000AD200C /* tik-icon@3x.png in Resources */,
@@ -747,6 +757,7 @@
 				237440D32C6C973000AD200C /* saik-icon@3x.png in Resources */,
 				237440D52C6C973000AD200C /* ssk-icon@3x.png in Resources */,
 				237440DD2C6C973000AD200C /* vh-icon@3x.png in Resources */,
+				232BFAEA300B618B00D26E73 /* vis-icon@2x.png in Resources */,
 				237440D12C6C973000AD200C /* rbk-icon@3x.png in Resources */,
 				237EFCBF2C67D3A400C6AA9E /* NewIcons.png in Resources */,
 				237440AA2C6C973000AD200C /* fhc-icon@2x.png in Resources */,
@@ -863,6 +874,7 @@
 				23743B0829B4C0DF00BE0AA6 /* LiveActivity.swift in Sources */,
 				D1AFC2A925B07F5E00490FCE /* StarredTeams.swift in Sources */,
 				231C055D299A529B00BEB846 /* Models.swift in Sources */,
+				232BFAE2300B5D6300D26E73 /* UpdateReport.swift in Sources */,
 				23537ED026B1D30200C9B6ED /* GamesStatsView.swift in Sources */,
 				235CB13C2889650000A898D7 /* PullToRefresh.swift in Sources */,
 				D1AAF86225AB10BF008D3D62 /* TeamLogo.swift in Sources */,
@@ -988,7 +1000,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1018,7 +1030,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1047,7 +1059,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1076,7 +1088,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-notification-service";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1108,7 +1120,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1140,7 +1152,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1172,7 +1184,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}.shl-app-ios-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1324,7 +1336,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1355,7 +1367,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.palforsberg.shl-app-ios${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

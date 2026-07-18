@@ -403,7 +403,7 @@ struct GamesStatsView: View {
             ScrollView {
                 #if DEBUG
                 NavigationLink("Update Report") {
-                    // UpdateReportView(game: game)
+                    UpdateReportView(game: game)
                 }
                 #endif
                 Spacer(minLength: 10)
