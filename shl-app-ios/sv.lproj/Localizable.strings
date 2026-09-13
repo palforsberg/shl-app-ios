@@ -42,6 +42,7 @@
 "Goal" = "Mål";
 "Goal_starred" = "MÅÅL! 🎉";
 "Penalty" = "Utvisning";
+"PENALTY_SHOT" = "Straff";
 
 // Game stats
 "league.shl" = "Svenska Hockey Ligan";

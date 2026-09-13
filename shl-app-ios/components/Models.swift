@@ -862,6 +862,7 @@ enum GameEventType : String, Codable {
     case penalty = "Penalty"
     case periodStart = "PeriodStart"
     case periodEnd = "PeriodEnd"
+    case shot = "Shot"
 }
 
 struct GameEvent: Codable, Identifiable {
@@ -884,10 +885,14 @@ struct GameEvent: Codable, Identifiable {
     let home_team_result: Int?
     let away_team_result: Int?
     let team_advantage: String?
+    let is_empty_net_goal: Bool?
+    let is_penalty_shot: Bool?
+    let location: EventLocation?
     
     func getEventType() -> GameEventType? {
         return GameEventType(rawValue: type)
     }
+    
     func getTeamAdvantage() -> String {
         if self.team_advantage == "EQ" {
             return ""
@@ -906,6 +911,11 @@ struct GameEvent: Codable, Identifiable {
 struct EventAssists: Codable {
     let first: EventPlayer?
     let second: EventPlayer?
+}
+
+struct EventLocation: Codable {
+    let x: Int
+    let y: Int
 }
 
 struct AddUser: Codable, Equatable {

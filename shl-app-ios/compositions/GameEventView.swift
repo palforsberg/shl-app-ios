@@ -53,7 +53,7 @@ struct PenaltyEventRow: View {
                 }
                 
             }
-            .padding(EdgeInsets(top: 7, leading: 30, bottom: 8, trailing: 35))
+            .padding(EdgeInsets(top: 7, leading: 30, bottom: 7, trailing: 35))
             .foregroundColor(Color(uiColor: .secondaryLabel))
             .contentShape(Rectangle())
         })
@@ -148,6 +148,7 @@ struct GoalEventRow: View {
     var body: some View {
         let team = event.team ?? ""
         let starred = starredTeams.isStarred(teamCode: team)
+        let advantage = event.getTeamAdvantage()
 
         Button(action: { self.selectEvent(event) }, label: {
             HStack(spacing: 10) {
@@ -159,6 +160,22 @@ struct GoalEventRow: View {
                         } else {
                             Text(LocalizedStringKey("Goal"))
                         }
+                        if event.is_empty_net_goal == true {
+                            Text("TOM BUR")
+                                .font(.system(size: 11, weight: .bold, design: .rounded))
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Color(uiColor: .tertiarySystemFill))
+                                .clipShape(Capsule())
+                        }
+                        if event.is_penalty_shot == true {
+                            Text(LocalizedStringKey("PENALTY_SHOT"))
+                                .font(.system(size: 11, weight: .bold, design: .rounded))
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Color(uiColor: .tertiarySystemFill))
+                                .clipShape(Capsule())
+                        }
                         Spacer()
                         Text(event.home_team_result ?? 0, format: .number).underline(team == game.home_team_code) +
                         Text(" - ") +
@@ -168,7 +185,9 @@ struct GoalEventRow: View {
                         if let player = event.player {
                             Text("#\(player.jersey) \(player.first_name) \(player.family_name)").truncationMode(.tail).lineLimit(1)
                         }
-                        Text(event.getTeamAdvantage())
+                        if !advantage.isEmpty {
+                            Text(advantage)
+                        }
                         Spacer()
                         Text(event.gametime)
                     }.font(.system(size: starred ? 14 : 14, weight: .semibold, design: .rounded))
@@ -196,8 +215,26 @@ struct GoalEventExpandedView: View {
 
         ScrollView {
             Spacer(minLength: 20)
-            Text(LocalizedStringKey(starred ? "Goal_starred" : "Goal"))
-                .font(.system(size: 26, weight: .heavy, design: .rounded).smallCaps())
+            HStack {
+                Text(LocalizedStringKey(starred ? "Goal_starred" : "Goal"))
+                    .font(.system(size: 26, weight: .heavy, design: .rounded).smallCaps())
+                if event.is_penalty_shot == true {
+                    Text(LocalizedStringKey("PENALTY_SHOT"))
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color(uiColor: .tertiarySystemFill))
+                        .clipShape(Capsule())
+                }
+                if event.is_empty_net_goal == true {
+                    Text("TOM BUR")
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color(uiColor: .tertiarySystemFill))
+                        .clipShape(Capsule())
+                }
+            }
             
             Spacer(minLength: 16)
             HStack(alignment: .center, spacing: 2) {
@@ -244,6 +281,17 @@ struct GoalEventExpandedView: View {
                         }
                         .font(.system(size: 15, weight: .bold, design: .rounded))
                     }
+                }
+
+                if event.location != nil {
+                    Spacer(minLength: 40)
+                    ShotChartView(
+                        events: [event],
+                        homeTeam: game.home_team_code,
+                        awayTeam: game.away_team_code,
+                        showLegend: false,
+                        replayStatus: event.status,
+                        replayGameTime: event.gametime)
                 }
             }
             .padding(EdgeInsets(top: 0, leading: 40, bottom: 0, trailing: 40))
@@ -341,7 +389,8 @@ struct GameStartEventRow: View {
         }
             .foregroundColor(Color(uiColor: UIColor.secondaryLabel))
             .font(.system(size: 14, weight: .semibold, design: .rounded))
-            .padding(EdgeInsets(top: 2, leading: 67, bottom: 2, trailing: 0))
+            .padding(.leading, 67)
+            .padding(.vertical, 4)
     }
 }
 
@@ -354,7 +403,8 @@ struct PeriodEventRow: View {
         }
             .foregroundColor(Color(uiColor: UIColor.secondaryLabel))
             .font(.system(size: 14, weight: .semibold, design: .rounded))
-            .padding(EdgeInsets(top: 2, leading: 67, bottom: 2, trailing: 0))
+            .padding(.leading, 67)
+            .padding(.vertical, 4)
     }
     
     private func getLocalizedString() -> LocalizedStringKey {
@@ -425,16 +475,10 @@ struct GameEventView: View {
     var game: Game
     var details: GameDetails?
     
-    var tapTip = TapEventTip()
-    
     var body: some View {
-        let events = details?.events ?? []
-        let firstGoalForTip = (events.first { $0.type == "Goal" || $0.type == "Penalty" })?.id
+        let events = (details?.events ?? []).filter { $0.getEventType() != .shot }
         Group {
             ForEach(events) { p in
-                if p.id == firstGoalForTip {
-                    TipView(tapTip, arrowEdge: .bottom)
-                }
                 GameEventRow(event: p, game: game, selectEvent: selectEvent)
             }
         }

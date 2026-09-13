@@ -93,11 +93,11 @@ func getEventPlayer() -> EventPlayer {
 func getEvent(type: GameEventType, period: Int = 1, team: String = "LHF", reason: String? = nil) -> GameEvent {
     switch type {
     case .goal:
-        return GameEvent(game_uuid: UUID().uuidString, event_id: "event_id", status: "Period1", gametime: "13:37", type: type.rawValue, team: team, reason: nil, player: getEventPlayer(), penalty: nil, assists: EventAssists(first: getEventPlayer(), second: getEventPlayer()), home_team_result: 3, away_team_result: 0, team_advantage: "PP1")
+            return GameEvent(game_uuid: UUID().uuidString, event_id: "event_id", status: "Period1", gametime: "13:37", type: type.rawValue, team: team, reason: nil, player: getEventPlayer(), penalty: nil, assists: EventAssists(first: getEventPlayer(), second: getEventPlayer()), home_team_result: 3, away_team_result: 0, team_advantage: "PP1", is_empty_net_goal: nil, is_penalty_shot: nil, location: EventLocation(x: 120, y: 20))
     case .penalty:
-        return GameEvent(game_uuid: UUID().uuidString, event_id: "event_id", status: "Period1", gametime: "13:37", type: type.rawValue, team: team, reason: reason ?? "Too many players on the ice", player: getEventPlayer(), penalty: "2 min + GM", assists: nil, home_team_result: nil, away_team_result: nil, team_advantage: nil)
+        return GameEvent(game_uuid: UUID().uuidString, event_id: "event_id", status: "Period1", gametime: "13:37", type: type.rawValue, team: team, reason: reason ?? "Too many players on the ice", player: getEventPlayer(), penalty: "2 min + GM", assists: nil, home_team_result: nil, away_team_result: nil, team_advantage: nil, is_empty_net_goal: nil, is_penalty_shot: nil, location: nil)
     default:
-        return GameEvent(game_uuid: UUID().uuidString, event_id: "event_id", status: "Period1", gametime: "13:37", type: type.rawValue, team: team, reason: nil, player: nil, penalty: nil, assists: nil,  home_team_result: nil, away_team_result: nil, team_advantage: nil)
+        return GameEvent(game_uuid: UUID().uuidString, event_id: "event_id", status: "Period1", gametime: "13:37", type: type.rawValue, team: team, reason: nil, player: nil, penalty: nil, assists: nil,  home_team_result: nil, away_team_result: nil, team_advantage: nil, is_empty_net_goal: nil, is_penalty_shot: nil, location: nil)
     }
 }
 

@@ -306,6 +306,22 @@ struct SeasonPreviewView: View {
     }
 }
 
+
+struct GameSeasonHeader: View {
+    @EnvironmentObject var settings: Settings
+    
+    var game: Game
+    
+    var body: some View {
+        VStack {
+            Text("\(game.league.rawValue) • \(settings.getFormattedSeason())")
+            Text(LocalizedStringKey(game.getGameType()?.rawValue ?? ""))
+        }
+        .font(.system(size: 14, weight: .bold, design: .rounded))
+        .foregroundColor(Color(UIColor.secondaryLabel))
+    }
+}
+
 struct GameStatsViewHeader: View {
     
     @EnvironmentObject var starredTeams: StarredTeams
@@ -315,13 +331,6 @@ struct GameStatsViewHeader: View {
     var game: Game
     
     var body: some View {
-        Group {
-            Text("\(game.league.rawValue) • \(settings.getFormattedSeason())")
-            Text(LocalizedStringKey(game.getGameType()?.rawValue ?? ""))
-        }
-        .font(.system(size: 14, weight: .bold, design: .rounded))
-        .foregroundColor(Color(UIColor.secondaryLabel))
-        Spacer(minLength: 15)
         
         Group { // Header
             HStack(alignment: .top, spacing: 0) {
@@ -338,15 +347,14 @@ struct GameStatsViewHeader: View {
                 VStack(spacing: 8) {
                     HStack(alignment: .center, spacing: 8) {
                         Text(game.home_team_result, format: .number)
-                            .font(.system(size: 40, weight: .heavy, design: .rounded))
                             .scaledToFit()
                             .minimumScaleFactor(0.6)
                         Text(":").rounded(size: 20, weight: .heavy).padding(.top, 2)
                         Text(game.away_team_result, format: .number)
-                            .font(.system(size: 40, weight: .heavy, design: .rounded))
                             .scaledToFit()
                             .minimumScaleFactor(0.6)
                     }
+                    .font(.system(size: 40, weight: .heavy, design: .rounded))
                     .padding(EdgeInsets(top: 3, leading: 5, bottom: 0, trailing: 5))
                     .opacity(game.isFuture() ? 0.2 : 1.0)
                     HStack(spacing: 3) {
@@ -395,117 +403,131 @@ struct GamesStatsView: View {
     @EnvironmentObject var teamsData: TeamsData
     
     var provider: DataProvider? = DataProvider()
+    
+    @State var headerIsVisible = true
 
     var game: Game
     
     var body: some View {
         let game = details?.game ?? game
-            ScrollView {
-                #if DEBUG
-                NavigationLink("Update Report") {
-                    UpdateReportView(game: game)
-                }
-                #endif
-                Spacer(minLength: 10)
 
+        let chartEvents = (details?.events ?? []).filter { $0.location != nil }
+        
+        ScrollView {
+            #if DEBUG
+            NavigationLink("Update Report") {
+                UpdateReportView(game: game)
+            }
+            #endif
+            //Spacer(minLength: 10)
+
+            if #available(iOS 18, *) {
+                GameStatsViewHeader(game: game) .onScrollVisibilityChange(threshold: 0.3) { isVisible in
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        headerIsVisible = isVisible
+                    }
+                }
+            } else {
                 GameStatsViewHeader(game: game)
+            }
                 
-                if LiveActivity.shared?.isGameApplicable(game: game) ?? false,
-                   ActivityAuthorizationInfo().areActivitiesEnabled
-                {
-                    Group {
-                        if self.liveActivityEnabled {
-                            Spacer(minLength: 10)
-                            Text("live aktiviteten lever på låsskärmen")
-                                .font(.system(size: 12, weight: .bold, design: .rounded))
-                                .foregroundColor(Color(uiColor: .tertiaryLabel))
-                            Spacer(minLength: 15)
-                        } else {
-                            Spacer(minLength: 20)
-                            Button("Start Live") { self.startLiveActivity(for: game) }
-                                .cornerRadius(10)
-                                .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                    .strokeBorder(.gray.opacity(0.3)))
-                            Spacer(minLength: 20)
-                        }
-                    }
-                    .buttonStyle(.bordered)
-                    .font(.system(size: 16, weight: .bold, design: .rounded))
-                    
-                } else if game.isFuture() {
-                    Spacer(minLength: 24)
-                    VStack(spacing: 5) {
-                        Text("Starts In").listHeader(false)
-                        TimerView(referenceDate: game.start_date_time)
-                    }
-                    
-                    Spacer(minLength: 30)
-                } else {
-                    Spacer(minLength: 20)
-                }
-                
-                if let stats = details?.stats {
-                    StatsView(title: "Match Detail", stats: stats)
-                    Spacer(minLength: 25)
-                    
-                } else if game.isFuture(), game.isSeasonGame() {
-                    SeasonPreviewView(game: game)
-                    Spacer(minLength: 30)
-                }
-                
-                if game.isPlayoff() || game.isDemotion() {
-                    PlayoffPreviewView(game: game, subtitle: false)
-                    Spacer(minLength: 20)
-                }
-                
-                if game.votes != nil || PickemData.isPickable(game: game) {
-                    Group {
-                        Text("Pick'em").listHeader()
-                            .padding(.bottom, -3)
-                        PickemSliderView(game: game, onVote: self.updateVote)
-                            .padding(.leading, 15).padding(.trailing, 15)
-                        Spacer(minLength: 30)
-                    }
-                }
-                if hasFetched { // hide until all data has been fetched to avoid jumping UI
-                    #if DEBUG
-                    if #available(iOS 19.0, *) {
-                        if !(details?.players.isEmpty ?? false) {
-                            GameStatsPlayerView(players: details?.players ?? [])
-                            Spacer(minLength: 20)
-                        }
-                    }
-                    #endif
-                    if !(details?.events.isEmpty ?? false) {
-                        Spacer(minLength: 0)
-                        GameEventView(game: game, details: details)
-                        Spacer(minLength: 30)
-                        Divider()
+            if LiveActivity.shared?.isGameApplicable(game: game) ?? false,
+               ActivityAuthorizationInfo().areActivitiesEnabled
+            {
+                Group {
+                    if self.liveActivityEnabled {
+                        Spacer(minLength: 10)
+                        Text("live aktiviteten lever på låsskärmen")
+                            .font(.system(size: 12, weight: .bold, design: .rounded))
+                            .foregroundColor(Color(uiColor: .tertiaryLabel))
+                        Spacer(minLength: 15)
+                    } else {
+                        Spacer(minLength: 20)
+                        Button("Start Live") { self.startLiveActivity(for: game) }
+                            .cornerRadius(10)
+                            .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                .strokeBorder(.gray.opacity(0.3)))
                         Spacer(minLength: 20)
                     }
-            
-                    MatchHistoryView(homeTeam: game.home_team_code, awayTeam: game.away_team_code)
+                }
+                .buttonStyle(.bordered)
+                .font(.system(size: 16, weight: .bold, design: .rounded))
+                
+            } else if game.isFuture() {
+                Spacer(minLength: 24)
+                VStack(spacing: 5) {
+                    Text("Starts In").listHeader(false)
+                    TimerView(referenceDate: game.start_date_time)
+                }
+                
+                Spacer(minLength: 30)
+            } else {
+                Spacer(minLength: 20)
+            }
+                
+            if let stats = details?.stats {
+                StatsView(title: "Match Detail", stats: stats)
+                Spacer(minLength: 25)
+                
+            } else if game.isFuture(), game.isSeasonGame() {
+                SeasonPreviewView(game: game)
+                Spacer(minLength: 30)
+            }
+                
+            if game.isPlayoff() || game.isDemotion() {
+                PlayoffPreviewView(game: game, subtitle: false)
+                Spacer(minLength: 20)
+            }
+                
+            if game.votes != nil || PickemData.isPickable(game: game) {
+                Group {
+                    Text("Pick'em").listHeader()
+                        .padding(.bottom, -3)
+                    PickemSliderView(game: game, onVote: self.updateVote)
+                        .padding(.horizontal, 15)
+                    Spacer(minLength: 30)
+                }
+            }
+            if hasFetched { // hide until all data has been fetched to avoid jumping UI
+                ShotChartView(
+                    events: chartEvents,
+                    homeTeam: game.home_team_code,
+                    awayTeam: game.away_team_code,
+                    replayStatus: game.status,
+                    replayGameTime: game.gametime
+                )
+                Spacer(minLength: 25)
+
+                if !(details?.events.isEmpty ?? false) {
+                    Spacer(minLength: 0)
+                    GameEventView(game: game, details: details)
+                    Spacer(minLength: 30)
+                    Divider()
                     Spacer(minLength: 10)
-                    if (!previousGames.isEmpty) {
-                        GroupedView(title: "") {
-                            VStack(spacing: 0) {
-                                ForEach(previousGames) { item in
-                                    NavigationLink(destination: GamesStatsView(game: item)) {
-                                        PlayedGame(game: item)
-                                            .padding(.vertical, 20)
-                                            .contentShape(Rectangle())
-                                    }
-                                    .buttonStyle(ActiveButtonStyle())
-                                    if item != previousGames.last {
-                                        Divider()
-                                    }
+                }
+                            
+                MatchHistoryView(homeTeam: game.home_team_code, awayTeam: game.away_team_code)
+                Spacer(minLength: 10)
+                if (!previousGames.isEmpty) {
+                    GroupedView(title: "") {
+                        VStack(spacing: 0) {
+                            ForEach(previousGames) { item in
+                                NavigationLink(destination: GamesStatsView(game: item)) {
+                                    PlayedGame(game: item)
+                                        .padding(.vertical, 20)
+                                        .contentShape(Rectangle())
+                                }
+                                .buttonStyle(ActiveButtonStyle())
+                                if item != previousGames.last {
+                                    Divider()
                                 }
                             }
                         }
-                        Spacer(minLength: 40)
                     }
+                    Spacer(minLength: 40)
                 }
             }
+        }
             .task { // runs before view appears
                 
                 let allPrevGames = self.gamesData.getGamesBetween(team1: game.home_team_code, team2: game.away_team_code)
@@ -532,9 +554,50 @@ struct GamesStatsView: View {
             .refreshable {
                 await self.reloadData()
             }
+            .toolbar {
+                //if #available(iOS 26, *) {
+                ToolbarItem(placement: .principal) {
+                    
+                    ZStack {
+                        GameSeasonHeader(game: game)
+                            .opacity(headerIsVisible ? 1 : 0)
+                            .offset(y: headerIsVisible ? 0 : 10)
+
+                        HStack {
+                            teamAvatar(teamCode: game.home_team_code)
+                            HStack(alignment: .center, spacing: 8) {
+                                Text(game.home_team_result, format: .number)
+                                    .scaledToFit()
+                                    .minimumScaleFactor(0.6)
+                                Text(":").rounded(size: 14, weight: .heavy).padding(.top, 2)
+                                Text(game.away_team_result, format: .number)
+                                    .scaledToFit()
+                                    .minimumScaleFactor(0.6)
+                            }
+                            .font(.system(size: 20, weight: .heavy, design: .rounded))
+                            teamAvatar(teamCode: game.away_team_code)
+                        }
+                        .opacity(headerIsVisible ? 0 : 1)
+                        .offset(y: headerIsVisible ? 10 : 0)
+                    }
+                }
+                //}
+            }
             .navigationBarTitle("", displayMode: .inline)
             .background(Color(UIColor.systemGroupedBackground))
-            .coordinateSpace(name: "game_stats_scrollview")
+    }
+    
+    @ViewBuilder
+    func teamAvatar(teamCode: String) -> some View {
+        HStack {
+            TeamLogo(code: teamCode, size: 20)
+            Text(self.teamsData.getDisplayCode(teamCode))
+                .rounded(size: 18, weight: .bold)
+                .foregroundColor(Color(uiColor: .label))
+                .scaledToFit()
+                .minimumScaleFactor(0.6)
+        }
+        .opacity(teamCode == "TBD" ? 0.4 : 1.0)
     }
     
     func reloadData() async {
@@ -608,16 +671,25 @@ struct GamesStatsView_Previews: PreviewProvider {
         starredTeams.addTeam(teamCode: "SAIK")
         let game = getLiveGame(t1: "SAIK", score1: 4, t2: "IKO", score2: 2, status: "Overtime")
         PickemData.updateStored(key: "picks.\(Settings.currentSeason)", picks: [Pick(gameUuid: game.game_uuid, pickedTeam: "SAIK")])
-        return GamesStatsView(details: GameDetails(game: game, events: events, stats: stats, players: getPlayers()),
-                              provider: nil,
-                              game: game)
-            .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
-            .environmentObject(teams)
-            .environmentObject(Settings())
-            .environmentObject(getPickemData())
-            .environmentObject(starredTeams)
-            .environmentObject(getStandingsData())
-            .environment(\.locale, .init(identifier: "sv"))
+        return NavigationStack {
+            NavigationLink {
+                
+            
+                GamesStatsView(details: GameDetails(game: game, events: events, stats: stats, players: getPlayers()),
+                               provider: nil,
+                               game: game)
+            } label: {
+                Text("Click")
+            }
+        }
+        .navigationTitle(Text("test"))
+        .environmentObject(GamesData(data: [getPlayedGame(), getPlayedGame(), getPlayedGame()]))
+        .environmentObject(teams)
+        .environmentObject(Settings())
+        .environmentObject(getPickemData())
+        .environmentObject(starredTeams)
+        .environmentObject(getStandingsData())
+        .environment(\.locale, .init(identifier: "sv"))
     }
 }
 
