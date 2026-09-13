@@ -5,6 +5,7 @@
 "Played" = "Spelade";
 "Played_param %@" = "Spelade %@";
 "Season_param %@" = "Säsongen %@";
+"Founded_param %@" = "Grundat %@";
 "Favourite" = "Favorit";
 "Swedish Hockey League" = "Svenska Hockey Ligan";
 "Match Detail" = "Matchen";
@@ -43,6 +44,7 @@
 "Goal_starred" = "MÅÅL! 🎉";
 "Penalty" = "Utvisning";
 "PENALTY_SHOT" = "Straff";
+"EMPTY_NET" = "Tom bur";
 
 // Game stats
 "league.shl" = "Svenska Hockey Ligan";

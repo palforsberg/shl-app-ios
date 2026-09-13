@@ -5,6 +5,7 @@
 "Played" = "Played";
 "Played_param %@" = "Played %@";
 "Season_param %@" = "Season %@";
+"Founded_param %@" = "Founded %@";
 "Favourite" = "Favourite";
 "Swedish Hockey League" = "Swedish Hockey League";
 "Match Detail" = "Match Detail";
@@ -43,6 +44,7 @@
 "Goal_starred" = "GOAL!";
 "Penalty" = "Penalty";
 "PENALTY_SHOT" = "Penalty Shot";
+"EMPTY_NET" = "Empty Net";
 
 // Game Stats
 "league.shl" = "Swedish Hockey League";

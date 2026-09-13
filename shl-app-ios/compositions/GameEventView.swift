@@ -161,7 +161,7 @@ struct GoalEventRow: View {
                             Text(LocalizedStringKey("Goal"))
                         }
                         if event.is_empty_net_goal == true {
-                            Text("TOM BUR")
+                            Text(LocalizedStringKey("EMPTY_NET"))
                                 .font(.system(size: 11, weight: .bold, design: .rounded))
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)
@@ -227,7 +227,7 @@ struct GoalEventExpandedView: View {
                         .clipShape(Capsule())
                 }
                 if event.is_empty_net_goal == true {
-                    Text("TOM BUR")
+                    Text(LocalizedStringKey("EMPTY_NET"))
                         .font(.system(size: 14, weight: .bold, design: .rounded))
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)

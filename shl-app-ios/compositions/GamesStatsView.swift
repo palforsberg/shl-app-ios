@@ -489,14 +489,16 @@ struct GamesStatsView: View {
                 }
             }
             if hasFetched { // hide until all data has been fetched to avoid jumping UI
-                ShotChartView(
-                    events: chartEvents,
-                    homeTeam: game.home_team_code,
-                    awayTeam: game.away_team_code,
-                    replayStatus: game.status,
-                    replayGameTime: game.gametime
-                )
-                Spacer(minLength: 25)
+                if false {
+                    ShotChartView(
+                        events: chartEvents,
+                        homeTeam: game.home_team_code,
+                        awayTeam: game.away_team_code,
+                        replayStatus: game.status,
+                        replayGameTime: game.gametime
+                    )
+                    Spacer(minLength: 25)
+                }
 
                 if !(details?.events.isEmpty ?? false) {
                     Spacer(minLength: 0)

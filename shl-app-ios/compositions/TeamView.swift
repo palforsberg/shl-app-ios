@@ -134,9 +134,8 @@ struct PlayerStatsSheet: View {
     }
     
     var body: some View {
-        ScrollView([]) {
-            VStack {
-                Spacer(minLength: 20)
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack(spacing: 0) {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
                         Spacer(minLength: 20)
@@ -289,12 +288,15 @@ struct PlayerStatsSheet: View {
                     }.fixedSize(horizontal: false, vertical: true)
                         .padding(.bottom, 10)
                 }
-                Spacer(minLength: 30)
             }
+            .frame(maxWidth: .infinity, alignment: .top)
+            .padding(.top, 20)
+            .padding(.bottom, 30)
         }
+        .defaultScrollAnchor(.top)
+        .scrollBounceBehavior(.basedOnSize)
         .background(Color(UIColor.systemGroupedBackground)
             .edgesIgnoringSafeArea(.all))
-        .ignoresSafeArea(edges: .all)
         .task {
             await self.fetchPlayerData()
         }
@@ -307,10 +309,6 @@ struct PlayerStatsSheet: View {
         )
         self.summary = sum
         self.fetchedPlayerInfo = pi
-        
-        withAnimation(.easeOut) {
-            
-        }
     }
     
     func isAllowed() -> Bool {
@@ -353,6 +351,24 @@ struct GoldView: View {
     }
 }
 
+struct TeamSeasonHeader: View {
+    @EnvironmentObject var settings: Settings
+
+    let league: League
+    let founded: String?
+
+    var body: some View {
+        VStack {
+            Text("\(league.rawValue) • \(settings.getFormattedSeason())")
+            if let founded {
+                Text("Founded_param \(founded)")
+            }
+        }
+        .font(.system(size: 14, weight: .bold, design: .rounded))
+        .foregroundColor(Color(UIColor.secondaryLabel))
+    }
+}
+
 struct TeamView: View {
     @EnvironmentObject var starredTeams: StarredTeams
     @EnvironmentObject var teams: TeamsData
@@ -370,6 +386,7 @@ struct TeamView: View {
     @State var showingAllPlayers = false
     @State var selectedPlayer: Player?
     @State var showingAllPlayedGames = false
+    @State var headerIsVisible = true
     
     var body: some View {
         let team = self.teams.getTeam(teamCode)
@@ -380,23 +397,17 @@ struct TeamView: View {
         ScrollView {
             VStack(alignment: .center, spacing: 0) {
                 VStack(spacing: 10) {
-                    VStack(spacing: 0) {
-                        Text("\(standing.league.rawValue) • \(settings.getFormattedSeason())")
-                        if let founded = team?.founded {
-                            Text("Grundat \(founded)")
-                                .foregroundColor(Color(UIColor.secondaryLabel))
-                        }
-                        GoldView(golds: team?.golds)
-                            .padding(.top, 4)
-                    }
-                    .font(.system(size: 14, weight: .bold, design: .rounded))
-                    .foregroundColor(Color(UIColor.secondaryLabel))
-                    VStack(spacing: 2) {
-                        TeamLogo(code: teamCode, size: 70)
-                    
-                        Text(team?.name ?? teamCode)
-                            .rounded(size: 24, weight: .heavy)
-                            .starred(starred)
+                    GoldView(golds: team?.golds)
+                        .padding(.top, 14)
+                    if #available(iOS 18, *) {
+                        teamIdentity(team: team, starred: starred)
+                            .onScrollVisibilityChange(threshold: 0.3) { isVisible in
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    headerIsVisible = isVisible
+                                }
+                            }
+                    } else {
+                        teamIdentity(team: team, starred: starred)
                     }
                     Spacer(minLength: 6)
                     StarButton(starred: starred) {
@@ -541,6 +552,28 @@ struct TeamView: View {
             }
             .background(Color(UIColor.systemGroupedBackground))
         }.background(Color(UIColor.systemGroupedBackground))
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                ZStack {
+                    TeamSeasonHeader(league: standing.league, founded: team?.founded)
+                        .opacity(headerIsVisible ? 1 : 0)
+                        .offset(y: headerIsVisible ? 0 : 10)
+
+                    HStack(spacing: 8) {
+                        TeamLogo(code: teamCode, size: 22)
+                        Text(teams.getShortname(teamCode))
+                            .rounded(size: 18, weight: .bold)
+                            .starred(starred)
+                            .lineLimit(1)
+                            .scaledToFit()
+                            .minimumScaleFactor(0.6)
+                    }
+                    .foregroundColor(Color(uiColor: .label))
+                    .opacity(headerIsVisible ? 0 : 1)
+                    .offset(y: headerIsVisible ? 10 : 0)
+                }
+            }
+        }
         .navigationBarTitle("", displayMode: .inline)
         .sheet(item: $selectedPlayer, onDismiss: {
             self.selectedPlayer = nil
@@ -550,6 +583,17 @@ struct TeamView: View {
         }
         .task { // runs before view appears
             await self.reloadPlayers()
+        }
+    }
+
+    @ViewBuilder
+    private func teamIdentity(team: Team?, starred: Bool) -> some View {
+        VStack(spacing: 2) {
+            TeamLogo(code: teamCode, size: 70)
+
+            Text(team?.name ?? teamCode)
+                .rounded(size: 24, weight: .heavy)
+                .starred(starred)
         }
     }
     
@@ -652,4 +696,3 @@ struct PlayerSheet_Previews: PreviewProvider {
                 .clipped()
     }
 }
-
