@@ -26,6 +26,335 @@ struct StatsRowSingle: View {
     }
 }
 
+private func powerTrendColor(for teamCode: String) -> Color {
+    let baseColor = TeamColors.color(for: teamCode) ?? .systemBlue
+    var hue: CGFloat = 0
+    var saturation: CGFloat = 0
+    var brightness: CGFloat = 0
+    var alpha: CGFloat = 0
+
+    guard baseColor.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha) else {
+        return Color(uiColor: baseColor)
+    }
+
+    let brighterValue = brightness + (1 - brightness) * 0.18
+    return Color(
+        uiColor: UIColor(
+            hue: hue,
+            saturation: saturation,
+            brightness: brighterValue,
+            alpha: alpha
+        )
+    )
+}
+
+private struct PowerTrendAreaMarks: ChartContent {
+    let points: [PowerRatingPoint]
+    let lowerBound: Double
+    let color: Color
+    let topOpacity: Double
+
+    var body: some ChartContent {
+        ForEach(points) { point in
+            AreaMark(
+                x: .value("Date", point.date),
+                yStart: .value("Lower Bound", lowerBound),
+                yEnd: .value("Power Rating", point.rating),
+                series: .value("Team", point.teamCode)
+            )
+            .foregroundStyle(
+                LinearGradient(
+                    colors: [color.opacity(topOpacity), color.opacity(topOpacity * 0.27), color.opacity(0)],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
+        }
+    }
+}
+
+private struct PowerTrendAreaSeriesMarks: ChartContent {
+    let ratings: [TeamPowerRating]
+    let lowerBound: Double
+
+    var body: some ChartContent {
+        ForEach(ratings, id: \.teamCode) { rating in
+            PowerTrendAreaMarks(
+                points: rating.trend,
+                lowerBound: lowerBound,
+                color: powerTrendColor(for: rating.teamCode),
+                topOpacity: ratings.count == 1 ? 0.22 : 0.12
+            )
+        }
+    }
+}
+
+private struct PowerTrendAverageMark: ChartContent {
+    let average: Double
+
+    var body: some ChartContent {
+        RuleMark(y: .value("League Average", average))
+            .foregroundStyle(Color(uiColor: .tertiaryLabel))
+            .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
+            .annotation(position: .top, alignment: .trailing) {
+                Text("League Average_param \(Int(average.rounded()))")
+                    .font(.system(size: 9, weight: .semibold, design: .rounded))
+                    .foregroundColor(Color(uiColor: .secondaryLabel))
+            }
+    }
+}
+
+private struct PowerTrendLineMarks: ChartContent {
+    let points: [PowerRatingPoint]
+    let lineWidth: CGFloat
+    let opacity: Double
+
+    var body: some ChartContent {
+        ForEach(points) { point in
+            LineMark(
+                x: .value("Date", point.date),
+                y: .value("Power Rating", point.rating),
+                series: .value("Team", point.teamCode)
+            )
+            .foregroundStyle(powerColor(for: point.teamCode).opacity(opacity))
+            .lineStyle(StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round))
+            .interpolationMethod(.linear)
+        }
+    }
+
+    private func powerColor(for teamCode: String) -> Color {
+        powerTrendColor(for: teamCode)
+    }
+}
+
+private struct PowerTrendPointMarks: ChartContent {
+    let points: [PowerRatingPoint]
+    let symbolSize: CGFloat
+    let opacity: Double
+
+    var body: some ChartContent {
+        ForEach(points) { point in
+            PointMark(
+                x: .value("Date", point.date),
+                y: .value("Power Rating", point.rating)
+            )
+            .foregroundStyle(powerColor(for: point.teamCode).opacity(opacity))
+            .symbolSize(symbolSize)
+        }
+    }
+
+    private func powerColor(for teamCode: String) -> Color {
+        powerTrendColor(for: teamCode)
+    }
+}
+
+private struct PowerTrendSelectionMark: ChartContent {
+    let date: Date?
+
+    @ChartContentBuilder
+    var body: some ChartContent {
+        if let date {
+            RuleMark(x: .value("Selected Date", date))
+                .foregroundStyle(Color(uiColor: .secondaryLabel))
+                .lineStyle(StrokeStyle(lineWidth: 1))
+        }
+    }
+}
+
+struct PowerTrendChart: View {
+    let ratings: [TeamPowerRating]
+    @State private var selectedDate: Date?
+
+    var body: some View {
+        let points = ratings.flatMap(\.trend)
+        let latestPoints = ratings.compactMap(\.trend.last)
+        let selectedPoints = selectedDate.map(nearestPoints(to:)) ?? []
+        let average = ratings.first?.leagueAverage ?? 1500
+        let minRating = points.map(\.rating).min() ?? average
+        let maxRating = points.map(\.rating).max() ?? average
+        let lowerBound = min(minRating - 10, average - 40)
+        let upperBound = max(maxRating + 10, average + 40)
+        let domain = lowerBound...upperBound
+
+        VStack(spacing: 10) {
+            if points.count > ratings.count {
+                Chart {
+                    PowerTrendAreaSeriesMarks(ratings: ratings, lowerBound: lowerBound)
+                    PowerTrendAverageMark(average: average)
+                    PowerTrendLineMarks(points: points, lineWidth: 2.5, opacity: 1)
+                    PowerTrendPointMarks(points: latestPoints, symbolSize: 28, opacity: 1)
+                    PowerTrendPointMarks(points: selectedPoints, symbolSize: 34, opacity: 1)
+                    PowerTrendSelectionMark(date: selectedDate)
+                }
+                .chartYScale(domain: domain)
+                .chartXAxis {
+                    AxisMarks(values: .automatic(desiredCount: 3)) {
+                        AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                    }
+                }
+                .chartYAxis {
+                    AxisMarks(position: .leading, values: .automatic(desiredCount: 3)) { value in
+                        AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [2, 4]))
+                            .foregroundStyle(Color(uiColor: .separator).opacity(0.35))
+                        if let rating = value.as(Double.self) {
+                            AxisValueLabel {
+                                Text("\(Int(rating.rounded()))")
+                            }
+                        }
+                    }
+                }
+                .chartPlotStyle { plotArea in
+                    plotArea
+                        .background(Color.clear)
+                }
+                .chartXSelection(value: $selectedDate)
+                .frame(height: 140)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(Text("Power Trend"))
+                .accessibilityValue(ratings.map { "\($0.teamCode) \($0.displayRating)" }.joined(separator: ", "))
+            } else {
+                Text("Power Trend Empty")
+                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                    .foregroundColor(Color(uiColor: .secondaryLabel))
+                    .frame(maxWidth: .infinity, minHeight: 60)
+            }
+
+            if let selectedDate {
+                HStack(spacing: 12) {
+                    Text(selectedDate, format: .dateTime.day().month(.abbreviated))
+                    Spacer()
+                    ForEach(selectedPoints) { point in
+                        HStack(spacing: 5) {
+                            Circle()
+                                .fill(powerColor(for: point.teamCode))
+                                .frame(width: 7, height: 7)
+                            Text(point.teamCode)
+                            Text(Int(point.rating.rounded()), format: .number)
+                                .fontWeight(.heavy)
+                                .monospacedDigit()
+                        }
+                    }
+                }
+                .font(.system(size: 12, weight: .bold, design: .rounded))
+                .foregroundColor(Color(uiColor: .secondaryLabel))
+            } else if ratings.count > 1 {
+                HStack(spacing: 18) {
+                    ForEach(ratings, id: \.teamCode) { rating in
+                        HStack(spacing: 5) {
+                            Circle()
+                                .fill(powerColor(for: rating.teamCode))
+                                .frame(width: 7, height: 7)
+                            Text(rating.teamCode)
+                            Text(rating.displayRating, format: .number)
+                                .fontWeight(.heavy)
+                                .monospacedDigit()
+                            Text(displayDelta(for: rating))
+                                .foregroundColor(deltaColor(for: rating))
+                        }
+                    }
+                }
+                .font(.system(size: 12, weight: .bold, design: .rounded))
+                .foregroundColor(Color(uiColor: .secondaryLabel))
+            } else if points.count > ratings.count {
+                Text("Power Trend Explore")
+                    .font(.system(size: 11, weight: .semibold, design: .rounded))
+                    .foregroundColor(Color(uiColor: .tertiaryLabel))
+            }
+        }
+    }
+
+    private func nearestPoints(to date: Date) -> [PowerRatingPoint] {
+        ratings.compactMap { rating in
+            rating.trend.min {
+                abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date))
+            }
+        }
+    }
+
+    private func displayDelta(for rating: TeamPowerRating) -> String {
+        guard let first = rating.trend.first else { return "–" }
+        let delta = rating.displayRating - Int(first.rating.rounded())
+        return delta > 0 ? "+\(delta)" : "\(delta)"
+    }
+
+    private func deltaColor(for rating: TeamPowerRating) -> Color {
+        guard let first = rating.trend.first else { return Color(uiColor: .secondaryLabel) }
+        let delta = rating.rating - first.rating
+        if delta > 0 { return .green }
+        if delta < 0 { return .red }
+        return Color(uiColor: .secondaryLabel)
+    }
+
+    private func powerColor(for teamCode: String) -> Color {
+        powerTrendColor(for: teamCode)
+    }
+}
+
+struct TeamPowerRatingCard: View {
+    let rating: TeamPowerRating
+
+    var body: some View {
+        VStack(spacing: 14) {
+            HStack(alignment: .firstTextBaseline) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(rating.displayRating, format: .number)
+                        .font(.system(size: 34, weight: .heavy, design: .rounded))
+                        .monospacedDigit()
+                    Text("Power Rating Description")
+                        .font(.system(size: 12, weight: .semibold, design: .rounded))
+                        .foregroundColor(Color(uiColor: .secondaryLabel))
+                }
+                Spacer()
+                Text("Power Rank_param \(rating.rank) \(rating.leagueTeamCount)")
+                    .font(.system(size: 15, weight: .bold, design: .rounded))
+                    .foregroundColor(Color(uiColor: .secondaryLabel))
+            }
+
+            HStack {
+                trendMetric(title: "Season Change", value: displayChange)
+                Divider().frame(height: 30)
+                trendMetric(title: "Season High", value: displayHigh)
+                Divider().frame(height: 30)
+                trendMetric(title: "Season Low", value: displayLow)
+            }
+
+            Divider()
+            PowerTrendChart(ratings: [rating])
+        }
+        .padding(.vertical, 16)
+        .padding(.horizontal, 24)
+    }
+
+    private var displayChange: String {
+        guard let first = rating.trend.first else { return "–" }
+        let delta = rating.displayRating - Int(first.rating.rounded())
+        return delta > 0 ? "+\(delta)" : "\(delta)"
+    }
+
+    private var displayHigh: String {
+        guard let high = rating.trend.map(\.rating).max() else { return "–" }
+        return "\(Int(high.rounded()))"
+    }
+
+    private var displayLow: String {
+        guard let low = rating.trend.map(\.rating).min() else { return "–" }
+        return "\(Int(low.rounded()))"
+    }
+
+    @ViewBuilder
+    private func trendMetric(title: LocalizedStringKey, value: String) -> some View {
+        VStack(spacing: 2) {
+            Text(value)
+                .font(.system(size: 15, weight: .heavy, design: .rounded))
+                .monospacedDigit()
+            Text(title)
+                .font(.system(size: 10, weight: .semibold, design: .rounded))
+                .foregroundColor(Color(uiColor: .secondaryLabel))
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
 struct TopPlayerEntry: View {
     var player: Player
     var action: () -> Void
@@ -394,6 +723,7 @@ struct TeamView: View {
         let liveGames = games.getLiveGames(filter: .teams([teamCode]))
         let futureGames = games.getFutureGames(filter: .teams([teamCode]), starred: starredTeams.starredTeams, includeToday: true)
         let playedGames = games.getPlayedGames(filter: .teams([teamCode]), starred: starredTeams.starredTeams, ).prefix(showingAllPlayedGames ? 1000 : 5)
+        let powerRating = games.getPowerRating(for: teamCode)
         ScrollView {
             VStack(alignment: .center, spacing: 0) {
                 VStack(spacing: 10) {
@@ -439,6 +769,14 @@ struct TeamView: View {
                         }.padding(EdgeInsets(top: 16, leading: 24, bottom: 16, trailing: 24))
                     }
                     Spacer(minLength: 30)
+                }
+                if FeatureFlags.powerRating, let powerRating {
+                    Group {
+                        GroupedView(title: "Power Rating") {
+                            TeamPowerRatingCard(rating: powerRating)
+                        }
+                        Spacer(minLength: 30)
+                    }
                 }
                 if let players = self.topPlayers {
                     Group {
@@ -645,6 +983,77 @@ struct StarButton: View {
             .strokeBorder(.gray.opacity(0.3)))
         .cornerRadius(24)
         .buttonStyle(PlainButtonStyle())
+    }
+}
+
+struct PowerRatingComponents_Previews: PreviewProvider {
+    private static let lulea = makeRating(
+        teamCode: "LHF",
+        rank: 3,
+        values: [1510, 1518, 1506, 1523, 1531, 1526, 1540, 1552, 1546, 1561]
+    )
+    private static let frolunda = makeRating(
+        teamCode: "FHC",
+        rank: 5,
+        values: [1542, 1535, 1548, 1556, 1547, 1538, 1544, 1532, 1525, 1536]
+    )
+
+    static var previews: some View {
+        Group {
+            ScrollView {
+                GroupedView(title: "Power Rating") {
+                    TeamPowerRatingCard(rating: lulea)
+                }
+                .padding(.vertical, 24)
+            }
+            .background(Color(uiColor: .systemGroupedBackground))
+            .previewDisplayName("Team Power Rating")
+
+            ScrollView {
+                GroupedView(title: "GamePreview") {
+                    VStack {
+                        StatsRow(
+                            left: "\(lulea.displayRating)",
+                            center: "Power Rating",
+                            right: "\(frolunda.displayRating)"
+                        )
+                        Divider()
+                            .padding(.vertical, 7)
+                        Text("Power Trend")
+                            .font(.system(size: 14, weight: .bold, design: .rounded))
+                            .foregroundColor(Color(uiColor: .secondaryLabel))
+                        PowerTrendChart(ratings: [lulea, frolunda])
+                            .padding(.top, 2)
+                    }
+                    .padding(EdgeInsets(top: 16, leading: 30, bottom: 16, trailing: 30))
+                }
+                .padding(.vertical, 24)
+            }
+            .background(Color(uiColor: .systemGroupedBackground))
+            .previewDisplayName("Pre-game Power Comparison")
+        }
+        .environment(\.locale, .init(identifier: "sv"))
+    }
+
+    private static func makeRating(teamCode: String, rank: Int, values: [Double]) -> TeamPowerRating {
+        let startDate = Date().addingTimeInterval(-Double(values.count) * 7 * 86_400)
+        let trend = values.enumerated().map { index, rating in
+            PowerRatingPoint(
+                id: "preview-\(teamCode)-\(index)",
+                teamCode: teamCode,
+                date: startDate.addingTimeInterval(Double(index) * 7 * 86_400),
+                rating: rating
+            )
+        }
+        return TeamPowerRating(
+            teamCode: teamCode,
+            league: .shl,
+            rating: values.last ?? 1500,
+            rank: rank,
+            leagueTeamCount: 14,
+            leagueAverage: 1500,
+            trend: trend
+        )
     }
 }
 

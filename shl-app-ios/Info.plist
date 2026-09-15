@@ -12,24 +12,6 @@
 	<dict>
 		<key>CFBundleAlternateIcons</key>
 		<dict>
-			<key>vis-icon</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>vis-icon</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<false/>
-			</dict>
-			<key>puck-real</key>
-			<dict>
-				<key>CFBundleIconFiles</key>
-				<array>
-					<string>puck-real</string>
-				</array>
-				<key>UIPrerenderedIcon</key>
-				<false/>
-			</dict>
 			<key>aik-icon</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -255,6 +237,15 @@
 				<key>UIPrerenderedIcon</key>
 				<false/>
 			</dict>
+			<key>puck-real</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>puck-real</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
 			<key>rbk-icon</key>
 			<dict>
 				<key>CFBundleIconFiles</key>
@@ -314,6 +305,15 @@
 				<key>CFBundleIconFiles</key>
 				<array>
 					<string>vik-icon</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+			<key>vis-icon</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>vis-icon</string>
 				</array>
 				<key>UIPrerenderedIcon</key>
 				<false/>

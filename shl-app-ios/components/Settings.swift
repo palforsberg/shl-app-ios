@@ -7,6 +7,14 @@
 
 import Foundation
 
+enum FeatureFlags {
+    #if DEBUG
+    static let powerRating = false
+    #else
+    static let powerRating = false
+    #endif
+}
+
 extension KeyPath where Root == Settings {
     var stringValue: String {
         switch self {

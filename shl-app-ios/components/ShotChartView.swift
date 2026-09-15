@@ -618,7 +618,7 @@ private struct ShotLegendItem: View {
     }
 }
 
-private struct TeamColors {
+struct TeamColors {
     static let map: [String: UIColor] = [
         // SHL
         "LHF": UIColor(hex: 0x000000),

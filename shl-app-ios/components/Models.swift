@@ -125,18 +125,51 @@ enum GameFilter {
     case teams([String])
 }
 
+struct PowerRatingPoint: Identifiable, Equatable {
+    let id: String
+    let teamCode: String
+    let date: Date
+    let rating: Double
+}
+
+struct TeamPowerRating: Equatable {
+    let teamCode: String
+    let league: League
+    let rating: Double
+    let rank: Int
+    let leagueTeamCount: Int
+    let leagueAverage: Double
+    let trend: [PowerRatingPoint]
+
+    var displayRating: Int {
+        Int(rating.rounded())
+    }
+}
+
 class GamesData: ObservableObject {
     var data: [Game]
     var live_games: [Game]
+    private var previousSeasonData: [Game]
+    private var powerRatings: [String: TeamPowerRating]
     
-    init(data: [Game]) {
+    init(data: [Game], previousSeasonData: [Game] = []) {
         self.data = data
         self.live_games = data.filter({ $0.isLive() })
+        self.previousSeasonData = previousSeasonData
+        self.powerRatings = [:]
+        rebuildPowerRatings()
     }
     
     func set(data: [Game]) {
         self.data = data
         self.live_games = data.filter({ $0.isLive() })
+        rebuildPowerRatings()
+        self.objectWillChange.send()
+    }
+
+    func setPreviousSeason(data: [Game]) {
+        self.previousSeasonData = data
+        rebuildPowerRatings()
         self.objectWillChange.send()
     }
     
@@ -240,6 +273,22 @@ class GamesData: ObservableObject {
             return g.hasTeam(team1) && g.hasTeam(team2)
         }
     }
+
+    func getPowerRating(for teamCode: String) -> TeamPowerRating? {
+        powerRatings[teamCode]
+    }
+
+    private func rebuildPowerRatings() {
+        guard FeatureFlags.powerRating else {
+            powerRatings = [:]
+            return
+        }
+
+        powerRatings = PowerRatingEngine.calculate(
+            currentSeasonGames: data,
+            previousSeasonGames: previousSeasonData
+        )
+    }
     
     func getPoints(for teamCode: String, numberOfGames: Int = 5) -> [Int] {
         return Array(self.data
@@ -318,6 +367,145 @@ class GamesData: ObservableObject {
         
         return StandingTimeline(gp: max_gp, timeline: result)
      }
+}
+
+private enum PowerRatingEngine {
+    private static let baseline = 1500.0
+    private static let homeAdvantage = 35.0
+    private static let updateRate = 20.0
+    private static let returningTeamRetention = 0.65
+    private static let changedLeagueRetention = 0.25
+
+    static func calculate(
+        currentSeasonGames: [Game],
+        previousSeasonGames: [Game]
+    ) -> [String: TeamPowerRating] {
+        let currentTeamLeagues = teamLeagues(
+            in: currentSeasonGames.filter { $0.getGameType() == .season }
+        )
+        guard !currentTeamLeagues.isEmpty else {
+            return [:]
+        }
+
+        let previousTeamLeagues = teamLeagues(
+            in: previousSeasonGames.filter { $0.getGameType() == .season }
+        )
+        var previousRatings = initialRatings(for: previousTeamLeagues.keys)
+        for game in playedGames(from: previousSeasonGames) {
+            updateRatings(for: game, ratings: &previousRatings)
+        }
+
+        var currentRatings: [String: Double] = [:]
+        var trends: [String: [PowerRatingPoint]] = [:]
+
+        for (teamCode, league) in currentTeamLeagues {
+            let previousRating = previousRatings[teamCode] ?? baseline
+            let stayedInLeague = previousTeamLeagues[teamCode] == league
+            let retention = stayedInLeague ? returningTeamRetention : changedLeagueRetention
+            let seed = baseline + (previousRating - baseline) * retention
+            currentRatings[teamCode] = seed
+
+            if let firstGameDate = currentSeasonGames
+                .filter({ $0.hasTeam(teamCode) })
+                .map(\.start_date_time)
+                .min() {
+                trends[teamCode] = [PowerRatingPoint(
+                    id: "power-seed-\(teamCode)",
+                    teamCode: teamCode,
+                    date: firstGameDate.addingTimeInterval(-86_400),
+                    rating: seed
+                )]
+            }
+        }
+
+        for game in playedGames(from: currentSeasonGames) {
+            updateRatings(for: game, ratings: &currentRatings)
+            for teamCode in [game.home_team_code, game.away_team_code] {
+                guard let rating = currentRatings[teamCode] else { continue }
+                trends[teamCode, default: []].append(PowerRatingPoint(
+                    id: "\(game.game_uuid)-\(teamCode)",
+                    teamCode: teamCode,
+                    date: game.start_date_time,
+                    rating: rating
+                ))
+            }
+        }
+
+        var result: [String: TeamPowerRating] = [:]
+        for league in [League.shl, League.ha] {
+            let teamCodes = currentTeamLeagues
+                .filter { $0.value == league }
+                .map(\.key)
+                .sorted {
+                    let lhs = currentRatings[$0] ?? baseline
+                    let rhs = currentRatings[$1] ?? baseline
+                    return lhs == rhs ? $0 < $1 : lhs > rhs
+                }
+            guard !teamCodes.isEmpty else { continue }
+
+            let average = teamCodes
+                .map { currentRatings[$0] ?? baseline }
+                .reduce(0, +) / Double(teamCodes.count)
+
+            for (index, teamCode) in teamCodes.enumerated() {
+                result[teamCode] = TeamPowerRating(
+                    teamCode: teamCode,
+                    league: league,
+                    rating: currentRatings[teamCode] ?? baseline,
+                    rank: index + 1,
+                    leagueTeamCount: teamCodes.count,
+                    leagueAverage: average,
+                    trend: trends[teamCode] ?? []
+                )
+            }
+        }
+        return result
+    }
+
+    private static func teamLeagues(in games: [Game]) -> [String: League] {
+        var result: [String: League] = [:]
+        for game in games {
+            if game.home_team_code != "TBD" {
+                result[game.home_team_code] = game.league
+            }
+            if game.away_team_code != "TBD" {
+                result[game.away_team_code] = game.league
+            }
+        }
+        return result
+    }
+
+    private static func initialRatings<S: Sequence>(for teams: S) -> [String: Double] where S.Element == String {
+        Dictionary(uniqueKeysWithValues: teams.map { ($0, baseline) })
+    }
+
+    private static func playedGames(from games: [Game]) -> [Game] {
+        games
+            .filter { $0.isPlayed() && !$0.isTbd() }
+            .sorted {
+                if $0.start_date_time == $1.start_date_time {
+                    return $0.game_uuid < $1.game_uuid
+                }
+                return $0.start_date_time < $1.start_date_time
+            }
+    }
+
+    private static func updateRatings(for game: Game, ratings: inout [String: Double]) {
+        let homeRating = ratings[game.home_team_code] ?? baseline
+        let awayRating = ratings[game.away_team_code] ?? baseline
+        let expectedHome = 1 / (1 + pow(10, (awayRating - homeRating - homeAdvantage) / 400))
+        let homeWon = game.home_team_result > game.away_team_result
+        let decidedAfterRegulation = game.overtime || game.shootout
+        let actualHome = decidedAfterRegulation
+            ? (homeWon ? 0.67 : 0.33)
+            : (homeWon ? 1.0 : 0.0)
+        let goalMargin = max(abs(game.home_team_result - game.away_team_result), 1)
+        let marginMultiplier = min(1 + log(Double(goalMargin)), 2.25)
+        let adjustment = updateRate * marginMultiplier * (actualHome - expectedHome)
+
+        ratings[game.home_team_code] = homeRating + adjustment
+        ratings[game.away_team_code] = awayRating - adjustment
+    }
 }
 
 struct StandingTimeline {

@@ -14,6 +14,17 @@
 "Rank" = "Ranking";
 "Games Played" = "Antal Matcher";
 "Points/Game" = "Poäng / Match";
+"Power Rating" = "Power Rating";
+"Power Trend" = "Powerutveckling";
+"Power Rating Description" = "Motståndsjusterad styrka";
+"Power Rank_param %lld %lld" = "Ranking %lld av %lld";
+"Power Trend Empty" = "Utvecklingen visas efter första matchen.";
+"Power Trend Explore" = "Dra över grafen för att se varje match";
+"League Average" = "Ligasnitt";
+"League Average_param %lld" = "Ligasnitt %lld";
+"Season Change" = "Säsong";
+"Season High" = "Högsta";
+"Season Low" = "Lägsta";
 "Starts In" = "Börjar om";
 
 // SeasonView

@@ -14,6 +14,17 @@
 "Rank" = "Rank";
 "Games Played" = "Games Played";
 "Points/Game" = "Points / Game";
+"Power Rating" = "Power Rating";
+"Power Trend" = "Power Trend";
+"Power Rating Description" = "Opponent-adjusted strength";
+"Power Rank_param %lld %lld" = "Rank %lld of %lld";
+"Power Trend Empty" = "The trend appears after the first game.";
+"Power Trend Explore" = "Drag across the chart to inspect each game";
+"League Average" = "League Average";
+"League Average_param %lld" = "League avg. %lld";
+"Season Change" = "Season Change";
+"Season High" = "High";
+"Season Low" = "Low";
 "Starts In" = "Starts In";
 
 // SeasonView

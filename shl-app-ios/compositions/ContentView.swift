@@ -64,6 +64,7 @@ struct ContentView: View {
     @ObservedObject var pickemData: PickemData
     @ObservedObject var errorHandler = ErrorHandler()
     @ObservedObject var playersData = PlayersData(data: [])
+    @AppStorage("standing.league") private var selectedLeague = League.shl
     
     var provider: DataProvider? = DataProvider()
     
@@ -79,6 +80,10 @@ struct ContentView: View {
         
         if let games = provider?.getCachedGames(season: settings.season) {
             self.gameData.set(data: games)
+        }
+        if FeatureFlags.powerRating,
+           let games = provider?.getCachedGames(season: settings.getPrevSeason()) {
+            self.gameData.setPreviousSeason(data: games)
         }
         if let standing = provider?.getCachedStandings(season: settings.season) {
             self.standings.set(data: standing)
@@ -149,6 +154,19 @@ struct ContentView: View {
         .environmentObject(playersData)
         .onReceive(NotificationCenter.default.publisher(for: .onGameNotification)) { data in
             // self.alert = data.object as? GameNofitication
+        }
+        .onChange(of: settings.gameFilter) { _, filter in
+            switch filter {
+            case .shl:
+                selectedLeague = .shl
+            case .ha:
+                selectedLeague = .ha
+            case .all, .starred:
+                break
+            }
+        }
+        .onChange(of: selectedLeague) { _, league in
+            settings.gameFilter = league == .shl ? .shl : .ha
         }
         .background(Color(UIColor.systemGroupedBackground))
         .accentColor(colorScheme == .light

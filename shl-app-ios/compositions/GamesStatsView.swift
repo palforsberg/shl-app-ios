@@ -275,17 +275,38 @@ struct PlayoffPreviewView: View {
 
 struct SeasonPreviewView: View {
     @EnvironmentObject var standings: StandingsData
+    @EnvironmentObject var gamesData: GamesData
     
     let game: Game
     
     var body: some View {
         if let homeRank = standings.getFor(team: game.home_team_code),
            let awayRank = standings.getFor(team: game.away_team_code) {
+            let homePowerRating = gamesData.getPowerRating(for: game.home_team_code)
+            let awayPowerRating = gamesData.getPowerRating(for: game.away_team_code)
+
             GroupedView(title: "GamePreview") {
                 VStack {
                     StatsRow(left: "#\(homeRank.rank)", center: "Rank", right: "#\(awayRank.rank)")
                     StatsRow(left: "\(homeRank.diff)", center: "Goal Diff", right: "\(awayRank.diff)")
                     StatsRow(left: "\(homeRank.getPointsPerGame())", center: "Points/Game", right: "\(awayRank.getPointsPerGame())")
+                    if FeatureFlags.powerRating,
+                       let homePowerRating,
+                       let awayPowerRating {
+                        StatsRow(
+                            left: "\(homePowerRating.displayRating)",
+                            center: "Power Rating",
+                            right: "\(awayPowerRating.displayRating)"
+                        )
+
+                        Divider()
+                            .padding(.vertical, 7)
+                        Text("Power Trend")
+                            .font(.system(size: 14, weight: .bold, design: .rounded))
+                            .foregroundColor(Color(uiColor: .secondaryLabel))
+                        PowerTrendChart(ratings: [homePowerRating, awayPowerRating])
+                            .padding(.top, 2)
+                    }
                     HStack(alignment: .bottom) {
                         FormGraph(teamCode: game.home_team_code)
                         Spacer()

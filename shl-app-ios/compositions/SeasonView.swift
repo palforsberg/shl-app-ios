@@ -325,6 +325,64 @@ struct StatusView: View {
     }
 }
 
+private struct GameFilterToolbarMenu: View {
+    @Binding var selection: StoredGameFilter
+
+    var body: some View {
+        Menu {
+            Picker("Game Filter", selection: $selection) {
+                Label("Your Teams", systemImage: "star")
+                    .tag(StoredGameFilter.starred)
+                Text("All")
+                    .tag(StoredGameFilter.all)
+                Text("SHL")
+                    .tag(StoredGameFilter.shl)
+                Text("HockeyAllsvenskan")
+                    .tag(StoredGameFilter.ha)
+            }
+        } label: {
+            if selection == .starred {
+                Image(systemName: "star")
+            } else {
+                HStack(spacing: 4) {
+                    Text(compactTitle)
+                        .rounded(size: 15, weight: .bold)
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 9, weight: .bold))
+                }
+                .frame(minWidth: minimumButtonWidth)
+            }
+        }
+        .frame(minWidth: minimumButtonWidth, minHeight: 44)
+        .accessibilityLabel(Text("Game Filter"))
+        .accessibilityValue(Text(accessibilityValue))
+    }
+
+    private var compactTitle: LocalizedStringKey {
+        switch selection {
+        case .all:
+            return "All"
+        case .shl:
+            return "SHL"
+        case .ha:
+            return "HA"
+        case .starred:
+            return "Your Teams"
+        }
+    }
+
+    private var accessibilityValue: LocalizedStringKey {
+        selection == .starred ? "Your Teams" : compactTitle
+    }
+
+    private var minimumButtonWidth: CGFloat {
+        switch (selection) {
+        case .all, .shl, .ha: return 60
+        default: return 44
+        }
+    }
+}
+
 struct SeasonView: View {
     @EnvironmentObject var starredTeams: StarredTeams
     @EnvironmentObject var gamesData: GamesData
@@ -334,6 +392,14 @@ struct SeasonView: View {
     @State var showAllPlayed: Bool = false
     
     var provider: DataProvider?
+
+    private var canShowGameFilter: Bool {
+        #if DEBUG
+        true
+        #else
+        settings.supporter
+        #endif
+    }
     
     var body: some View {
         let liveGames = gamesData.getGamesToday(filter: settings.gameFilter.filterValue, starred: starredTeams.starredTeams)
@@ -424,20 +490,12 @@ struct SeasonView: View {
             .listStyle(InsetGroupedListStyle())
             .navigationBarTitle(Text("Matches"))
             .toolbar {
-                /*
-                ToolbarItem(placement: .topBarLeading) {
-                    Picker(selection: $settings.gameFilter) {
-                        Text("All").tag(StoredGameFilter.all)
-                        Text("SHL").tag(StoredGameFilter.shl)
-                        Text("HA").tag(StoredGameFilter.ha)
-                        Text("Your Teams").tag(StoredGameFilter.starred)
-                    } label: {
-                        Text("Game Filter")
+                if canShowGameFilter {
+                    ToolbarItem(placement: .topBarLeading) {
+                        GameFilterToolbarMenu(selection: $settings.gameFilter)
                     }
-                    .font(.system(size: 15, weight: .bold, design: .rounded))
                 }
-                 */
-                
+
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink(destination: SettingsView()) {
                         Label("Settings", systemImage: "gearshape")
@@ -470,9 +528,10 @@ struct SeasonView: View {
         let maxAge = self.gamesData.live_games.count > 0 ? 5 : throttling
         
         async let gamesDataReq = provider?.getGames(season: settings.season, fetchType: .throttled, maxAge: maxAge)
+        async let previousGamesDataReq = getPreviousSeasonGamesForPowerRating()
         async let statusReq = provider?.getStatus()
         
-        let (gameRsp, status) = await (gamesDataReq, statusReq)
+        let (gameRsp, previousGames, status) = await (gamesDataReq, previousGamesDataReq, statusReq)
         
         if let gd = gameRsp {
             if let games = gd.entries {
@@ -483,8 +542,24 @@ struct SeasonView: View {
                debugPrint("[SEASON] reload widgets")
             }
         }
+
+        if FeatureFlags.powerRating {
+            gamesData.setPreviousSeason(data: previousGames ?? [])
+        }
         
         self.status = status
+    }
+
+    private func getPreviousSeasonGamesForPowerRating() async -> [Game]? {
+        guard FeatureFlags.powerRating else {
+            return nil
+        }
+
+        return await provider?.getGames(
+            season: settings.getPrevSeason(),
+            fetchType: .throttled,
+            maxAge: TimeInterval.days(7)
+        ).entries
     }
 }
 
@@ -555,4 +630,3 @@ struct PlayedCells_Previews: PreviewProvider {
             .environment(\.locale, .init(identifier: "sv"))
     }
 }
-
